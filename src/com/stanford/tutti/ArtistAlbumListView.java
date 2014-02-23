@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.stanford.tutti;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,9 @@ import android.widget.Toast;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.example.myfirstapp.R;
+import com.stanford.tutti.ArtistAlbumSongListView;
 
 
 public class ArtistAlbumListView extends Activity {

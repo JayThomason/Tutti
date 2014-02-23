@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.myfirstapp.MainActivity"
+            android:name="com.stanford.tutti.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,23 +25,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.myfirstapp.DisplayMessageActivity"
+            android:name="com.stanford.tutti.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.example.myfirstapp.MainActivity" >
+            android:parentActivityName="com.stanford.tutti.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myfirstapp.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.myfirstapp.ArtistListView"
+            android:name="com.stanford.tutti.ArtistListView"
             android:label="@string/title_activity_artist_list_view" >
         </activity>
                 <activity
-            android:name="com.example.myfirstapp.ArtistAlbumListView"
+            android:name="com.stanford.tutti.ArtistAlbumListView"
             android:label="@string/title_activity_artist_album_list_view" >
         </activity>
         <activity
-            android:name="com.example.myfirstapp.ArtistAlbumSongListView"
+            android:name="com.stanford.tutti.ArtistAlbumSongListView"
             android:label="@string/title_activity_artist_album_song_list_view" >
         </activity>
     </application>

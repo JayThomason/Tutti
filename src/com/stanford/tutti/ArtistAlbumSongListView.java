@@ -1,6 +1,8 @@
-package com.example.myfirstapp;
+package com.stanford.tutti;
 
 import java.util.ArrayList;
+
+import com.example.myfirstapp.R;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,7 +21,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ArtistAlbumSongListView extends Activity {
     ListView listView;
-    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {

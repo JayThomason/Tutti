@@ -1,4 +1,6 @@
-package com.example.myfirstapp;
+package com.stanford.tutti;
+
+import com.example.myfirstapp.R;
 
 import android.os.Bundle;
 import android.app.Activity;

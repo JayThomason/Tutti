@@ -1,7 +1,9 @@
-package com.example.myfirstapp;
+package com.stanford.tutti;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.example.myfirstapp.R;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
