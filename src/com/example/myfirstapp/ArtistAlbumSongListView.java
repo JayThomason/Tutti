@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
 
-public class ArtistAlbumListView extends Activity {
+public class ArtistAlbumSongListView extends Activity {
     ListView listView;
     
     
@@ -31,23 +31,23 @@ public class ArtistAlbumListView extends Activity {
         
         setContentView(R.layout.artist_album_list_view);
         
-        ArrayList<String> albums = new ArrayList<String>();
+        ArrayList<String> songs = new ArrayList<String>();
         
-        final String where = MediaStore.Audio.AlbumColumns.ARTIST
+        final String where = MediaStore.Audio.Media.ALBUM
         		+ "='" 
-        		+ getIntent().getStringExtra(getString(R.string.artist))
+        		+ getIntent().getStringExtra(getString(R.string.album))
         		+ "'";
         
         Cursor cursor = getContentResolver().query(
-        	    MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
+        	    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
         	    null, 
         	    where, 
         	    null, 
         	    MediaStore.Audio.Albums.ALBUM + " ASC");
         
         while (cursor.moveToNext()) {
-            String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
-            albums.add(0, album);
+            String song = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+            songs.add(0, song);
         }
                 
         // Get ListView object from xml
@@ -55,7 +55,7 @@ public class ArtistAlbumListView extends Activity {
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-          android.R.layout.simple_list_item_1, android.R.id.text1, albums);
+          android.R.layout.simple_list_item_1, android.R.id.text1, songs);
 
 
         // Assign adapter to ListView
@@ -66,10 +66,8 @@ public class ArtistAlbumListView extends Activity {
               @Override
               public void onItemClick(AdapterView<?> parent, View view,
             		  int position, long id) {
-            	  String  album = (String) listView.getItemAtPosition(position); 
-        		  Intent intent = new Intent(getApplicationContext(), ArtistAlbumSongListView.class);
-        		  intent.putExtra(getString(R.string.album), album);
-            	  startActivity(intent);
+            	  String song = (String) listView.getItemAtPosition(position); 
+            	  System.out.println(song);
               }
         }); 
     }
@@ -80,5 +78,4 @@ public class ArtistAlbumListView extends Activity {
         onBackPressed(); 
         return true;
     }
-
 }

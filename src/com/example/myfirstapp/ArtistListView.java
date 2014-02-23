@@ -1,6 +1,7 @@
 package com.example.myfirstapp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,7 +23,8 @@ public class ArtistListView extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view_android_example);
+        
+        setContentView(R.layout.artist_list_view);
         
         ArrayList<String> artists = new ArrayList<String>();
 
@@ -34,12 +36,12 @@ public class ArtistListView extends Activity {
         	    MediaStore.Audio.Artists.ARTIST + " ASC");
         
         while (cursor.moveToNext()) {
-            String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
-            artists.add(0, title);
+            String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
+            artists.add(0, artist);
         }
                 
         // Get ListView object from xml
-        listView = (ListView) findViewById(R.id.list);
+        listView = (ListView) findViewById(R.id.artist_list);
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -53,15 +55,14 @@ public class ArtistListView extends Activity {
         listView.setOnItemClickListener(new OnItemClickListener() {
               @Override
               public void onItemClick(AdapterView<?> parent, View view,
-            		  int position, long id) {
-            	  // ListView Clicked item index
-            	  int itemPosition     = position;         
-            	  // ListView Clicked item value
-            	  String  itemValue    = (String) listView.getItemAtPosition(position);     
-            	  startActivity(new Intent(this, ArtistAlbumView.class));
+            		  int position, long id) {     
+            	  String  artist = (String) listView.getItemAtPosition(position);
+            	  if (artist != null) {
+            		  Intent intent = new Intent(getApplicationContext(), ArtistAlbumListView.class);
+            		  intent.putExtra(getString(R.string.artist), artist);
+            		  startActivity(intent); 
+            	  }
               }
-
         }); 
     }
-
 }

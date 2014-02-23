@@ -33,8 +33,16 @@
                 android:value="com.example.myfirstapp.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.myfirstapp.ListViewAndroidExample"
-            android:label="@string/title_activity_list_view_android_example" >
+            android:name="com.example.myfirstapp.ArtistListView"
+            android:label="@string/title_activity_artist_list_view" >
+        </activity>
+                <activity
+            android:name="com.example.myfirstapp.ArtistAlbumListView"
+            android:label="@string/title_activity_artist_album_list_view" >
+        </activity>
+        <activity
+            android:name="com.example.myfirstapp.ArtistAlbumSongListView"
+            android:label="@string/title_activity_artist_album_song_list_view" >
         </activity>
     </application>
 
