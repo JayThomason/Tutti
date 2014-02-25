@@ -14,6 +14,7 @@
     <string name="artist">ARTIST</string>
     <string name="artist_key">ARTIST_KEY</string>
     <string name="album">ALBUM</string>
+    <string name="browse_artists">Browse Artists</string>
    
     
 </resources>

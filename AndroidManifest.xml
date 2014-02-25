@@ -25,14 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.stanford.tutti.DisplayMessageActivity"
-            android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.stanford.tutti.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.myfirstapp.MainActivity" />
-        </activity>
-        <activity
             android:name="com.stanford.tutti.ArtistListView"
             android:label="@string/title_activity_artist_list_view" >
         </activity>

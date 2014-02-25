@@ -9,17 +9,10 @@
     android:orientation="horizontal"
     tools:context=".MainActivity" >
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="5dp"
-        android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="#CCCCCC"
-        android:dividerHeight="1dp"
-        android:paddingLeft="2dp" >
-    </ListView>
+    <Button android:id="@+id/browse_artists_btn"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:text="@string/browse_artists" />
 
 </LinearLayout>

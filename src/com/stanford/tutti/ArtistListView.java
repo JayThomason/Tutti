@@ -7,6 +7,7 @@ import com.example.myfirstapp.R;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -27,6 +29,10 @@ public class ArtistListView extends Activity {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.artist_list_view);
+        
+        ActionBar actionBar = getActionBar();
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
         
         ArrayList<String> artists = new ArrayList<String>();
 
@@ -66,5 +72,12 @@ public class ArtistListView extends Activity {
             	  }
               }
         }); 
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem)
+    {       
+        onBackPressed(); 
+        return true;
     }
 }

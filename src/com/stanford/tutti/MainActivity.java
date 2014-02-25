@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends Activity {
@@ -17,9 +19,17 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Intent intent = new Intent(this, ArtistListView.class);
-        System.out.println("testing bro\n");
-		startActivity(intent);
+		
+		Button browseArtistsBtn = (Button) this.findViewById(R.id.browse_artists_btn);
+		browseArtistsBtn.setOnClickListener( new OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	
+		      	Intent intent = new Intent(getApplicationContext(), ArtistListView.class);
+		      	startActivity(intent);
+		    }
+		  });
+
 	}
 
 	@Override
