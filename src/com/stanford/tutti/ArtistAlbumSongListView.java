@@ -2,8 +2,6 @@ package com.stanford.tutti;
 
 import java.util.ArrayList;
 
-import com.example.myfirstapp.R;
-
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.ActionBar;
@@ -22,21 +20,12 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ArtistAlbumSongListView extends Activity {
     ListView listView;
     
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        ActionBar actionBar = getActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        
-        setContentView(R.layout.artist_album_list_view);
-        
-        ArrayList<String> songs = new ArrayList<String>();
-        
-        final String where = MediaStore.Audio.Media.ALBUM
+    private ArrayList<String> readSongsForAlbumFromSDCard(String album) {
+    	ArrayList<String> songs = new ArrayList<String>();
+    	
+    	final String where = MediaStore.Audio.Media.ALBUM
         		+ "='" 
-        		+ getIntent().getStringExtra(getString(R.string.album))
+        		+ album
         		+ "'";
         
         Cursor cursor = getContentResolver().query(
@@ -50,6 +39,23 @@ public class ArtistAlbumSongListView extends Activity {
             String song = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
             songs.add(0, song);
         }
+        return songs;  
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.artist_album_list_view);
+        
+        String album = getIntent().getStringExtra(getString(R.string.album));
+        Globals g = (Globals) getApplication();
+        ArrayList<String> songs = g.getSongsForAlbum(album);
+        if (songs == null || songs.size() == 0) {
+        	songs = readSongsForAlbumFromSDCard(album);
+        	g.setSongsForAlbum(album, songs);
+        }      
                 
         // Get ListView object from xml
         listView = (ListView) findViewById(R.id.artist_album_list);

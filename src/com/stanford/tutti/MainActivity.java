@@ -1,6 +1,6 @@
 package com.stanford.tutti;
 
-import com.example.myfirstapp.R;
+import com.stanford.tutti.R;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,24 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends Activity {
-
-    public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		Button browseArtistsBtn = (Button) this.findViewById(R.id.browse_artists_btn);
-		browseArtistsBtn.setOnClickListener( new OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		    	
-		      	Intent intent = new Intent(getApplicationContext(), ArtistListView.class);
-		      	startActivity(intent);
-		    }
-		  });
-
+		Intent intent = new Intent(this, MenuActivity.class);
+        startActivity(intent);
 	}
 
 	@Override
@@ -38,5 +26,4 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
 }

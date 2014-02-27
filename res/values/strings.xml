@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">My First App</string>
+    <string name="app_name">Tutti</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
     <string name="action_settings">Settings</string>
@@ -15,6 +15,8 @@
     <string name="artist_key">ARTIST_KEY</string>
     <string name="album">ALBUM</string>
     <string name="browse_artists">Browse Artists</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="add_fake_music">Add Fake Music</string>
    
     
 </resources>

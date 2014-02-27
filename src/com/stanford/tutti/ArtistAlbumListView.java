@@ -12,33 +12,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.example.myfirstapp.R;
-import com.stanford.tutti.ArtistAlbumSongListView;
-
-
 public class ArtistAlbumListView extends Activity {
     ListView listView;
     
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        ActionBar actionBar = getActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        
-        setContentView(R.layout.artist_album_list_view);
-        
-        ArrayList<String> albums = new ArrayList<String>();
-        
-        final String where = MediaStore.Audio.AlbumColumns.ARTIST
+    private ArrayList<String> readAlbumsForArtistFromSDCard(String artist) {
+    	ArrayList<String> albums = new ArrayList<String>();
+    	
+    	final String where = MediaStore.Audio.AlbumColumns.ARTIST
         		+ "='" 
-        		+ getIntent().getStringExtra(getString(R.string.artist))
+        		+ artist
         		+ "'";
         
         Cursor cursor = getContentResolver().query(
@@ -50,9 +37,28 @@ public class ArtistAlbumListView extends Activity {
         
         while (cursor.moveToNext()) {
             String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+            
             albums.add(0, album);
         }
-                
+        return albums;
+	}
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.artist_album_list_view);
+        
+        String artist = getIntent().getStringExtra(getString(R.string.artist));
+        Globals g = (Globals) getApplication();
+        ArrayList<String> albums = g.getAlbumsForArtist(artist);
+        if (albums == null || albums.size() == 0) {
+        	albums = readAlbumsForArtistFromSDCard(artist);
+        	g.setAlbumsForArtist(artist, albums);
+        }
+        
         // Get ListView object from xml
         listView = (ListView) findViewById(R.id.artist_album_list);
 
@@ -77,7 +83,8 @@ public class ArtistAlbumListView extends Activity {
         }); 
     }
     
-    @Override
+
+	@Override
     public boolean onOptionsItemSelected(MenuItem menuItem)
     {       
         onBackPressed(); 
