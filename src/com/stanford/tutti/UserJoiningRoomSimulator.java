@@ -20,6 +20,7 @@ public class UserJoiningRoomSimulator {
 	};
 	
 	public void addUserMusic(Globals g) {
+		g.addArtist(phoenix);
 		g.addAlbumForArtist(phoenix, bankrupt);
 		for (String songTitle : bankruptSongs) {
 			g.addSongToAlbum(bankrupt, songTitle);
