@@ -6,51 +6,28 @@ import java.util.HashMap;
 import android.app.Application;
 
 public class Globals extends Application {
-	private ArrayList<String> artists = new ArrayList<String>();
-	private HashMap<String, ArrayList<String>> artistAlbumMap = new HashMap<String, ArrayList<String>>();
-	private HashMap<String, ArrayList<String>> albumSongMap = new HashMap<String, ArrayList<String>>();
-	// I assume album names are unique. Will fix later.
+	private ArrayList<Artist> artistList = new ArrayList<Artist>();
+	private ArrayList<Album> albumList = new ArrayList<Album>();
+	private HashMap<String, Artist> artistMap = new HashMap<String, Artist>();
 		
-	public ArrayList<String> getArtists() {
-		return artists;
+	public ArrayList<Artist> getArtistList() {
+		return artistList;
 	}
 	
-	public void setArtists(ArrayList<String> newArtists) {
-		artists = newArtists;
+	public void addArtist(Artist artist) {
+		artistList.add(artist);
+		artistMap.put(artist.getName(), artist);
+	}	
+	
+	public Artist getArtistByName(String artistName) {
+		return artistMap.get(artistName);
 	}
 	
-	public void addArtist(String artist) {
-		artists.add(artist);
-	}
-
-	
-	public ArrayList<String> getAlbumsForArtist(String artist) {
-		return artistAlbumMap.get(artist);
+	public ArrayList<Album> getAlbumList() {
+		return albumList;
 	}
 	
-	public void addAlbumForArtist(String artist, String album) {
-		if (artistAlbumMap.get(artist) == null) {
-			artistAlbumMap.put(artist, new ArrayList<String>());
-		}
-		artistAlbumMap.get(artist).add(album);
-	}
-	
-	public ArrayList<String> getSongsForAlbum(String album) {
-		return albumSongMap.get(album);
-	}
-	
-	public void addSongToAlbum(String album, String song) {
-		if (albumSongMap.get(album) == null) {
-			albumSongMap.put(album, new ArrayList<String>());
-		}
-		albumSongMap.get(album).add(song);
-	}
-
-	public void setSongsForAlbum(String album, ArrayList<String> songs) {
-		albumSongMap.put(album, songs);
-	}
-	
-	public void setAlbumsForArtist(String artist, ArrayList<String> albums) {
-		artistAlbumMap.put(artist,  albums);
+	public void addAlbum(Album album) {
+		albumList.add(album);
 	}
 }
