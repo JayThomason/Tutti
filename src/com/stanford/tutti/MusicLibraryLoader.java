@@ -70,7 +70,9 @@ public class MusicLibraryLoader {
 	        
 	        while (cursor.moveToNext()) {
 	            String songTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-	            Song song = new Song(songTitle);
+	            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+	            Song song = new Song(songTitle, path);
+	            System.out.println(song.getPath());
 	            song.setAlbum(album);
 	            song.setArtist(album.getArtist());
 	            album.addSong(song);
