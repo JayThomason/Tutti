@@ -20,28 +20,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 public class ArtistListView extends Activity {
-    ListView listView;
-    
-    private ArrayList<String> readArtistsFromSDCard() {
-    	
-    	ArrayList<String> artists = new ArrayList<String>();
-
-        Cursor cursor = getContentResolver().query(
-        	    MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, 
-        	    null, 
-        	    null, 
-        	    null, 
-        	    MediaStore.Audio.Artists.ARTIST + " ASC");
-        
-        while (cursor.moveToNext()) {
-            String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
-            artists.add(0, artist);
-            Log.d("test", "reading artists from sd card and caching them");
-        }
-                
-        return artists;
-    }
-    
+    ListView listView;    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +29,18 @@ public class ArtistListView extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         Globals g = (Globals) getApplication();
-        ArrayList<String> artists = g.getArtists();
-        if (artists == null || artists.size() == 0) {
-        	artists = readArtistsFromSDCard();
-        	g.setArtists(artists);;
+        ArrayList<Artist> artists = g.getArtistList();
+        ArrayList<String> artistNames = new ArrayList<String>();
+        for (int i = 0; i < artists.size(); ++i) {
+        	artistNames.add(artists.get(i).getName());
         }
                  
         // Get ListView object from xml
         listView = (ListView) findViewById(R.id.artist_list);
 
+        // TODO: implement custom adapter for artists
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-          android.R.layout.simple_list_item_1, android.R.id.text1, artists);
+          android.R.layout.simple_list_item_1, android.R.id.text1, artistNames);
 
         // Assign adapter to ListView
         listView.setAdapter(adapter); 

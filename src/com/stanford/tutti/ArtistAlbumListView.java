@@ -20,28 +20,6 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ArtistAlbumListView extends Activity {
     ListView listView;
     
-    private ArrayList<String> readAlbumsForArtistFromSDCard(String artist) {
-    	ArrayList<String> albums = new ArrayList<String>();
-    	
-    	final String where = MediaStore.Audio.AlbumColumns.ARTIST
-        		+ "='" 
-        		+ artist
-        		+ "'";
-        
-        Cursor cursor = getContentResolver().query(
-        	    MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
-        	    null, 
-        	    where, 
-        	    null, 
-        	    MediaStore.Audio.Albums.ALBUM + " ASC");
-        
-        while (cursor.moveToNext()) {
-            String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
-            
-            albums.add(0, album);
-        }
-        return albums;
-	}
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +29,13 @@ public class ArtistAlbumListView extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.artist_album_list_view);
         
-        String artist = getIntent().getStringExtra(getString(R.string.artist));
+        String artistName = getIntent().getStringExtra(getString(R.string.artist));
         Globals g = (Globals) getApplication();
-        ArrayList<String> albums = g.getAlbumsForArtist(artist);
-        if (albums == null || albums.size() == 0) {
-        	albums = readAlbumsForArtistFromSDCard(artist);
-        	g.setAlbumsForArtist(artist, albums);
+        Artist artist = g.getArtistByName(artistName);
+        ArrayList<Album> albumList = artist.getAlbumList();
+        ArrayList<String> albumTitleList = new ArrayList<String>();
+        for (int i = 0; i < albumList.size(); ++i) {
+        	albumTitleList.add(albumList.get(i).getTitle());
         }
         
         // Get ListView object from xml
@@ -64,7 +43,7 @@ public class ArtistAlbumListView extends Activity {
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-          android.R.layout.simple_list_item_1, android.R.id.text1, albums);
+          android.R.layout.simple_list_item_1, android.R.id.text1, albumTitleList);
 
 
         // Assign adapter to ListView
@@ -76,8 +55,10 @@ public class ArtistAlbumListView extends Activity {
               public void onItemClick(AdapterView<?> parent, View view,
             		  int position, long id) {
             	  String  album = (String) listView.getItemAtPosition(position); 
+                  String artistName = getIntent().getStringExtra(getString(R.string.artist));
         		  Intent intent = new Intent(getApplicationContext(), ArtistAlbumSongListView.class);
         		  intent.putExtra(getString(R.string.album), album);
+        		  intent.putExtra(getString(R.string.artist), artistName);
             	  startActivity(intent);
               }
         }); 
