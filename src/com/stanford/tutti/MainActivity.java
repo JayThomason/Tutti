@@ -16,6 +16,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		MusicLibraryLoader musicLibraryLoader = new MusicLibraryLoader();
+		musicLibraryLoader.loadMusic(this);
 		Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
 	}
