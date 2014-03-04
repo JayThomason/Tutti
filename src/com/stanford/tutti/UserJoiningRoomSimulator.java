@@ -20,10 +20,19 @@ public class UserJoiningRoomSimulator {
 	};
 	
 	public void addUserMusic(Globals g) {
-		g.addArtist(phoenix);
-		g.addAlbumForArtist(phoenix, bankrupt);
+		Artist artist = g.getArtistByName(phoenix);
+		if (artist == null) {
+			artist = new Artist(phoenix);
+			g.addArtist(artist);
+		}
+		Album album = new Album(bankrupt, artist);
+		g.addAlbum(album);
+		artist.addAlbum(album);
 		for (String songTitle : bankruptSongs) {
-			g.addSongToAlbum(bankrupt, songTitle);
+			Song song = new Song(songTitle);
+			song.setAlbum(album);
+			song.setArtist(artist);
+			album.addSong(song);
 		}
 	}
 }
