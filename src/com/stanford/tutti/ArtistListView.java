@@ -53,7 +53,8 @@ public class ArtistListView extends Activity {
             	  String  artist = (String) listView.getItemAtPosition(position);
             	  if (artist != null) {
             		  Intent intent = new Intent(getApplicationContext(), ArtistAlbumListView.class);
-            		  intent.putExtra(getString(R.string.artist), artist);
+            		  Globals g = (Globals) getApplication();
+            		  g.setCurrentArtist(g.getArtistList().get(position));
             		  startActivity(intent); 
             	  }
               }

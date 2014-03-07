@@ -29,9 +29,9 @@ public class ArtistAlbumListView extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.artist_album_list_view);
         
-        String artistName = getIntent().getStringExtra(getString(R.string.artist));
         Globals g = (Globals) getApplication();
-        Artist artist = g.getArtistByName(artistName);
+        
+        Artist artist = g.getCurrentArtist();
         ArrayList<Album> albumList = artist.getAlbumList();
         ArrayList<String> albumTitleList = new ArrayList<String>();
         for (int i = 0; i < albumList.size(); ++i) {
@@ -54,12 +54,10 @@ public class ArtistAlbumListView extends Activity {
               @Override
               public void onItemClick(AdapterView<?> parent, View view,
             		  int position, long id) {
-            	  String  album = (String) listView.getItemAtPosition(position); 
-                  String artistName = getIntent().getStringExtra(getString(R.string.artist));
         		  Intent intent = new Intent(getApplicationContext(), ArtistAlbumSongListView.class);
-        		  intent.putExtra(getString(R.string.album), album);
-        		  intent.putExtra(getString(R.string.artist), artistName);
-            	  startActivity(intent);
+        		  Globals g = (Globals) getApplication();
+        		  g.setCurrentAlbum(g.getCurrentArtist().getAlbumList().get(position));
+        		  startActivity(intent);
               }
         }); 
     }

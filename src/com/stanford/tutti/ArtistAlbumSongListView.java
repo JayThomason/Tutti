@@ -20,27 +20,15 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ArtistAlbumSongListView extends Activity {
     ListView listView;
     
-
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.artist_album_list_view);
-        
-        String albumTitle = getIntent().getStringExtra(getString(R.string.album));
-        String artistName = getIntent().getStringExtra(getString(R.string.artist));
-        
+                
         Globals g = (Globals) getApplication();
-        Artist artist = g.getArtistByName(artistName);
-        ArrayList<Album> albumList = artist.getAlbumList();
-        Album album = null;
-        for (int i = 0; i < albumList.size(); ++i) {
-        	if (albumList.get(i).getTitle().equals(albumTitle)) {
-        		album = albumList.get(i);
-        	}
-        }
+        Album album = g.getCurrentAlbum();
         ArrayList<Song> songList = album.getSongList();
         ArrayList<String> songTitles = new ArrayList<String>();
         for (int i = 0; i < songList.size(); ++i) {
@@ -63,8 +51,10 @@ public class ArtistAlbumSongListView extends Activity {
               @Override
               public void onItemClick(AdapterView<?> parent, View view,
             		  int position, long id) {
-            	  String song = (String) listView.getItemAtPosition(position); 
-            	  System.out.println(song);
+            	  Globals g = (Globals) getApplication();
+                  g.setCurrentSong(g.getCurrentAlbum().getSongList().get(position));
+                  Intent intent = new Intent(getApplicationContext(), SongMediaPlayer.class);
+                  startActivity(intent);
               }
         }); 
     }
