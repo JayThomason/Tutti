@@ -3,6 +3,12 @@ package com.stanford.tutti;
 import android.app.Activity;
 import android.os.Bundle;
 
+/*
+ * Simulates a user joining the master room in the application by adding
+ * 'fake' songs to the global music library. These songs are not actually
+ * stored on the phone anywhere, but are place holders for songs which may
+ * be stored on someone else's phone.
+ */
 public class UserJoiningRoomSimulator {
 	private final String phoenix = "Phoenix";
 	private final String bankrupt = "Bankrupt!";
