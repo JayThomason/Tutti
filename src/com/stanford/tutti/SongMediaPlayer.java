@@ -23,9 +23,15 @@ import android.widget.Button;
  */
 public class SongMediaPlayer extends Activity {
 	MediaPlayer mediaPlayer = new MediaPlayer();
+	Button startButton = (Button) this.findViewById(R.id.song_media_player_start_btn);
+	Button pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
+
+
 	
+	/*
+	 * Sets the OnClickListener for the play button.
+	 */
 	private void configureStartButton() {
-		Button startButton = (Button) this.findViewById(R.id.song_media_player_start_btn);
 		startButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -34,8 +40,10 @@ public class SongMediaPlayer extends Activity {
 		});
 	}
 	
+	/*
+	 * Sets the OnClickListener for the pause button.
+	 */
 	private void configurePauseButton() {
-		Button pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
 		pauseButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -44,6 +52,13 @@ public class SongMediaPlayer extends Activity {
 		});
 	}
 
+	/*
+	 * Initializes the media player by setting up the action bar, configuring
+	 * the start and pause buttons, and then loading and playing the current
+	 * song.
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +81,12 @@ public class SongMediaPlayer extends Activity {
 		}
 	}
 	
+	/*
+	 * Sets up the back button and ensures that the media player stops
+	 * playing when the back button is pressed.
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem)
     {       
