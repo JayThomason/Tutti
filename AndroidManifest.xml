@@ -41,6 +41,10 @@
             android:name="com.stanford.tutti.MenuActivity"
             android:label="@string/title_activity_menu" >
         </activity>
+        <activity
+            android:name="com.stanford.tutti.SongMediaPlayer"
+            android:label="@string/song_media_player">
+        </activity>
     </application>
 
 </manifest>

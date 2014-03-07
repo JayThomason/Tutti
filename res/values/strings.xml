@@ -17,6 +17,7 @@
     <string name="browse_artists">Browse Artists</string>
     <string name="title_activity_menu">Menu</string>
     <string name="add_fake_music">Add Fake Music</string>
+    <string name="song_media_player">Song Media Player</string>
    
     
 </resources>
