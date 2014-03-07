@@ -1,0 +1,4 @@
+INDEX VERSION 1.126+/Users/audrey/Developer/tutti_repo/Tutti/tuttiUI/.metadata/.plugins/org.eclipse.jdt.core
+2541906588.index
+1635325591.index
+3362749479.index
