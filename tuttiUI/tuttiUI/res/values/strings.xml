@@ -14,5 +14,7 @@
     <string name="title_activity_join_jam">JoinJamActivity</string>
     <string name="nearby_jams">Nearby Jams</string>
     <string name="add_to_jam">Add Songs to Jam</string>
+    <string name="title_activity_view_jam">ViewJamActivity</string>
+    <string name="audrey_jam">Audrey\'s Galaxy Note Jam</string>
 
 </resources>

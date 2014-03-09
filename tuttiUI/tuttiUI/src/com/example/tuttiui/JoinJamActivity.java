@@ -1,14 +1,21 @@
 package com.example.tuttiui;
 
-import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.widget.TextView;
 
 public class JoinJamActivity extends Activity {
 
@@ -23,6 +30,24 @@ public class JoinJamActivity extends Activity {
 		String[] items = { "Audrey's Galaxy Note", "Jay's Nexus 7" };
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
 		listView2.setAdapter(adapter);
+		
+		listView2.setOnItemClickListener(new OnItemClickListener() {
+			  @Override
+			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				  String item = ((TextView)view).getText().toString();
+				  new AlertDialog.Builder(view.getContext())
+		            .setMessage("Join "+item+"?")
+		            .setNegativeButton("No", null)
+				  	.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							Intent intent = new Intent(JoinJamActivity.this, ViewJamActivity.class);  
+					        startActivity(intent);
+						}
+					}) .show();
+			  }
+			});
 	}
 
 	/**
@@ -58,5 +83,6 @@ public class JoinJamActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 
 }

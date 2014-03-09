@@ -7,11 +7,13 @@ import android.view.Menu;
 import android.view.View;
 
 public class MainActivity extends Activity {
-
+	public static Jam jam;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+		jam = new Jam();
     }
 
 
