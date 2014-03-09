@@ -1,29 +1,28 @@
 package com.example.tuttiui;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.support.v4.app.NavUtils;
+import android.annotation.TargetApi;
+import android.os.Build;
 
-public class NewJamActivity extends Activity {
+public class JoinJamActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_new_jam);
+		setContentView(R.layout.activity_join_jam);
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
-		ListView listView1 = (ListView) findViewById(R.id.listView1);
-		String[] items = { "About You Now", "Alejandro", "All I Ask of You", "Best Song Ever", "Boyfriend", "Bye Bye Bye", "C'mon, C'mon", "Call Me Maybe", "A Change in Me", "Clarity", "Crazy Town", "Dark Horse", "Defying Gravity", "Demons", "Does He Know?", "Don't Rain on My Parade", "Ever Ever After", "Feel Again", "Finish the Fight", "Fireflies", "Friday", "Gangam Style", "Happily", "Hoedown Throwdown", "I Dreamed a Dream", "It's Time", "Kiss You", "Let It Go", "Little Things", "Live While We're Young", "Midnight Memories", "Never Say Never", "One Thing", "The Phantom of the Opera", "Popular", "Radioactive", "Right Now", "Roar", "Safety Dance", "She's Not Afraid", "Somebody That I Used to Know", "Story of My Life", "They Don't Know About Us", "Tik Tok", "Titanium", "Up All Night", "Way Back Into Love", "When Will My Life Begin", "You & I", "22" };
+		ListView listView2 = (ListView) findViewById(R.id.listView2);
+		String[] items = { "Audrey's Galaxy Note", "Jay's Nexus 7" };
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-		listView1.setAdapter(adapter);
-		
+		listView2.setAdapter(adapter);
 	}
 
 	/**
@@ -39,7 +38,7 @@ public class NewJamActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.new_jam, menu);
+		getMenuInflater().inflate(R.menu.join_jam, menu);
 		return true;
 	}
 

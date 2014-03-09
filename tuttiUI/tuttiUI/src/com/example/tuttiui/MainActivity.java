@@ -26,4 +26,10 @@ public class MainActivity extends Activity {
     	Intent intent = new Intent(this, NewJamActivity.class);
     	startActivity(intent);
     }
+
+
+	public void joinJam(View view) {
+		Intent intent = new Intent(this, JoinJamActivity.class);
+		startActivity(intent);
+	}
 }

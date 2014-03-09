@@ -11,7 +11,7 @@
          
     <Button
         android:id="@+id/Button01"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true"
@@ -25,7 +25,7 @@
     
     <Button
         android:id="@+id/Button02"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/Button01"
         android:layout_centerHorizontal="true"
@@ -34,11 +34,12 @@
         android:text="@string/join_jam"
         android:layout_marginTop="15dp"
         android:paddingLeft="15dip"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff" 
+        android:onClick="joinJam"/>
   
      <Button
         android:id="@+id/Button03"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/Button02"
         android:layout_centerHorizontal="true"
@@ -51,7 +52,7 @@
      
     <Button
         android:id="@+id/Button04"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/Button03"
         android:layout_centerHorizontal="true"
@@ -65,7 +66,7 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="400dp"
+        android:layout_width="fill_parent"
         android:layout_height="80dp"
         android:layout_alignLeft="@+id/Button01"
         android:layout_alignParentTop="true"
