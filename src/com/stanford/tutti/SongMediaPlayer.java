@@ -23,8 +23,8 @@ import android.widget.Button;
  */
 public class SongMediaPlayer extends Activity {
 	MediaPlayer mediaPlayer = new MediaPlayer();
-	Button startButton = (Button) this.findViewById(R.id.song_media_player_start_btn);
-	Button pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
+	Button startButton;
+	Button pauseButton;
 
 
 	
@@ -65,6 +65,8 @@ public class SongMediaPlayer extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.song_media_player);
+		startButton = (Button) this.findViewById(R.id.song_media_player_start_btn);
+		pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
 		configureStartButton();
 		configurePauseButton();
 		Globals g = (Globals) getApplication();
