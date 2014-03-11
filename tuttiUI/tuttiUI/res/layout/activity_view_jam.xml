@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#FF0927"
+    android:background="@drawable/red_gradient"
     tools:context=".ViewJamActivity" >
 
     <TextView
@@ -46,10 +46,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/listView3"
-        android:layout_marginRight="14dp"
-        android:text="" 
-        android:background="#FF0927"
-        android:onClick="popupJoinRequest"/>
-   
+        android:layout_marginRight="00dp"
+        android:background="@android:color/transparent"
+        android:onClick="popupJoinRequest"
+        android:text="" />
 
 </RelativeLayout>

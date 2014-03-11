@@ -16,5 +16,8 @@
     <string name="add_to_jam">Add Songs to Jam</string>
     <string name="title_activity_view_jam">ViewJamActivity</string>
     <string name="audrey_jam">Audrey\'s Galaxy Note Jam</string>
+    <string name="title_activity_help_menu">HelpMenuActivity</string>
+    <string name="help_text"/>
+    <string name="help_menu_title">Help Menu</string>
 
 </resources>

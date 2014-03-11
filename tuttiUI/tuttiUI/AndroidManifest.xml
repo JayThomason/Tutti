@@ -42,6 +42,22 @@
             android:name="com.example.tuttiui.ViewJamActivity"
             android:label="@string/title_activity_view_jam" >
         </activity>
+        <activity
+            android:name="com.example.tuttiui.SettingsMenuActivity"
+            android:label="@string/title_activity_settings_menu"
+            android:parentActivityName="com.example.tuttiui.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.tuttiui.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.tuttiui.HelpMenuActivity"
+            android:label="@string/title_activity_help_menu"
+            android:parentActivityName="com.example.tuttiui.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.tuttiui.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
