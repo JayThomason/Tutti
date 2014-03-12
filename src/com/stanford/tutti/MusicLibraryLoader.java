@@ -35,7 +35,7 @@ public class MusicLibraryLoader {
 		for (int i = 0; i < artistList.size(); ++i) {
 			Artist artist = artistList.get(i);
 			final String where = MediaStore.Audio.AlbumColumns.ARTIST
-        		+ "='" + artist.getName() + "'";
+        		+ "='" + artist.getName().replaceAll("'", "''")+ "'";
         
 	        Cursor cursor = activity.getContentResolver().query(
 	        	    MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
@@ -59,7 +59,7 @@ public class MusicLibraryLoader {
 			Album album = albumList.get(i);
 			
 	    	final String where = MediaStore.Audio.Media.ALBUM
-	        		+ "='" + album.getTitle() + "'";
+	        		+ "='" + album.getTitle().replaceAll("'", "''") + "'";
 	        
 	        Cursor cursor = activity.getContentResolver().query(
 	        	    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
