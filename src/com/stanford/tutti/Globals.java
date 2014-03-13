@@ -45,7 +45,6 @@ public class Globals extends Application {
             	currentSong = playlist.get(currentSongIndex); 
                 playCurrentSong(); 
             }
-
         });
 		
 		try {
