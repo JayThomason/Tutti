@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/red_gradient"
+    android:background="@drawable/gradient"
     tools:context=".ViewJamActivity" >
 
     <TextView
@@ -23,10 +23,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
+        android:background="#ff0927"
         android:textColor="#ffffff" 
         android:layout_centerHorizontal="true" >
 
     </ListView>
+    
+    <Button
+        android:id="@+id/song_media_player_start_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play" 
+        android:layout_below="@+id/listView3"
+        android:layout_alignParentLeft="true"
+        android:background="#ff0927"
+        android:textColor="#ffffff" 
+        />
+
+    <Button
+        android:id="@+id/song_media_player_pause_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pause" 
+        android:layout_toRightOf="@+id/song_media_player_start_btn"
+        android:layout_alignTop="@+id/song_media_player_start_btn"
+        android:background="#ff0927"
+        android:textColor="#ffffff" 
+        />
     
         <Button
         android:id="@+id/button1"
