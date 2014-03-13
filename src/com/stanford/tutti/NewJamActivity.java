@@ -1,9 +1,10 @@
-package com.example.tuttiui;
+package com.stanford.tutti;
+
+import java.io.Serializable;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,35 +18,31 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class JoinJamActivity extends Activity {
 
+public class NewJamActivity extends Activity {
+
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_join_jam);
+		setContentView(R.layout.activity_new_jam);
 		// Show the Up button in the action bar.
 		setupActionBar();
+
 		
-		ListView listView2 = (ListView) findViewById(R.id.listView2);
-		String[] items = { "Audrey's Galaxy Note", "Jay's Nexus 7" };
+		ListView listView1 = (ListView) findViewById(R.id.listView1);
+		String[] items = { "About You Now", "Alejandro", "All I Ask of You", "Best Song Ever", "Boyfriend", "Bye Bye Bye", "C'mon, C'mon", "Call Me Maybe", "A Change in Me", "Clarity", "Crazy Town", "Dark Horse", "Defying Gravity", "Demons", "Does He Know?", "Don't Rain on My Parade", "Ever Ever After", "Feel Again", "Finish the Fight", "Fireflies", "Friday", "Gangam Style", "Happily", "Hoedown Throwdown", "I Dreamed a Dream", "It's Time", "Kiss You", "Let It Go", "Little Things", "Live While We're Young", "Midnight Memories", "Never Say Never", "One Thing", "The Phantom of the Opera", "Popular", "Radioactive", "Right Now", "Roar", "Safety Dance", "She's Not Afraid", "Somebody That I Used to Know", "Story of My Life", "They Don't Know About Us", "Tik Tok", "Titanium", "Up All Night", "Way Back Into Love", "When Will My Life Begin", "You & I", "22" };
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-		listView2.setAdapter(adapter);
+		listView1.setAdapter(adapter);
 		
-		listView2.setOnItemClickListener(new OnItemClickListener() {
+		listView1.setOnItemClickListener(new OnItemClickListener() {
 			  @Override
 			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				  String item = ((TextView)view).getText().toString();
 				  new AlertDialog.Builder(view.getContext())
-		            .setMessage("Join "+item+"?")
-		            .setNegativeButton("No", null)
-				  	.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-							Intent intent = new Intent(JoinJamActivity.this, ViewJamActivity.class);  
-					        startActivity(intent);
-						}
-					}) .show();
+		            .setMessage(item+" added to Jam").show();
+				  MainActivity.jam.addSong(item);
 			  }
 			});
 	}
@@ -63,7 +60,7 @@ public class JoinJamActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.join_jam, menu);
+		getMenuInflater().inflate(R.menu.new_jam, menu);
 		return true;
 	}
 
@@ -83,6 +80,12 @@ public class JoinJamActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
 
+    public void viewJam(View view) {
+    	Intent intent = new Intent(this, ViewJamActivity.class);
+    	Bundle bundle = new Bundle();
+    	bundle.putSerializable("jam", MainActivity.jam);
+    	intent.putExtras(bundle);
+    	startActivity(intent);
+    }
 }

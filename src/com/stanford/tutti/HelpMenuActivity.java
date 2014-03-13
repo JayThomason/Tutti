@@ -1,4 +1,4 @@
-package com.example.tuttiui;
+package com.stanford.tutti;
 
 import android.os.Bundle;
 import android.app.Activity;

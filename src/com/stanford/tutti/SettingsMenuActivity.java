@@ -1,4 +1,4 @@
-package com.example.tuttiui;
+package com.stanford.tutti;
 
 import android.annotation.TargetApi;
 import android.content.Context;

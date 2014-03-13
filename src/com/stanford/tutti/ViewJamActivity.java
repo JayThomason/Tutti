@@ -1,4 +1,4 @@
-package com.example.tuttiui;
+package com.stanford.tutti;
 
 import java.util.ArrayList;
 
