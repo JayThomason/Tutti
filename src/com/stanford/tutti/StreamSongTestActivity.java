@@ -1,10 +1,15 @@
 package com.stanford.tutti;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import com.stanford.tutti.NanoHTTPD.Response.Status;
+
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Path;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -31,6 +36,7 @@ public class StreamSongTestActivity extends Activity {
 	
 	private final int PORT = 1234;
 	private Server server;
+	private Globals g;
 	
 	private Button clientButton;
 	private Button serverButton;
@@ -86,6 +92,7 @@ public class StreamSongTestActivity extends Activity {
 		serverButton = (Button) this.findViewById(R.id.activity_stream_song_test_server_btn);
 		editText = (EditText) this.findViewById(R.id.ip_address);
 		editText.setText(getIpAddr());
+		g = (Globals) getApplication();
 		configureClientButton();
 		configureServerButton();
 	}
@@ -103,7 +110,7 @@ public class StreamSongTestActivity extends Activity {
     	}
     	
         @Override
-        public Response serve(String uri, Method method, 
+        public Response serve(final String uri, final Method method, 
                               Map<String, String> header,
                               Map<String, String> parameters,
                               Map<String, String> files)  {
@@ -113,7 +120,22 @@ public class StreamSongTestActivity extends Activity {
         		System.out.println(str + ": " + header.get(str));
             for (String str : parameters.keySet())
             	System.out.println(str + " : " + parameters.get(str));
-            return new NanoHTTPD.Response("");
+            runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+                    editText.setText(method.toString() + uri);
+				}
+            	
+            });
+            FileInputStream fis = null;
+            try {
+            	String path = g.getArtistList().get(0).getAlbumList().get(0).getSongList().get(0).getPath();
+            	System.out.println("returning file: " + path);
+                fis = new FileInputStream(path);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
         }
     }
 
@@ -128,9 +150,9 @@ public class StreamSongTestActivity extends Activity {
     			mp.setDataSource(getApplicationContext(), uri);
     			mp.prepare();
     			mp.start();
-    			mp.stop();
-    			mp.release();
-    			mp = null;
+//    			mp.pause();
+//    			Thread.sleep(100);
+//    			mp.start();
     		}
     		catch (IOException e) {
     			e.printStackTrace();
