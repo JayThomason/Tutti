@@ -8,9 +8,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -33,6 +37,7 @@ import android.widget.EditText;
 public class StreamSongTestActivity extends Activity {
 	
 	private final int PORT = 1234;
+	private Server server;
 	
 	private Button clientButton;
 	private Button serverButton;
@@ -67,7 +72,12 @@ public class StreamSongTestActivity extends Activity {
 		serverButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				(new ServerThread()).start();
+		        server = new Server();
+		        try {
+					server.start();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
@@ -94,44 +104,40 @@ public class StreamSongTestActivity extends Activity {
         return true;
     }
     
-    class ServerThread extends Thread {
-    	public void run() {
-    		try {
-    			ServerSocket serverSocket = new ServerSocket(PORT);
-    			Socket connection = serverSocket.accept();
-
-    			BufferedReader in = new BufferedReader(  
-    					new InputStreamReader(  
-    							connection.getInputStream()));  
-    			StringBuilder str = new StringBuilder();
-    			String line = null;
-    			while ((line = in.readLine()) != null) {
-    				str.append(line);
-    			}
-    			final String msg = str.toString();
-    			runOnUiThread(new Runnable() {
-    				public void run() {
-        				editText.setText(msg);
-    				}
-    			});
-    			connection.close();
-    			serverSocket.close();
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		}
+    class Server extends NanoHTTPD {
+    	public Server() {
+    		super(PORT);
     	}
+    	
+        @Override
+        public Response serve(String uri, Method method, 
+                              Map<String, String> header,
+                              Map<String, String> parameters,
+                              Map<String, String> files)  {
+        	System.out.println(uri);
+        	System.out.println(method.toString());
+        	for (String str : header.keySet())
+        		System.out.println(str + ": " + header.get(str));
+            for (String str : parameters.keySet())
+            	System.out.println(str + " : " + parameters.get(str));
+            return new NanoHTTPD.Response("");
+        }
     }
-    
+
     class ClientThread extends Thread {
     	public void run() {
     		try {
     			String ipAddr = editText.getText().toString();
-    			Socket socket = new Socket(ipAddr, PORT);
-    			PrintWriter out = new PrintWriter(
-    					new BufferedWriter(new OutputStreamWriter(
-    							socket.getOutputStream())), true);
-    			out.println("TEST MESSAGE");
-    			socket.close();
+    			Uri uri = Uri.parse("http://" + ipAddr + ":" + PORT);
+    			System.out.println(uri.toString());
+    			MediaPlayer mp = new MediaPlayer();
+    			mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    			mp.setDataSource(getApplicationContext(), uri);
+    			mp.prepare();
+    			mp.start();
+    			mp.stop();
+    			mp.release();
+    			mp = null;
     		}
     		catch (IOException e) {
     			e.printStackTrace();
