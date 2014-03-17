@@ -48,4 +48,9 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, HelpMenuActivity.class);
 		startActivity(intent);
 	}
+	
+	public void testNetworking(View view) {
+		Intent intent = new Intent(this, StreamSongTestActivity.class);
+		startActivity(intent);
+	}
 }

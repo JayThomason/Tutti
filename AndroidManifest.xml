@@ -83,6 +83,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.stanford.tutti.MainActivity" />
         </activity>
-    </application>
+        <activity
+            android:name="com.stanford.tutti.StreamSongTestActivity"
+            android:label="StreamSongTestActivity"
+            android:parentActivityName="com.stanford.tutti.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.stanford.tutti.MainActivity" />
+        </activity>    
+        </application>
 
 </manifest>
