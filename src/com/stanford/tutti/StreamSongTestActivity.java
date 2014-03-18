@@ -1,15 +1,9 @@
 package com.stanford.tutti;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
-
-import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.graphics.Path;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
