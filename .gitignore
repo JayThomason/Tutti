@@ -27,3 +27,6 @@ proguard/
 
 # Android lint
 lint.xml
+
+# old tuttiUI folder
+tuttiUI/
