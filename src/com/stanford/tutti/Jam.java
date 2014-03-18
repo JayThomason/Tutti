@@ -29,9 +29,14 @@ public class Jam implements Serializable {
 		return currentSongIndex; 
 	}
 	
-	public void iterateCurrentSong() {
-		currentSongIndex++; 
+	public boolean iterateCurrentSong() {
+		currentSongIndex++;
+		if (currentSongIndex >= songs.size()) {
+            currentSongIndex = 0;
+			return false;
+        }
     	currentSong = songs.get(currentSongIndex); 
+    	return true;
 	}
 	
 	public void setCurrentSong(Song song) {

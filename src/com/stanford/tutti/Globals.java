@@ -2,11 +2,13 @@ package com.stanford.tutti;
 
 import java.io.IOException;
 import java.util.*; 
+
 import org.json.*; 
 
 import android.app.Application;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 
 /* 
@@ -43,8 +45,8 @@ public class Globals extends Application {
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-            	jam.iterateCurrentSong(); 
-                playCurrentSong(); 
+            	if (jam.iterateCurrentSong()) 
+            		playCurrentSong();
             }
         });
 		
