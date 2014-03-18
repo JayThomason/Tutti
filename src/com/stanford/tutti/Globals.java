@@ -51,34 +51,32 @@ public class Globals extends Application {
         });
 		
 		try {
-			
 			// SWITCH CASE FOR LOCAL SONGS VS. EXTERNAL
-			
-			if (jam.getCurrentSong().getLocal() == true) {
-				System.out.println("Local song"); 
-				Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
-				mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				mediaPlayer.setDataSource(getApplicationContext(), myUri);
+			String ipAddr = otherIP; 
+			int port = 1234;
+			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
+			boolean local = jam.getCurrentSong().getLocal();
+			if (!local)
+				//Uri uri = Uri.parse("http://" + ipAddr + ":" + port + "/" + jam.getCurrentSong().getArtist().getName() + "/" + jam.getCurrentSong().getTitle()); 
+				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + jam.getCurrentSong().getPath());
+			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mediaPlayer.setDataSource(getApplicationContext(), myUri);
+			if (local) {
 				mediaPlayer.prepare();
 				mediaPlayer.start();
-				return true; 
-			} else {
-				System.out.println("Non-local song at ip: " + otherIP); 
-				
-      			String ipAddr = otherIP; 
-      			int port = 1234; 
-      			
-      			Uri uri = Uri.parse("http://" + ipAddr + ":" + port + "/" + jam.getCurrentSong().getArtist().getName() + "/" + jam.getCurrentSong().getTitle()); 
-      			
-      			System.out.println(uri.toString());
-				mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				mediaPlayer.setDataSource(getApplicationContext(), uri);
-				mediaPlayer.prepare();
-				mediaPlayer.start();
-				
- 				// (new ClientStreamThread(otherIP)).start();
- 				return true; 
 			}
+			else {
+				mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+					@Override
+					public void onPrepared(MediaPlayer mp) {
+						mp.start();
+					}
+				});
+				mediaPlayer.prepareAsync();
+				mediaPlayer.start();
+			}
+			System.out.println(myUri);
+			return true; 
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
