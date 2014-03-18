@@ -131,6 +131,7 @@ class JoinJamThread extends Thread {
 							Song song = new Song(songTitle, songPath, false);
 							song.setArtist(artist); 
 							song.setAlbum(album); 
+							g.addSong(song);
 							album.addSong(song); 
 						}
 					}

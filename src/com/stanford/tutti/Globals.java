@@ -23,6 +23,7 @@ public class Globals extends Application {
 	private ArrayList<Artist> artistList = new ArrayList<Artist>();
 	private ArrayList<Album> albumList = new ArrayList<Album>();
 	private HashMap<String, Artist> artistMap = new HashMap<String, Artist>();
+	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	private Artist currentArtist;
 	private Album currentAlbum;
 	
@@ -191,6 +192,20 @@ public class Globals extends Application {
 	 */
 	public void setCurrentAlbum(Album album) {
 		this.currentAlbum = album;
+	}
+	
+	/*
+	 * Associates a song with a unique key in the song map.
+	 */
+	public void addSong(Song song) {
+		songMap.put(Utils.getUniqueKeyForSong(song), song);
+	}
+	
+	/*
+	 * Gets a song associated with a specific key.
+	 */
+	public Song getSongForUniqueKey(String key) {
+		return songMap.get(key);
 	}
 	
 	/*

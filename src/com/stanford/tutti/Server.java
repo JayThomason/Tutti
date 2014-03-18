@@ -125,14 +125,22 @@ public class Server extends NanoHTTPD {
     	if (path.startsWith(ADD_TO_JAM)) {
     		return addToJamResponse(path.substring(ADD_TO_JAM.length())); 
     	}
-    	
-        // return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
+        return badRequestResponse();
     }
 
-    
-	private Response addToJamResponse(String substring) {
-		
-		return null;
+    /*
+     * Adds the requested song to the jam.
+     */
+	private Response addToJamResponse(String keyPath) {
+		Song song = g.getSongForUniqueKey(keyPath.substring(1));
+		if (song == null) 
+			return fileNotFoundResponse();
+		g.jam.addSong(song);
+		if (g.jam.getCurrentSong() == null) {
+			g.jam.setCurrentSong(song);
+			g.playCurrentSong();
+		}
+		return new NanoHTTPD.Response("Added to jam");
 	}
 
 	/*

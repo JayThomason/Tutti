@@ -22,6 +22,6 @@ public class Utils {
 		if (album != null) 
 			keyBuilder.append(album.getTitle());
 		keyBuilder.append(song.getTitle());
-		return keyBuilder.toString(); 
+		return String.valueOf(keyBuilder.toString().hashCode()); 
 	}
 }
