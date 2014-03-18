@@ -24,13 +24,6 @@ import android.widget.EditText;
 
 /*
  * Test Class for networking between phones. 
- * 
- * Current goal is to stream a song from one phone to another, however
- * right now all that this class does is open a socket from one phone to
- * another and send a message through.
- * 
- * I want to bind the startServer and startClient methods to buttons in the
- * layout file but I haven't gotten there yet.
  */
 public class StreamSongTestActivity extends Activity {
 	
@@ -150,9 +143,6 @@ public class StreamSongTestActivity extends Activity {
     			mp.setDataSource(getApplicationContext(), uri);
     			mp.prepare();
     			mp.start();
-//    			mp.pause();
-//    			Thread.sleep(100);
-//    			mp.start();
     		}
     		catch (IOException e) {
     			e.printStackTrace();
