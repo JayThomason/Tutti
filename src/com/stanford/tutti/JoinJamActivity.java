@@ -102,8 +102,14 @@ public class JoinJamActivity extends Activity {
 					// a message to the user and back out to the main menu or just stay here...
 					e.printStackTrace();
 				}
+				
+				// Load the new jam screen as a slave
 				Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);
+				Bundle b = new Bundle();
+				b.putInt("host", 0); //Your id
+				intent.putExtras(b);
 				startActivity(intent);
+				finish();
 			}
 		});		
 	}

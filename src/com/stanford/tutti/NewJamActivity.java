@@ -47,6 +47,8 @@ public class NewJamActivity extends Activity {
 	private Server server;
 	private Globals g; 
 	private Handler handler;
+	
+	private boolean master; 
 
 	// We should really be building this up as a global
 	HashMap<String, Song> songMap; 
@@ -59,6 +61,11 @@ public class NewJamActivity extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 
+		Bundle b = getIntent().getExtras();
+		int value = b.getInt("host");
+		master = (value == 1); 
+
+		
 		// Set up the server thread to listen for "join jam" requests
 		g = (Globals) getApplication(); 
 
@@ -94,10 +101,16 @@ public class NewJamActivity extends Activity {
 						+ " added to Jam", Toast.LENGTH_SHORT)
 						.show();                
 
-				if (g.jam.getCurrentSong() == null) {
-					g.jam.setCurrentSong(song);
-					g.playCurrentSong();
-				}                
+				if (master) {
+					if (g.jam.getCurrentSong() == null) {
+						g.jam.setCurrentSong(song);
+						g.playCurrentSong();
+					}          
+				} else {
+					// If we're not the master, send messages to the other phone
+					// instead of doing local playback ourselves
+					
+				}
 
 				return false;
 			}

@@ -17,6 +17,8 @@ public class Server extends NanoHTTPD {
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
+	private static final String UPDATE_JAM = "/jam"; 
+	private static final String ADD_TO_JAM = "/add"; 
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private int port;
 	private Globals g = null;
@@ -81,7 +83,9 @@ public class Server extends NanoHTTPD {
     		return getLocalLibraryResponse();
     	}
     	else if (uri.startsWith(GET_SONG)) {
-    		return getSong(uri.substring(GET_SONG.length()));    	
+    		return getSong(uri.substring(GET_SONG.length()));  
+    	} else if (uri.startsWith(UPDATE_JAM)) {
+    		return updateJamResponse(uri.substring(UPDATE_JAM.length())); 
     	} else {
     		return badRequestResponse();
     	}
@@ -111,6 +115,24 @@ public class Server extends NanoHTTPD {
 			e.printStackTrace();
 		}
 		return new NanoHTTPD.Response("OK to join");
+	}
+    
+    /*
+     * Responds to a request to update the jam. 
+     * Pause, play, skip song, set song, etc. 
+     */
+    private Response updateJamResponse(final String path) {
+    	if (path.startsWith(ADD_TO_JAM)) {
+    		return addToJamResponse(path.substring(ADD_TO_JAM.length())); 
+    	}
+    	
+        // return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
+    }
+
+    
+	private Response addToJamResponse(String substring) {
+		
+		return null;
 	}
 
 	/*
