@@ -19,14 +19,12 @@ public class Globals extends Application {
 	private ArrayList<Artist> artistList = new ArrayList<Artist>();
 	private ArrayList<Album> albumList = new ArrayList<Album>();
 	private HashMap<String, Artist> artistMap = new HashMap<String, Artist>();
-	private Song currentSong = null;
-	private int currentSongIndex = -1; 
 	private Artist currentArtist;
 	private Album currentAlbum;
 	
 	MediaPlayer mediaPlayer = new MediaPlayer();
 	
-	private ArrayList<Song> playlist = new ArrayList<Song>(); 
+	public Jam jam = new Jam(); 
 	
 	/*
 	 * Plays the current song. 
@@ -34,21 +32,20 @@ public class Globals extends Application {
 	 * @return True (success) or false (failure)
 	 */
 	public boolean playCurrentSong() {
-		if (this.currentSong != null) {
+		if (jam.getCurrentSong() != null) {
 			mediaPlayer.reset();
 		}
 		
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-            	currentSongIndex++; 
-            	currentSong = playlist.get(currentSongIndex); 
+            	jam.iterateCurrentSong(); 
                 playCurrentSong(); 
             }
         });
 		
 		try {
-			Uri myUri = Uri.parse(currentSong.getPath());
+			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource(getApplicationContext(), myUri);
 			mediaPlayer.prepare();
@@ -59,28 +56,7 @@ public class Globals extends Application {
 			System.out.println(e.getMessage());
 			return false; 
 		}
-	}
-	
-	
-	/*
-	 * Adds a given song to the playlist. 
-	 */
-	public void addToPlaylist(Song song) {
-		this.playlist.add(song); 
-	}
-	
-	
-	/*
-	 * Returns the index of the currently-playing song
-	 * in the playlist array.  
-	 * 
-	 * @return int (index of current song)
-	 */
-	public int getCurrentSongIndex() {
-		return currentSongIndex; 
-	}
-	
-	
+	}	
 		
 	/*
 	 * Returns a list of all artists.
@@ -127,35 +103,6 @@ public class Globals extends Application {
 	public void addAlbum(Album album) {
 		albumList.add(album);
 	}
-	
-	/*
-	 * Gets the currently selected / playing song.
-	 * 
-	 * @returns Song
-	 */
-	public Song getCurrentSong() {
-		return currentSong;
-	}
-	
-	/*
-	 * Sets the current song.
-	 * 
-	 * @param Song song
-	 */
-	public void setCurrentSong(Song song) {
-		this.currentSong = song;
-	}
-	
-	/*
-	 * Sets the current song by its index in the playlist array. 
-	 * 
-	 * @param Song song
-	 */
-	public void setCurrentSongByIndex(int index) {
-		this.currentSong = this.playlist.get(index); 
-		this.currentSongIndex = index; 
-	}
-	
 	
 	
 	/*

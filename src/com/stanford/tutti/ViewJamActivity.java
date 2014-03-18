@@ -35,10 +35,19 @@ public class ViewJamActivity extends Activity {
 		pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
 		configureStartButton(); 
 		configurePauseButton(); 
-		
+				
 		ListView listView = (ListView) findViewById(R.id.listView3);
-		ArrayList<String> songList = MainActivity.jam.getSongList(); 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		
+        Globals g = (Globals) getApplication();  
+		ArrayList<Song> songList = g.jam.getSongList(); 
+		
+		// Eventually want to abstract this so the Jam is maintaining its own string list
+		ArrayList<String> songStringList = new ArrayList<String>(); 
+		for (int i = 0; i < songList.size(); i++) {
+			songStringList.add(songList.get(i).getArtist().getName() + ": " + songList.get(i).getTitle()); 
+		}
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songStringList);
 		listView.setAdapter(adapter);
 		
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -52,7 +61,7 @@ public class ViewJamActivity extends Activity {
 	                        .show();
 				  
 	              Globals g = (Globals) getApplication();  
-	              g.setCurrentSongByIndex(position);
+	              g.jam.setCurrentSongByIndex(position);
 	              g.playCurrentSong(); 
 	              //setCurrentSongIndex? 
 	                

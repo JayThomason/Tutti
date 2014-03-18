@@ -66,10 +66,12 @@ public class NewJamActivity extends Activity {
             	
                 Song song = songMap.get(songName); 
                 
+                Globals g = (Globals) getApplication();
+                
+                g.jam.addSong(song); 
+                
                 String songString = song.getArtist().getName() + ": " + songName; 
-            	
-				MainActivity.jam.addSong(songString);
-            	
+            	            	
                 Toast.makeText(
                         getApplicationContext(),
                         listDataHeader.get(groupPosition)
@@ -77,12 +79,9 @@ public class NewJamActivity extends Activity {
                                 + songName 
                                 + " added to Jam", Toast.LENGTH_SHORT)
                         .show();                
-                
-                Globals g = (Globals) getApplication();
-                g.addToPlaylist(song); 
-                
-                if (g.getCurrentSong() == null) {
-	                g.setCurrentSong(song);
+                                
+                if (g.jam.getCurrentSong() == null) {
+	                g.jam.setCurrentSong(song);
 	                g.playCurrentSong();
                 } 
                 
@@ -185,7 +184,10 @@ public class NewJamActivity extends Activity {
     public void viewJam(View view) {
     	Intent intent = new Intent(this, ViewJamActivity.class);
     	Bundle bundle = new Bundle();
-    	bundle.putSerializable("jam", MainActivity.jam);
+    	
+        Globals g = (Globals) getApplication();
+    	// bundle.putSerializable("jam", g.jam);
+    	
     	intent.putExtras(bundle);
     	startActivity(intent);
     }

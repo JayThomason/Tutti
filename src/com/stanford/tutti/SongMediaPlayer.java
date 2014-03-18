@@ -70,9 +70,9 @@ public class SongMediaPlayer extends Activity {
 		configureStartButton();
 		configurePauseButton();
 		Globals g = (Globals) getApplication();
-		Song selectedSong = g.getCurrentSong();
+		Song selectedSong = g.jam.getCurrentSong();
 		try {
-			Uri myUri = Uri.parse(g.getCurrentSong().getPath());
+			Uri myUri = Uri.parse(g.jam.getCurrentSong().getPath());
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource(getApplicationContext(), myUri);
 			mediaPlayer.prepare();

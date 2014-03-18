@@ -52,7 +52,7 @@ public class ArtistAlbumSongListView extends Activity {
               public void onItemClick(AdapterView<?> parent, View view,
             		  int position, long id) {
             	  Globals g = (Globals) getApplication();
-                  g.setCurrentSong(g.getCurrentAlbum().getSongList().get(position));
+                  g.jam.setCurrentSong(g.getCurrentAlbum().getSongList().get(position));
                   Intent intent = new Intent(getApplicationContext(), SongMediaPlayer.class);
                   startActivity(intent);
               }

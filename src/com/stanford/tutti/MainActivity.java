@@ -6,18 +6,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-public class MainActivity extends Activity {
-	public static Jam jam;
-	
+public class MainActivity extends Activity {	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
 		MusicLibraryLoader musicLibraryLoader = new MusicLibraryLoader();
-		musicLibraryLoader.loadMusic(this);
-        
-		jam = new Jam();
+		musicLibraryLoader.loadMusic(this);        
     }
 
 
