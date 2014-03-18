@@ -1,12 +1,22 @@
 package com.stanford.tutti;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.net.http.AndroidHttpClient;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -95,17 +105,22 @@ public class StreamSongTestActivity extends Activity {
     	public void run() {
     		try {
     			String ipAddr = editText.getText().toString();
-    			Uri uri = Uri.parse("http://" + ipAddr + ":" + PORT);
-    			System.out.println(uri.toString());
-    			MediaPlayer mp = new MediaPlayer();
-    			mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-    			mp.setDataSource(getApplicationContext(), uri);
-    			mp.prepare();
-    			mp.start();
+    			String path = "/getLocalLibrary";
+    			Uri uri = Uri.parse("http://" + ipAddr + ":" + PORT + path);
+    			HttpClient httpClient = new DefaultHttpClient();
+    			HttpGet get = new HttpGet(uri.toString());
+    			HttpResponse response = httpClient.execute(get);
+    			BufferedReader reader = new BufferedReader(
+    					new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+    			String serverArtistList = reader.readLine();
+    			JSONObject jsonArtistList = new JSONObject(serverArtistList);
+    			System.out.println(jsonArtistList.toString(2));
     		}
     		catch (IOException e) {
     			e.printStackTrace();
-    		}
+    		} catch (JSONException e) {
+				e.printStackTrace();
+			}
     	}
     }
 }
