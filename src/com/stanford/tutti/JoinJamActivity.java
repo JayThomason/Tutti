@@ -87,6 +87,7 @@ public class JoinJamActivity extends Activity {
 			public void onClick(View arg0) {
 				String ip = editText.getText().toString(); 
 				Globals g = (Globals) getApplication(); 
+				g.otherIP = ip; 
 				new ClientThread(ip, g).start();
 			}
 		});		

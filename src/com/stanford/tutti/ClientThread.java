@@ -71,6 +71,7 @@ import android.net.Uri;
     						Song song = new Song(songTitle, songPath);
     						song.setArtist(artist); 
     						song.setAlbum(album); 
+    						song.setLocal(false); 
     						album.addSong(song); 
     					}
     					artist.addAlbum(album); 

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -24,13 +25,17 @@ public class Server extends NanoHTTPD {
 	}
 	
 	/*
-	 * Returns the first component of an absolute path. Assumes
-	 * that the path starts with a single forward slash.
+	 * Returns the nth component of an absolute path. 
+	 * Assumes that the path starts with a single forward slash.
 	 *
 	 */
-	private String getFirstComponent(final String path) {
+	private String getComponent(final String path, int index) {
 		String[] components = path.split("/");
-		return components[1];
+		if (components.length > index) {
+			return components[index];
+		} else {
+			return ""; 
+		}
 	}
 	
 	/*
@@ -46,13 +51,47 @@ public class Server extends NanoHTTPD {
                           Map<String, String> header,
                           Map<String, String> parameters,
                           Map<String, String> files)  {
+    	System.out.println("SERVER PING"); 
+    	System.out.println("URI: " + uri); 
     	
-    	String root = getFirstComponent(uri);
-    	if (root.equals(GET_LOCAL_LIBRARY)) {
+    	String root = getComponent(uri, 1);     	
+    	
+    	if (root != "" && root.equals(GET_LOCAL_LIBRARY)) {
     		return getLocalLibraryResponse();
+    	} else {
+    		String artistString = root; 
+    		String titleString = getComponent(uri, 2); 
+            FileInputStream fis = null;
+            try {
+            	Artist artist = g.getArtistByName(artistString); 
+            	
+            	// Super janky linear search code, 
+            	// we need to have better global maps for retrieving songs
+            	ArrayList<Album> albumList = artist.getAlbumList(); 
+            	for (int i = 0; i < albumList.size(); i++) {
+            		Album album = albumList.get(i); 
+            		ArrayList<Song> songList = album.getSongList(); 
+            		for (int j = 0; j < songList.size(); j++) {
+            			if (songList.get(j).getTitle().equals(titleString)) {
+            				
+                        	String path = songList.get(j).getPath(); // g.getArtistList().get(0).getAlbumList().get(0).getSongList().get(0).getPath();
+                        	System.out.println("returning file: " + path);
+                            fis = new FileInputStream(path);
+                            return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
+            				
+            			}
+            		}
+            	}
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
+    	}
+    	/*
     	} else {
     		return badRequestResponse();
     	}
+    	*/
     }
 
 	private Response getLocalLibraryResponse() {

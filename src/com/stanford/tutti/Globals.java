@@ -1,5 +1,6 @@
 package com.stanford.tutti;
 
+import java.io.IOException;
 import java.util.*; 
 import org.json.*; 
 
@@ -27,6 +28,8 @@ public class Globals extends Application {
 	
 	public Jam jam = new Jam(); 
 	
+	public String otherIP; 
+	
 	/*
 	 * Plays the current song. 
 	 * 
@@ -46,18 +49,66 @@ public class Globals extends Application {
         });
 		
 		try {
-			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mediaPlayer.setDataSource(getApplicationContext(), myUri);
-			mediaPlayer.prepare();
-			mediaPlayer.start();
-			return true; 
+			
+			// SWITCH CASE FOR LOCAL SONGS VS. EXTERNAL
+			
+			if (jam.getCurrentSong().getLocal() == true) {
+				System.out.println("Local song"); 
+				Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
+				mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mediaPlayer.setDataSource(getApplicationContext(), myUri);
+				mediaPlayer.prepare();
+				mediaPlayer.start();
+				return true; 
+			} else {
+				System.out.println("Non-local song at ip: " + otherIP); 
+				
+      			String ipAddr = otherIP; 
+      			int port = 1234; 
+      			
+      			Uri uri = Uri.parse("http://" + ipAddr + ":" + port + "/" + jam.getCurrentSong().getArtist().getName() + "/" + jam.getCurrentSong().getTitle()); 
+      			
+      			System.out.println(uri.toString());
+				mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mediaPlayer.setDataSource(getApplicationContext(), uri);
+				mediaPlayer.prepare();
+				mediaPlayer.start();
+				
+ 				// (new ClientStreamThread(otherIP)).start();
+ 				return true; 
+			}
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
 			return false; 
 		}
-	}	
+	}
+	
+   class ClientStreamThread extends Thread {
+		   
+		   private String ipAddress;
+		   private final int PORT = 1234;
+		   
+		   public ClientStreamThread(String ip) {
+			   ipAddress = ip; 
+		   }
+		   
+	    	public void run() {
+	     		try {
+	      			String ipAddr = ipAddress;
+	      			Uri uri = Uri.parse("http://" + ipAddr + ":" + PORT + "STREAMSONG");
+	      			System.out.println(uri.toString());
+					mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					mediaPlayer.setDataSource(getApplicationContext(), uri);
+					mediaPlayer.prepare();
+					mediaPlayer.start();
+	      		}
+	      		catch (IOException e) {
+	      			e.printStackTrace();
+	      		}
+	    	}
+	    }
+	
 		
 	/*
 	 * Returns a list of all artists.

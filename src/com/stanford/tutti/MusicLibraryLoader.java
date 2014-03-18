@@ -75,6 +75,7 @@ public class MusicLibraryLoader {
 	            System.out.println(song.getPath());
 	            song.setAlbum(album);
 	            song.setArtist(album.getArtist());
+	            song.setLocal(true); 
 	            album.addSong(song);
 			}
 		}

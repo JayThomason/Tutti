@@ -19,7 +19,10 @@ public class Song {
 	private Album album;
 	
 	/* The path on the disk/sdcard to the raw song data or file. */
-	private String path;
+	private String path; 
+	
+	/* Indicates whether the song is local to this device. */
+	private boolean local; 
 	
 	/*
 	 * Constructor
@@ -92,6 +95,25 @@ public class Song {
 	 */
 	public String getPath() {
 		return path;
+	}
+	
+	
+	/*
+	 * Sets whether the song is local to this phone. 
+	 * 
+	 * @param boolean local
+	 */
+	public void setLocal(boolean local) {
+		this.local = local; 
+	}
+	
+	/*
+	 * Gets whether the song is local to this phone. 
+	 * 
+	 * @return boolean local
+	 */
+	public boolean getLocal() {
+		return local; 
 	}
 	
 	/*
