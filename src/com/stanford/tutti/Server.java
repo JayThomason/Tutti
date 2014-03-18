@@ -11,8 +11,8 @@ import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 public class Server extends NanoHTTPD {
 	//probably want to make this a better global later, maybe in @strings
-	private static final String GET_LOCAL_LIBRARY = "getLocalLibrary";
-	private static final String GET_SONG = "song";
+	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
+	private static final String GET_SONG = "/song";
 	private int port;
 	private Globals g = null;
 	
@@ -23,27 +23,12 @@ public class Server extends NanoHTTPD {
 	}
 	
 	/*
-	 * Returns the nth component of an absolute path. 
-	 * Assumes that the path starts with a single forward slash.
-	 *
-	 */
-	private String getComponent(final String path, int index) {
-		String[] components = path.split("/");
-		if (components.length > index) {
-			return components[index];
-		} else {
-			return ""; 
-		}
-	}
-	
-	/*
 	 * Returns a BAD_REQUEST HTTP response.
 	 */
 	private Response badRequestResponse() {
 		return new NanoHTTPD.Response(NanoHTTPD.Response.Status.BAD_REQUEST, 
 				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Bad Request".getBytes()));
 	}
-	
 
 	/*
 	 * Returns an INTERAL_ERROR HTTP response.
@@ -53,19 +38,25 @@ public class Server extends NanoHTTPD {
 				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Internal Error".getBytes()));
 	}
 	
+	/*
+	 * Returns a NOT_FOUND HTTP response.
+	 */
+	private Response fileNotFoundResponse() {
+		return new NanoHTTPD.Response(NanoHTTPD.Response.Status.NOT_FOUND, 
+				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Not Found".getBytes()));	
+	}
+	
     @Override
     public Response serve(final String uri, final Method method, 
                           Map<String, String> header,
                           Map<String, String> parameters,
                           Map<String, String> files)  {
-    	// could probably just refactor to str.startsWith("/getLocalLibrary") etc.
-    	System.out.println("URI: " + uri); 
-    	String root = getComponent(uri, 1);     	
-    	if (root != "" && root.equals(GET_LOCAL_LIBRARY)) {
+    	System.out.println("SERVER REQUEST URI: " + uri); 
+    	if (uri.startsWith(GET_LOCAL_LIBRARY)) { // assume requests are well-formed with just one / at beginning of uri
     		return getLocalLibraryResponse();
     	}
-    	else if (root != "" && root.equals(GET_SONG)) {
-    		return getSong(uri.substring(GET_SONG.length() + 1));    	
+    	else if (uri.startsWith(GET_SONG)) {
+    		return getSong(uri.substring(GET_SONG.length()));    	
     	} else {
     		return badRequestResponse();
     	}
@@ -81,7 +72,7 @@ public class Server extends NanoHTTPD {
         	fis = new FileInputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return internalErrorResponse();
+            return fileNotFoundResponse();
         }
         return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
 	}
