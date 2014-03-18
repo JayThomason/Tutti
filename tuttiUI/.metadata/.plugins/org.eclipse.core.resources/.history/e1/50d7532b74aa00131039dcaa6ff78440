@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >  
+         
+    <Button
+        android:id="@+id/Button01"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/main_button"
+        android:gravity="left|center_vertical"
+        android:text="@string/new_jam"
+		android:layout_marginTop="15dp"
+		android:paddingLeft="15dip"
+        android:textColor="#ffffff" 
+        android:onClick="makeNewJam"/>
+    
+    <Button
+        android:id="@+id/Button02"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/Button01"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/main_button"
+        android:gravity="left|center_vertical"
+        android:text="@string/join_jam"
+        android:layout_marginTop="15dp"
+        android:paddingLeft="15dip"
+        android:textColor="#ffffff" 
+        android:onClick="joinJam"/>
+  
+     <Button
+        android:id="@+id/Button03"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/Button02"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/main_button"
+        android:gravity="left|center_vertical"
+        android:text="@string/settings"
+        android:layout_marginTop="15dp"
+        android:paddingLeft="15dip"
+        android:textColor="#ffffff" 
+        android:onClick="settingsMenu"/>
+     
+    <Button
+        android:id="@+id/Button04"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/Button03"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/main_button"
+        android:gravity="left|center_vertical"
+        android:text="@string/help"
+        android:layout_marginTop="15dp"
+        android:paddingLeft="15dip"
+        android:textColor="#ffffff" 
+        android:onClick="helpMenu"/>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="fill_parent"
+        android:layout_height="95dp"
+        android:layout_alignLeft="@+id/Button01"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/tutti_logo"
+        android:src="@drawable/tutti_logo_blank" />
+
+</RelativeLayout>

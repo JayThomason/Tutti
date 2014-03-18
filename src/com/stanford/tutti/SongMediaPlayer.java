@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 /*
  * class SongMediaPlayer
@@ -23,8 +24,10 @@ import android.widget.Button;
  */
 public class SongMediaPlayer extends Activity {
 	MediaPlayer mediaPlayer = new MediaPlayer();
-	Button startButton;
-	Button pauseButton;
+	ImageButton startButton;
+	ImageButton pauseButton;
+	ImageButton backButton;
+	ImageButton nextButton;
 
 
 	
@@ -51,6 +54,8 @@ public class SongMediaPlayer extends Activity {
 			}
 		});
 	}
+	
+
 
 	/*
 	 * Initializes the media player by setting up the action bar, configuring
@@ -65,10 +70,13 @@ public class SongMediaPlayer extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.song_media_player);
-		startButton = (Button) this.findViewById(R.id.song_media_player_start_btn);
-		pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
+		startButton = (ImageButton) this.findViewById(R.id.song_media_player_start_btn);
+		pauseButton = (ImageButton) this.findViewById(R.id.song_media_player_pause_btn);
+		backButton = (ImageButton) this.findViewById(R.id.song_media_player_back_btn);
+		nextButton = (ImageButton) this.findViewById(R.id.song_media_player_next_btn);
 		configureStartButton();
 		configurePauseButton();
+		
 		Globals g = (Globals) getApplication();
 		Song selectedSong = g.jam.getCurrentSong();
 		try {

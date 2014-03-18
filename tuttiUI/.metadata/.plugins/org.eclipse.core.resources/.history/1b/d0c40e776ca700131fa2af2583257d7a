@@ -1,0 +1,16 @@
+    
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+	 android:shape="line">
+	 <stroke
+	   android:width="1dp"
+	   android:color="#000000"
+	   android:dashWidth="1dp"
+	   android:dashGap="1dp" />
+	</shape>
+	<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+</resources>

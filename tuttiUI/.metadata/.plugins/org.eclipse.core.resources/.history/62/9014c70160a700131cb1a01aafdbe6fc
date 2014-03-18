@@ -1,0 +1,19 @@
+package com.example.tuttiui;
+
+import java.util.ArrayList;
+
+public class Jam {
+	ArrayList<String> songs;
+	
+	Jam(){
+		songs = new ArrayList<String>();
+	}
+	
+	public void addSong(String song) {
+		songs.add(song);
+	}
+	
+	public ArrayList<String> getSongList() {
+		return songs;
+	}
+}

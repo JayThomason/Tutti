@@ -1,0 +1,11 @@
+package com.example.tuttiui;
+
+import java.util.List;
+
+public class Jam {
+	List<String> songs;
+	
+	private Jam(){
+		songs = new ArrayList<String>();
+	}
+}

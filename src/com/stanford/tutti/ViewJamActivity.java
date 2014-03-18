@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,8 +20,10 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ViewJamActivity extends Activity {
 
-	Button startButton;
-	Button pauseButton;
+	ImageButton startButton;
+	ImageButton pauseButton;
+	ImageButton backButton;
+	ImageButton nextButton;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +33,15 @@ public class ViewJamActivity extends Activity {
 		// setupActionBar();
 		
 	//	jam = (Jam)getIntent().getExtras().getSerializable("jam");
+		backButton = (ImageButton) this.findViewById(R.id.song_media_player_back_btn);
+		startButton =  (ImageButton)this.findViewById(R.id.song_media_player_start_btn);
+		pauseButton = (ImageButton) this.findViewById(R.id.song_media_player_pause_btn);
 		
-		startButton = (Button) this.findViewById(R.id.song_media_player_start_btn);
-		pauseButton = (Button) this.findViewById(R.id.song_media_player_pause_btn);
+		nextButton = (ImageButton) this.findViewById(R.id.song_media_player_next_btn);
+		configureBackButton();
 		configureStartButton(); 
 		configurePauseButton(); 
+		//configureNextButton();
 				
 		ListView listView = (ListView) findViewById(R.id.listView3);
 		
@@ -102,6 +109,7 @@ public class ViewJamActivity extends Activity {
 		});
 	}
 	
+	
 	/*
 	 * Sets the OnClickListener for the pause button.
 	 */
@@ -114,5 +122,30 @@ public class ViewJamActivity extends Activity {
 			}
 		});
 	}
+
+
+	private void configureBackButton() {
+		backButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+	            Globals g = (Globals) getApplication();
+				g.mediaPlayer.seekTo(0);
+				
+			}
+		});
+	}
+	
+
+	/*private void configureNextButton() {
+		backButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+	            Globals g = (Globals) getApplication();
+	            g.mediaPlayer.seekTo(g.mediaPlayer.getDuration());
+	            
+				
+			}
+		});
+	}*/
 
 }

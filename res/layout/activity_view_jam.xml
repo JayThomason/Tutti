@@ -29,27 +29,41 @@
 
     </ListView>
     
-    <Button
+<LinearLayout
+        android:id="@+id/player_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">    
+        
+    <ImageButton
+        android:id="@+id/song_media_player_back_btn"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/tutti_back_button"
+        />
+    
+    <ImageButton
         android:id="@+id/song_media_player_start_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play" 
-        android:layout_below="@+id/listView3"
-        android:layout_alignParentLeft="true"
-        android:background="#ff0927"
-        android:textColor="#ffffff" 
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/tutti_play_button"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/song_media_player_pause_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pause" 
-        android:layout_toRightOf="@+id/song_media_player_start_btn"
-        android:layout_alignTop="@+id/song_media_player_start_btn"
-        android:background="#ff0927"
-        android:textColor="#ffffff" 
+        android:layout_width="100dp"
+        android:layout_height="100dp" 
+        android:background="@drawable/tutti_pause_button"
         />
+    
+    <ImageButton
+        android:id="@+id/song_media_player_next_btn"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/tutti_next_button"
+        />
+ </LinearLayout>
     
         <Button
         android:id="@+id/button1"

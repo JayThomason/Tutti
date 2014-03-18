@@ -1,0 +1,58 @@
+package com.example.tuttiui;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
+
+public class MainActivity extends Activity {
+	public static Jam jam;
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+		jam = new Jam();
+		Typeface tf = Typeface.createFromAsset(getAssets(),"harrythinregular.ttf");
+		TextView tv1 = (TextView) findViewById(R.id.Button01);
+		tv1.setTypeface(tf);
+		TextView tv2 = (TextView) findViewById(R.id.Button02);
+		tv2.setTypeface(tf);
+		TextView tv3 = (TextView) findViewById(R.id.Button03);
+		tv3.setTypeface(tf);
+		TextView tv4 = (TextView) findViewById(R.id.Button04);
+		tv4.setTypeface(tf);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    public void makeNewJam(View view) {
+    	Intent intent = new Intent(this, NewJamActivity.class);
+    	startActivity(intent);
+    }
+
+
+	public void joinJam(View view) {
+		Intent intent = new Intent(this, JoinJamActivity.class);
+		startActivity(intent);
+	}
+	
+	public void settingsMenu(View view) {
+		Intent intent = new Intent(this, SettingsMenuActivity.class);
+		startActivity(intent);
+	}
+	
+	public void helpMenu(View view) {
+		Intent intent = new Intent(this, HelpMenuActivity.class);
+		startActivity(intent);
+	}
+}
