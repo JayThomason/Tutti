@@ -14,19 +14,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/nearby_jams"
+        android:text="Input Jam ID"
         android:textColor="#ffffff" 
         android:textSize="28sp" />
-
-    <ListView
-        android:id="@+id/listView2"
-        android:layout_width="match_parent"
+    
+    <EditText
+	    android:id="@+id/ip_address"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/textView2"
+	    android:inputType="text" />
+    
+   <Button
+        android:id="@+id/join_jam_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#ff0927"
+        android:layout_below="@+id/ip_address"
         android:textColor="#ffffff" 
-        android:layout_below="@+id/textView2" >
-
-    </ListView>
+        android:hint="Enter the Jam ID"
+        android:text="Join Jam" />
 
 </RelativeLayout>

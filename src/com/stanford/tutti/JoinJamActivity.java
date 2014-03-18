@@ -1,24 +1,47 @@
 package com.stanford.tutti;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class JoinJamActivity extends Activity {
 
+	private Button joinButton; 
+		
+	private EditText editText;
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,6 +49,11 @@ public class JoinJamActivity extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
+		editText = (EditText) this.findViewById(R.id.ip_address);
+		
+		configureJoinJamButton(); 
+		
+		/*
 		ListView listView2 = (ListView) findViewById(R.id.listView2);
 		String[] items = { "Audrey's Galaxy Note", "Jay's Nexus 7" };
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
@@ -48,8 +76,23 @@ public class JoinJamActivity extends Activity {
 					}) .show();
 			  }
 			});
+		*/
+	}
+	
+	
+	private void configureJoinJamButton() {
+		joinButton = (Button) this.findViewById(R.id.join_jam_btn);
+		joinButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String ip = editText.getText().toString(); 
+				Globals g = (Globals) getApplication(); 
+				new ClientThread(ip, g).start();
+			}
+		});		
 	}
 
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -83,6 +126,4 @@ public class JoinJamActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-
 }

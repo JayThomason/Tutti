@@ -1,5 +1,6 @@
 package com.stanford.tutti;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -7,6 +8,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ExpandableListView;
@@ -34,6 +38,10 @@ public class NewJamActivity extends Activity {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
     
+	private final int PORT = 1234;
+	private Server server;
+	private Globals g; 
+        
     // We should really be building this up as a global
     HashMap<String, Song> songMap; 
     
@@ -45,6 +53,18 @@ public class NewJamActivity extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 
+		// Set up the server thread to listen for "join jam" requests
+		g = (Globals) getApplication(); 
+	    server = new Server(PORT, g);
+        try {
+			server.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        // Show the unique code for "join jam" requests
+		EditText editText = (EditText) this.findViewById(R.id.ip_address);
+		editText.setText("Your Jam ID is: " + getIpAddr());
 		
 		// get the listview
         expListView = (ExpandableListView) findViewById(R.id.listView1);
@@ -94,8 +114,29 @@ public class NewJamActivity extends Activity {
         });
 	}
 	
+	/*
+	 * Return a string representation of the current device's IP address. 
+	 */
+	public String getIpAddr() {
+		WifiManager wifiManager = 
+				(WifiManager) getSystemService(WIFI_SERVICE);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		int ip = wifiInfo.getIpAddress();
+
+		String ipString = String.format(
+				"%d.%d.%d.%d",
+				(ip & 0xff),
+				(ip >> 8 & 0xff),
+				(ip >> 16 & 0xff),
+				(ip >> 24 & 0xff));
+
+		return ipString;
+	}
 	
 	
+	/*
+	 * Set up the nested/expandable ListView
+	 */
 	private void prepareListData() {
 	    listDataHeader = new ArrayList<String>();
 	    listDataChild = new HashMap<String, List<String>>();

@@ -61,7 +61,7 @@ public class StreamSongTestActivity extends Activity {
 		clientButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				(new ClientThread()).start();
+				//(new ClientThread()).start();
 			}
 		});		
 	}
@@ -103,6 +103,7 @@ public class StreamSongTestActivity extends Activity {
         return true;
     }
     
+    /*
     class ClientThread extends Thread {
     	public void run() {
     		try {
@@ -126,7 +127,7 @@ public class StreamSongTestActivity extends Activity {
 				e.printStackTrace();
 			}
     	}
-    }
+    }*/
     
     /*
      * Load new music into the global library by

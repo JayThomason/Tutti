@@ -48,9 +48,9 @@ public class Server extends NanoHTTPD {
                           Map<String, String> files)  {
     	
     	String root = getFirstComponent(uri);
-    	if (root.equals(GET_LOCAL_LIBRARY))
+    	if (root.equals(GET_LOCAL_LIBRARY)) {
     		return getLocalLibraryResponse();
-    	else {
+    	} else {
     		return badRequestResponse();
     	}
     }
