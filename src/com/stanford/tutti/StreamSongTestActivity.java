@@ -64,7 +64,7 @@ public class StreamSongTestActivity extends Activity {
 		serverButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-		        server = new Server();
+		        server = new Server(PORT, g);
 		        try {
 					server.start();
 				} catch (IOException e) {
@@ -97,41 +97,6 @@ public class StreamSongTestActivity extends Activity {
         return true;
     }
     
-    class Server extends NanoHTTPD {
-    	public Server() {
-    		super(PORT);
-    	}
-    	
-        @Override
-        public Response serve(final String uri, final Method method, 
-                              Map<String, String> header,
-                              Map<String, String> parameters,
-                              Map<String, String> files)  {
-        	System.out.println(uri);
-        	System.out.println(method.toString());
-        	for (String str : header.keySet())
-        		System.out.println(str + ": " + header.get(str));
-            for (String str : parameters.keySet())
-            	System.out.println(str + " : " + parameters.get(str));
-            runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-                    editText.setText(method.toString() + uri);
-				}
-            	
-            });
-            FileInputStream fis = null;
-            try {
-            	String path = g.getArtistList().get(0).getAlbumList().get(0).getSongList().get(0).getPath();
-            	System.out.println("returning file: " + path);
-                fis = new FileInputStream(path);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
-        }
-    }
-
     class ClientThread extends Thread {
     	public void run() {
     		try {
