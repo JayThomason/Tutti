@@ -14,13 +14,13 @@ import org.json.JSONObject;
 
 import android.net.Uri;
 
-   class ClientThread extends Thread {
+   class JoinJamThread extends Thread {
 	   
 	   private String ipAddress;
 	   private final int PORT = 1234;
 	   private Globals g; 
 	   
-	   public ClientThread(String ip, Globals g) {
+	   public JoinJamThread(String ip, Globals g) {
 		   ipAddress = ip; 
 		   this.g = g; 
 	   }

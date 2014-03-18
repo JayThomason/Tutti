@@ -88,13 +88,14 @@ public class JoinJamActivity extends Activity {
 				String ip = editText.getText().toString(); 
 				Globals g = (Globals) getApplication(); 
 				g.otherIP = ip; 
-				new ClientThread(ip, g).start();
+				Thread joinJamThread = new JoinJamThread(ip, g);
+				joinJamThread.start();
 				try {
-					Thread.sleep(500);
+					joinJamThread.join();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					// probably want to log some message to user: unable to join jam
 					e.printStackTrace();
-				} 
+				}
 				Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);
 				startActivity(intent);
 			}
