@@ -39,7 +39,7 @@ import android.net.Uri;
     			String serverArtistList = reader.readLine();
     			JSONObject jsonArtistList = new JSONObject(serverArtistList);
     			JSONArray artists = jsonArtistList.getJSONArray("artists");     			
-    			loadMusicFromJSON(artists); 			
+    			loadMusicFromJSON(artists); 		
     		}
     		catch (IOException e) {
     			e.printStackTrace();

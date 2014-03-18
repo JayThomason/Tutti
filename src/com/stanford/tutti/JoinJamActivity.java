@@ -89,6 +89,14 @@ public class JoinJamActivity extends Activity {
 				Globals g = (Globals) getApplication(); 
 				g.otherIP = ip; 
 				new ClientThread(ip, g).start();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);
+				startActivity(intent);
 			}
 		});		
 	}
