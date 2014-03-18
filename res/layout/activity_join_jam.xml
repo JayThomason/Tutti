@@ -23,7 +23,8 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/textView2"
-	    android:inputType="text" />
+	    android:inputType="text" 
+	    android:textColor="#ffffff" />
     
    <Button
         android:id="@+id/join_jam_btn"
