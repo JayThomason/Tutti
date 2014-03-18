@@ -92,29 +92,6 @@ public class NewJamActivity extends Activity {
                 return false;
             }
         });
-        
-		
-		//ListView listView1 = (ListView) findViewById(R.id.listView1);
-		//String[] items = { "About You Now", "Alejandro", "All I Ask of You", "Best Song Ever", "Boyfriend", "Bye Bye Bye", "C'mon, C'mon", "Call Me Maybe", "A Change in Me", "Clarity", "Crazy Town", "Dark Horse", "Defying Gravity", "Demons", "Does He Know?", "Don't Rain on My Parade", "Ever Ever After", "Feel Again", "Finish the Fight", "Fireflies", "Friday", "Gangam Style", "Happily", "Hoedown Throwdown", "I Dreamed a Dream", "It's Time", "Kiss You", "Let It Go", "Little Things", "Live While We're Young", "Midnight Memories", "Never Say Never", "One Thing", "The Phantom of the Opera", "Popular", "Radioactive", "Right Now", "Roar", "Safety Dance", "She's Not Afraid", "Somebody That I Used to Know", "Story of My Life", "They Don't Know About Us", "Tik Tok", "Titanium", "Up All Night", "Way Back Into Love", "When Will My Life Begin", "You & I", "22" };
-		
-		
-		
-		//ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-		//listView1.setAdapter(adapter);
-		
-		/*listView1.setOnItemClickListener(new OnItemClickListener() {
-			  @Override
-			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				  
-				  
-				  String item = ((TextView)view).getText().toString();
-				  new AlertDialog.Builder(view.getContext())
-		            .setMessage(item+" added to Jam").show();
-				  MainActivity.jam.addSong(item);
-				  
-			  }
-			});
-			*/
 	}
 	
 	
