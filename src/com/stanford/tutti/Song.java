@@ -29,8 +29,9 @@ public class Song {
 	 * 
 	 * @param String title
 	 */
-	public Song(String title) {
+	public Song(String title, boolean local) {
 		this.title = title;
+		this.local = local;
 	}
 	
 	/*
@@ -38,9 +39,10 @@ public class Song {
 	 * 
 	 * @param String title, String path
 	 */
-	public Song(String title, String path) {
+	public Song(String title, String path, boolean local) {
 		this.title = title;
 		this.path = path;
+		this.local = local;
 	}
 	
 	/*
@@ -97,22 +99,12 @@ public class Song {
 		return path;
 	}
 	
-	
-	/*
-	 * Sets whether the song is local to this phone. 
-	 * 
-	 * @param boolean local
-	 */
-	public void setLocal(boolean local) {
-		this.local = local; 
-	}
-	
 	/*
 	 * Gets whether the song is local to this phone. 
 	 * 
 	 * @return boolean local
 	 */
-	public boolean getLocal() {
+	public boolean isLocal() {
 		return local; 
 	}
 	

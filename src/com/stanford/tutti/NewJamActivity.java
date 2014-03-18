@@ -15,6 +15,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,19 +38,20 @@ import android.widget.Toast;
 
 public class NewJamActivity extends Activity {
 
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
-    
+	ExpandableListAdapter listAdapter;
+	ExpandableListView expListView;
+	List<String> listDataHeader;
+	HashMap<String, List<String>> listDataChild;
+
 	private final int PORT = 1234;
 	private Server server;
 	private Globals g; 
-        
-    // We should really be building this up as a global
-    HashMap<String, Song> songMap; 
-    
-	
+	private Handler handler;
+
+	// We should really be building this up as a global
+	HashMap<String, Song> songMap; 
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,65 +61,73 @@ public class NewJamActivity extends Activity {
 
 		// Set up the server thread to listen for "join jam" requests
 		g = (Globals) getApplication(); 
-	    server = new Server(PORT, g);
-        try {
+
+		// Show the unique code for "join jam" requests
+		EditText editText = (EditText) this.findViewById(R.id.ip_address);
+		editText.setText("Your Jam ID is: " + getIpAddr());
+
+		// get the listview
+		expListView = (ExpandableListView) findViewById(R.id.listView1);
+
+		// preparing list data
+		prepareListData();
+
+		listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+
+		// setting list adapter
+		expListView.setAdapter(listAdapter);
+
+		expListView.setOnChildClickListener(new OnChildClickListener() {
+
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+
+				String songName = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition); 
+				Song song = songMap.get(songName); 
+				Globals g = (Globals) getApplication();
+				g.jam.addSong(song); 
+				Toast.makeText(
+						getApplicationContext(),
+						listDataHeader.get(groupPosition)
+						+ " : "
+						+ songName 
+						+ " added to Jam", Toast.LENGTH_SHORT)
+						.show();                
+
+				if (g.jam.getCurrentSong() == null) {
+					g.jam.setCurrentSong(song);
+					g.playCurrentSong();
+				}                
+
+				return false;
+			}
+		});
+
+		handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from the server that we have new non-local music, we can
+				 * update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					System.out.println("ATTEMPTING TO UPDATE LIST VIEWWWWWWW\n\n\n");
+					prepareListData();
+					listAdapter = new ExpandableListAdapter(getBaseContext(), listDataHeader, listDataChild);
+					expListView.setAdapter(listAdapter);
+				}
+				super.handleMessage(msg);
+			}
+		};
+		
+		server = new Server(PORT, g, handler);
+		try {
 			server.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        
-        // Show the unique code for "join jam" requests
-		EditText editText = (EditText) this.findViewById(R.id.ip_address);
-		editText.setText("Your Jam ID is: " + getIpAddr());
-		
-		// get the listview
-        expListView = (ExpandableListView) findViewById(R.id.listView1);
- 
-        // preparing list data
-        prepareListData();
- 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
- 
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-        
-        expListView.setOnChildClickListener(new OnChildClickListener() {
-        	 
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-            	
-            	String songName = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition); 
-            	
-                Song song = songMap.get(songName); 
-                
-                Globals g = (Globals) getApplication();
-                
-                g.jam.addSong(song); 
-                
-                String songString = song.getArtist().getName() + ": " + songName; 
-            	            	
-                Toast.makeText(
-                        getApplicationContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + songName 
-                                + " added to Jam", Toast.LENGTH_SHORT)
-                        .show();                
-                                
-                if (g.jam.getCurrentSong() == null) {
-	                g.jam.setCurrentSong(song);
-	                g.playCurrentSong();
-                } 
-                
-                //Intent intent = new Intent(getApplicationContext(), SongMediaPlayer.class);
-                //startActivity(intent);
-                
-                
-                return false;
-            }
-        });
 	}
-	
+
 	/*
 	 * Return a string representation of the current device's IP address. 
 	 */
@@ -135,37 +146,37 @@ public class NewJamActivity extends Activity {
 
 		return ipString;
 	}
-	
-	
+
+
 	/*
 	 * Set up the nested/expandable ListView
 	 */
 	private void prepareListData() {
-	    listDataHeader = new ArrayList<String>();
-	    listDataChild = new HashMap<String, List<String>>();
-	    songMap = new HashMap<String, Song>(); 
-		
-        Globals g = (Globals) getApplication();
+		listDataHeader = new ArrayList<String>();
+		listDataChild = new HashMap<String, List<String>>();
+		songMap = new HashMap<String, Song>(); 
+
+		Globals g = (Globals) getApplication();
 		ArrayList<Artist> artists = g.getArtistList();
-		
-        for (int i = 0; i < artists.size(); ++i) {
-        	listDataHeader.add(artists.get(i).getName());
-        	ArrayList<Album> albums = artists.get(i).getAlbumList(); 
-        	ArrayList<String> songs = new ArrayList<String>(); 
-        	for (int j = 0; j < albums.size(); j++) {
-        		ArrayList<Song> albumSongs = albums.get(j).getSongList(); 
-        		for (int k = 0; k < albumSongs.size(); k++) {
-        			Song song = albumSongs.get(k); 
-        			songs.add(song.getTitle()); 
-        			songMap.put(song.getTitle(), song);
-        		}
-        	}
-    		listDataChild.put(listDataHeader.get(i), songs);
-        }
-        
-        
+
+		for (int i = 0; i < artists.size(); ++i) {
+			listDataHeader.add(artists.get(i).getName());
+			ArrayList<Album> albums = artists.get(i).getAlbumList(); 
+			ArrayList<String> songs = new ArrayList<String>(); 
+			for (int j = 0; j < albums.size(); j++) {
+				ArrayList<Song> albumSongs = albums.get(j).getSongList(); 
+				for (int k = 0; k < albumSongs.size(); k++) {
+					Song song = albumSongs.get(k); 
+					songs.add(song.getTitle()); 
+					songMap.put(song.getTitle(), song);
+				}
+			}
+			listDataChild.put(listDataHeader.get(i), songs);
+		}
+
+
 	}
-	
+
 
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -201,14 +212,10 @@ public class NewJamActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-    public void viewJam(View view) {
-    	Intent intent = new Intent(this, ViewJamActivity.class);
-    	Bundle bundle = new Bundle();
-    	
-        Globals g = (Globals) getApplication();
-    	// bundle.putSerializable("jam", g.jam);
-    	
-    	intent.putExtras(bundle);
-    	startActivity(intent);
-    }
+	public void viewJam(View view) {
+		Intent intent = new Intent(this, ViewJamActivity.class);
+		Bundle bundle = new Bundle();    	
+		intent.putExtras(bundle);
+		startActivity(intent);
+	}
 }

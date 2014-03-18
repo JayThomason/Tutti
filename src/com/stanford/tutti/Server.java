@@ -7,19 +7,26 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import android.os.Handler;
+import android.os.Message;
+
 import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 public class Server extends NanoHTTPD {
 	//probably want to make this a better global later, maybe in @strings
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String GET_SONG = "/song";
+	private static final String JOIN_JAM = "/joinJam";
+	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private int port;
 	private Globals g = null;
+	private Handler handler = null;
 	
-	public Server(int port, Globals g) {
+	public Server(int port, Globals g, Handler handler) {
 		super(port);
 		this.port = port;
 		this.g = g;
+		this.handler = handler;
 	}
 	
 	/*
@@ -46,13 +53,31 @@ public class Server extends NanoHTTPD {
 				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Not Found".getBytes()));	
 	}
 	
+	/*
+	 * Logs a request to the console. Prints the method, uri, and headers.
+	 */
+	private void logRequest(final String uri, final Method method, 
+                          Map<String, String> header,
+                          Map<String, String> parameters,
+                          Map<String, String> files) {
+		System.out.println("SERVER: request received");
+		System.out.println("SERVER: " + method.toString() + " " + uri);
+		for (String str : header.keySet())
+			System.out.println("SERVER: " + str + " : " + header.get(str));
+		System.out.println("\n");
+	}
+	
     @Override
     public Response serve(final String uri, final Method method, 
                           Map<String, String> header,
                           Map<String, String> parameters,
                           Map<String, String> files)  {
-    	System.out.println("SERVER REQUEST URI: " + uri); 
-    	if (uri.startsWith(GET_LOCAL_LIBRARY)) { // assume requests are well-formed with just one / at beginning of uri
+    	logRequest(uri, method, header, parameters, files);
+    	if (uri.startsWith(JOIN_JAM)) {
+    		g.otherIP = header.get(HTTP_CLIENT_IP);
+    		return joinJamResponse(g.otherIP);
+    	}
+    	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { // assume requests are well-formed with just one / at beginning of uri
     		return getLocalLibraryResponse();
     	}
     	else if (uri.startsWith(GET_SONG)) {
@@ -61,8 +86,34 @@ public class Server extends NanoHTTPD {
     		return badRequestResponse();
     	}
     }
-    	
+    
     /*
+     * Responds to a request to join the jam. Should pop up a box in the ui 
+     * asking the user to accept/reject the join.
+     * 
+     * Right now it just always allows it.
+     * 
+     * When allowing the other phone to join the jam it should also create a
+     * client thread to request the local music on the joining phone and
+     * sync jam libraries.
+     */
+    private Response joinJamResponse(String otherIpAddress) {
+    	Thread getLibraryThread = new JoinJamThread(otherIpAddress, g, true);
+    	getLibraryThread.start();
+    	try {
+			getLibraryThread.join();
+			if (handler != null) {
+				Message msg = handler.obtainMessage();
+				msg.what = 0; // fix this later to be constant
+				handler.sendMessage(msg);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return new NanoHTTPD.Response("OK to join");
+	}
+
+	/*
      * Returns an OK HTTP response for the path (if the path corresponds
      * to a media file) with an audio/mpeg body.
      */
@@ -83,7 +134,7 @@ public class Server extends NanoHTTPD {
      */
 	private Response getLocalLibraryResponse() {
 		System.out.println("Returning Local Library as JSON");
-		JSONObject jsonLibrary = g.getArtistsAsJSON();
+		JSONObject jsonLibrary = g.getArtistsAsJSON(true);
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;

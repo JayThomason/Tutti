@@ -8,10 +8,12 @@ public class Album {
 	private String title;
 	private Artist artist;
 	private ArrayList<Song> songList = new ArrayList<Song>();
+	private boolean local;
 	
-	public Album(String title, Artist artist) {
+	public Album(String title, Artist artist, boolean local) {
 		this.title = title;
 		this.artist = artist;
+		this.local = local;
 	}
 	
 	public Artist getArtist() {
@@ -34,13 +36,22 @@ public class Album {
 		return title;
 	}
 	
-	public JSONObject toJSON() {
+	
+	public boolean isLocal() {
+		return local;
+	}
+	
+	public JSONObject toJSON(boolean justLocal) {
 		JSONObject json = new JSONObject(); 
 		try {
 			json.put("title", title);
 			JSONArray songArray = new JSONArray(); 
 			for (int i = 0; i < songList.size(); i++) {
-				songArray.put(songList.get(i).toJSON()); 
+				Song song = songList.get(i);
+				if (justLocal && song.isLocal())
+					songArray.put(song.toJSON());
+				else if (!justLocal)
+					songArray.put(song.toJSON());
 			}
 			json.put("songs", songArray); 
 		} catch (JSONException e) {
@@ -49,4 +60,5 @@ public class Album {
 		} 
 		return json;
 	}
+
 }

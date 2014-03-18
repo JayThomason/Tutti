@@ -36,21 +36,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class JoinJamActivity extends Activity {
-
 	private Button joinButton; 
-		
+	private static final int PORT = 1234;
 	private EditText editText;
+	private Server server;
+	private Globals g;
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join_jam);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
 		editText = (EditText) this.findViewById(R.id.ip_address);
-		
+		g = (Globals) getApplication();
 		configureJoinJamButton(); 
 		
 		/*
@@ -85,15 +84,22 @@ public class JoinJamActivity extends Activity {
 		joinButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+			    server = new Server(PORT, g, null);
 				String ip = editText.getText().toString(); 
 				Globals g = (Globals) getApplication(); 
 				g.otherIP = ip; 
-				Thread joinJamThread = new JoinJamThread(ip, g);
-				joinJamThread.start();
+				Thread joinJamThread = new JoinJamThread(ip, g, false);
 				try {
+					server.start();
+					joinJamThread.start();
 					joinJamThread.join();
 				} catch (InterruptedException e) {
 					// probably want to log some message to user: unable to join jam
+					e.printStackTrace();
+				} catch (IOException e) {
+					// unable to start server
+					// in either failure case we can't join the jam and thus we should display
+					// a message to the user and back out to the main menu or just stay here...
 					e.printStackTrace();
 				}
 				Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);

@@ -28,14 +28,14 @@ public class UserJoiningRoomSimulator {
 	public void addUserMusic(Globals g) {
 		Artist artist = g.getArtistByName(phoenix);
 		if (artist == null) {
-			artist = new Artist(phoenix);
+			artist = new Artist(phoenix, false);
 			g.addArtist(artist);
 		}
-		Album album = new Album(bankrupt, artist);
+		Album album = new Album(bankrupt, artist, false);
 		g.addAlbum(album);
 		artist.addAlbum(album);
 		for (String songTitle : bankruptSongs) {
-			Song song = new Song(songTitle);
+			Song song = new Song(songTitle, false);
 			song.setAlbum(album);
 			song.setArtist(artist);
 			album.addSong(song);

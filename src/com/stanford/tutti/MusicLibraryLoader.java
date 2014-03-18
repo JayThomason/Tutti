@@ -25,7 +25,7 @@ public class MusicLibraryLoader {
         
         while (cursor.moveToNext()) {
             String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
-            Artist artist = new Artist(artistName);
+            Artist artist = new Artist(artistName, true);
             g.addArtist(artist);
         }
 	}
@@ -46,7 +46,7 @@ public class MusicLibraryLoader {
 	        
 	        while (cursor.moveToNext()) {
 	            String albumTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
-	            Album album = new Album(albumTitle, artist);
+	            Album album = new Album(albumTitle, artist, true);
 	            artist.addAlbum(album);
 	            g.addAlbum(album);
 	        }
@@ -71,11 +71,10 @@ public class MusicLibraryLoader {
 	        while (cursor.moveToNext()) {
 	            String songTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
 	            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-	            Song song = new Song(songTitle, path);
+	            Song song = new Song(songTitle, path, true);
 	            System.out.println(song.getPath());
 	            song.setAlbum(album);
 	            song.setArtist(album.getArtist());
-	            song.setLocal(true); 
 	            album.addSong(song);
 			}
 		}

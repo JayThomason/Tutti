@@ -55,7 +55,7 @@ public class Globals extends Application {
 			String ipAddr = otherIP; 
 			int port = 1234;
 			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
-			boolean local = jam.getCurrentSong().getLocal();
+			boolean local = jam.getCurrentSong().isLocal();
 			if (!local)
 				//Uri uri = Uri.parse("http://" + ipAddr + ":" + port + "/" + jam.getCurrentSong().getArtist().getName() + "/" + jam.getCurrentSong().getTitle()); 
 				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + jam.getCurrentSong().getPath());
@@ -197,12 +197,17 @@ public class Globals extends Application {
 	 * Gets the current library of artists/albums/songs as JSON. 
 	 * 
 	 * @param JSONObject object
+	 * @param boolean (whether we should just get music that is local) 
 	 */
-	public JSONObject getArtistsAsJSON() {
+	public JSONObject getArtistsAsJSON(boolean justLocal) {
 		JSONObject json = new JSONObject(); 
 		JSONArray artistArray = new JSONArray(); 
 		for (int i = 0; i < artistList.size(); i++) {
-			artistArray.put(artistList.get(i).toJSON()); 
+			Artist artist = artistList.get(i);
+			if (justLocal && artist.isLocal())
+				artistArray.put(artist.toJSON(justLocal));
+			else if (!justLocal) 
+				artistArray.put(artist.toJSON(justLocal));
 		}
 		try {
 			json.put("artists", artistArray);
