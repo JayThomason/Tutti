@@ -2,6 +2,8 @@ package com.stanford.tutti;
 
 import java.util.ArrayList;
 
+import org.json.*; 
+
 public class Album {
 	private String title;
 	private Artist artist;
@@ -30,5 +32,21 @@ public class Album {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public JSONObject toJSON() {
+		JSONObject json = new JSONObject(); 
+		try {
+			json.put("title", title);
+			JSONArray songArray = new JSONArray(); 
+			for (int i = 0; i < songList.size(); i++) {
+				songArray.put(songList.get(i).toJSON()); 
+			}
+			json.put("songs", songArray); 
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return json;
 	}
 }

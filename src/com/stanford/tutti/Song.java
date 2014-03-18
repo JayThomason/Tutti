@@ -1,5 +1,7 @@
 package com.stanford.tutti;
 
+import org.json.*; 
+
 /*
  * Stores all metadata associated with a given song. Also includes references
  * to the album which includes the song and the artist who plays the song. This
@@ -90,5 +92,21 @@ public class Song {
 	 */
 	public String getPath() {
 		return path;
+	}
+	
+	/*
+	 * Returns a JSON string for the song. 
+	 * 
+	 * @return String
+	 */
+	public JSONObject toJSON() {
+		JSONObject json = new JSONObject(); 
+		try {
+			json.put("title", title); 
+			json.put("path", path); 
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		return json; 
 	}
 }

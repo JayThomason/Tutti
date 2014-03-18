@@ -1,6 +1,7 @@
 package com.stanford.tutti;
 
 import java.util.*; 
+import org.json.*; 
 
 import android.app.Application;
 import android.media.AudioManager;
@@ -139,5 +140,25 @@ public class Globals extends Application {
 	 */
 	public void setCurrentAlbum(Album album) {
 		this.currentAlbum = album;
+	}
+	
+	/*
+	 * Gets the current library of artists/albums/songs as JSON. 
+	 * 
+	 * @param JSONObject object
+	 */
+	public JSONObject getArtistsAsJSON() {
+		JSONObject json = new JSONObject(); 
+		JSONArray artistArray = new JSONArray(); 
+		for (int i = 0; i < artistList.size(); i++) {
+			artistArray.put(artistList.get(i).toJSON()); 
+		}
+		try {
+			json.put("artists", artistArray);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return json; 
 	}
 }
