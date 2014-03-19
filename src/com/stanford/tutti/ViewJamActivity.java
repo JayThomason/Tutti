@@ -70,9 +70,10 @@ public class ViewJamActivity extends Activity {
 	              Globals g = (Globals) getApplication();  
 	              g.jam.setCurrentSongByIndex(position);
 	              g.jam.playCurrentSong(); 
-	              //setCurrentSongIndex? 
+	              
+				  new PassSongThread(g.jam.getOtherIP(), g.jam.getSongByIndex(position), "/jam/set").start(); 
+
 	                
-				  // MainActivity.jam.addSong(item);
 			  }
 			});
 	}

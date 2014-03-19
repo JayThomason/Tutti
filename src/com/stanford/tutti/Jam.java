@@ -55,14 +55,23 @@ public class Jam implements Serializable {
 	}
 	
 	public void start() {
+		if (!master)
+			return; 
+		
 		mediaPlayer.start(); 
 	}
 	
 	public void pause() {
+		if (!master)
+			return; 
+		
 		mediaPlayer.pause(); 
 	}
 	
 	public void seekTo(int time) {
+		if (!master)
+			return; 
+		
 		mediaPlayer.seekTo(time); 
 	}
 	
@@ -102,6 +111,10 @@ public class Jam implements Serializable {
 			currentSongIndex = index; 
 			currentSong = songs.get(index); 
 		}
+	}
+	
+	public Song getSongByIndex(int index) {
+		return songs.get(index); 
 	}
 	
 	/*

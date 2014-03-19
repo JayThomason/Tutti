@@ -19,24 +19,24 @@ import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 import android.net.Uri;
 
-class AddSongThread extends Thread {
+class PassSongThread extends Thread {
 
 	private String ipAddress;
 	private final int PORT = 1234;
 	private Globals g; 
 	private Song song; 
-	boolean isMasterPhone;
+	private String method; 
 
-	public AddSongThread(String ip, boolean isMasterPhone, Song song) {
+	public PassSongThread(String ip, Song song, String method) {
 		ipAddress = ip; 
 		g = (Globals) Globals.getAppContext(); 
-		this.isMasterPhone = isMasterPhone;
 		this.song = song; 
+		this.method = method; 
 	}
 
 	public void run() {
 		HttpClient httpClient = new DefaultHttpClient();
-		String path = "/jam/add/" + Utils.getUniqueKeyForSong(song);
+		String path = method + "/" + Utils.getUniqueKeyForSong(song);
 		String uri = "http://" + g.jam.getOtherIP() + ":" + PORT + path;
 		HttpGet get = new HttpGet(uri.toString());
 		try {

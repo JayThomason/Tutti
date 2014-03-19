@@ -18,7 +18,8 @@ public class Server extends NanoHTTPD {
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
 	private static final String UPDATE_JAM = "/jam"; 
-	private static final String ADD_TO_JAM = "/add"; 
+	private static final String JAM_ADD_SONG = "/add"; 
+	private static final String JAM_SET_SONG = "/set"; 
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private int port;
 	private Globals g = null;
@@ -122,8 +123,10 @@ public class Server extends NanoHTTPD {
      * Pause, play, skip song, set song, etc. 
      */
     private Response updateJamResponse(final String path) {
-    	if (path.startsWith(ADD_TO_JAM)) {
-    		return addToJamResponse(path.substring(ADD_TO_JAM.length())); 
+    	if (path.startsWith(JAM_ADD_SONG)) {
+    		return jamAddSongResponse(path.substring(JAM_ADD_SONG.length())); 
+    	} else if (path.startsWith(JAM_SET_SONG)) {
+    		return jamSetSongResponse(path.substring(JAM_SET_SONG.length())); 
     	}
         return badRequestResponse();
     }
@@ -131,7 +134,7 @@ public class Server extends NanoHTTPD {
     /*
      * Adds the requested song to the jam.
      */
-	private Response addToJamResponse(String keyPath) {
+	private Response jamAddSongResponse(String keyPath) {
 		Song song = g.getSongForUniqueKey(keyPath.substring(1));
 		if (song == null) 
 			return fileNotFoundResponse();
@@ -140,7 +143,19 @@ public class Server extends NanoHTTPD {
 			g.jam.setCurrentSong(song);
 			g.jam.playCurrentSong();
 		}
-		return new NanoHTTPD.Response("Added to jam");
+		return new NanoHTTPD.Response("Added song to jam");
+	}
+	
+    /*
+     * Sets the requested song to be the currently playing song. 
+     */
+	private Response jamSetSongResponse(String keyPath) {
+		Song song = g.getSongForUniqueKey(keyPath.substring(1));
+		if (song == null) 
+			return fileNotFoundResponse();
+		g.jam.setCurrentSong(song);
+		g.jam.playCurrentSong(); 
+		return new NanoHTTPD.Response("Set new currently playing song");
 	}
 
 	/*

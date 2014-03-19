@@ -69,8 +69,12 @@ public class NewJamActivity extends Activity {
 		setupActionBar();
 
 		Bundle b = getIntent().getExtras();
-		int value = b.getInt("host");
-		master = (value == 1); 
+		if (b != null && b.containsKey("host")) {
+			int value = b.getInt("host");
+			master = (value == 1); 
+		} else {
+			master = false; 
+		}
 		
 		g = (Globals) getApplication(); 
 		g.jam.setMaster(master); 
@@ -115,7 +119,7 @@ public class NewJamActivity extends Activity {
 				} else {*/
 					// If we're not the master, send messages to the other phone
 					// instead of doing local playback ourselves
-					new AddSongThread(g.jam.getOtherIP(), master, song).start(); 
+					new PassSongThread(g.jam.getOtherIP(), song, "/jam/add").start(); 
 				//}
 
 				return false;
