@@ -111,16 +111,15 @@ public class NewJamActivity extends Activity {
 						+ " added to Jam", Toast.LENGTH_SHORT)
 						.show();                
 
-				/*if (master) {
+				if (master) {
 					if (g.jam.getCurrentSong() == null) {
 						g.jam.setCurrentSong(song);
 						g.jam.playCurrentSong();
 					}          
-				} else {*/
-					// If we're not the master, send messages to the other phone
-					// instead of doing local playback ourselves
-					new PassMessageThread(g.jam.getOtherIP(), "/jam/add/" + Utils.getUniqueKeyForSong(song)).start(); 
-				//}
+				} 
+				
+				// Send a message to the other phone to add the song to its version of the jam
+				new PassMessageThread(g.jam.getOtherIP(), "/jam/add/" + Utils.getUniqueKeyForSong(song)).start(); 
 
 				return false;
 			}
