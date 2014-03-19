@@ -53,7 +53,6 @@ public class Globals extends Application {
 		}
 
 		try {
-			// SWITCH CASE FOR LOCAL SONGS VS. EXTERNAL
 			String ipAddr = otherIP; 
 			int port = 1234;
 			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());

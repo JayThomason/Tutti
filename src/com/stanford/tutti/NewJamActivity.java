@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -109,7 +116,7 @@ public class NewJamActivity extends Activity {
 				} else {
 					// If we're not the master, send messages to the other phone
 					// instead of doing local playback ourselves
-					
+					new AddSongThread(g.otherIP, g, master, song).start(); 
 				}
 
 				return false;
@@ -140,6 +147,42 @@ public class NewJamActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+
+class AddSongThread extends Thread {
+
+	private String ipAddress;
+	private final int PORT = 1234;
+	private Globals g; 
+	private Song song; 
+	boolean isMasterPhone;
+
+	public AddSongThread(String ip, Globals g, boolean isMasterPhone, Song song) {
+		ipAddress = ip; 
+		this.g = g; 
+		this.isMasterPhone = isMasterPhone;
+		this.song = song; 
+	}
+
+	public void run() {
+		HttpClient httpClient = new DefaultHttpClient();
+		String path = "/jam/add/" + Utils.getUniqueKeyForSong(song);
+		String uri = "http://" + g.otherIP + ":" + PORT + path;
+		HttpGet get = new HttpGet(uri.toString());
+		try {
+			System.out.println("NewJamActivity: Sending 'add to jam' message to other phone at " + g.otherIP);
+			System.out.println(uri.toString()); 
+			HttpResponse response = httpClient.execute(get);
+			System.out.println("RESPONSE:"); 
+			System.out.println(response.toString());
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+	
 
 	/*
 	 * Return a string representation of the current device's IP address. 
