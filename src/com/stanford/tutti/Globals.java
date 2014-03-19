@@ -59,6 +59,14 @@ public class Globals extends Application {
 			boolean local = jam.getCurrentSong().isLocal();
 			if (!local)
 				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + jam.getCurrentSong().getPath());
+			
+			System.out.println("PLAYING SONG: " + myUri.toString()); 
+			System.out.println("SONG LIST: "); 
+			ArrayList<Song> songList = jam.getSongList(); 
+			for (int i = 0; i < songList.size(); i++) {
+				System.out.println(i + ". " + songList.get(i).getArtist().getName() + ": " + songList.get(i).getTitle()); 
+			}
+			
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource(getApplicationContext(), myUri);
 			if (local) {
@@ -73,7 +81,6 @@ public class Globals extends Application {
 					}
 				});
 				mediaPlayer.prepareAsync();
-				mediaPlayer.start();
 			}
 			System.out.println(myUri);
 			return true; 
