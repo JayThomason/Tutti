@@ -26,13 +26,22 @@ public class Globals extends Application {
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	private Artist currentArtist;
 	private Album currentAlbum;
-	
-	MediaPlayer mediaPlayer = new MediaPlayer();
-	
+	public MediaPlayer mediaPlayer = new MediaPlayer();
 	public Jam jam = new Jam(); 
-	
 	public String otherIP; 
 	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+            	if (jam.iterateCurrentSong()) 
+            		playCurrentSong();
+            }
+        });
+	}
+
 	/*
 	 * Plays the current song. 
 	 * 
@@ -42,15 +51,7 @@ public class Globals extends Application {
 		if (jam.getCurrentSong() != null) {
 			mediaPlayer.reset();
 		}
-		
-		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-            	if (jam.iterateCurrentSong()) 
-            		playCurrentSong();
-            }
-        });
-		
+
 		try {
 			// SWITCH CASE FOR LOCAL SONGS VS. EXTERNAL
 			String ipAddr = otherIP; 
@@ -58,7 +59,6 @@ public class Globals extends Application {
 			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
 			boolean local = jam.getCurrentSong().isLocal();
 			if (!local)
-				//Uri uri = Uri.parse("http://" + ipAddr + ":" + port + "/" + jam.getCurrentSong().getArtist().getName() + "/" + jam.getCurrentSong().getTitle()); 
 				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + jam.getCurrentSong().getPath());
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource(getApplicationContext(), myUri);
@@ -84,33 +84,7 @@ public class Globals extends Application {
 			return false; 
 		}
 	}
-	
-   class ClientStreamThread extends Thread {
-		   
-		   private String ipAddress;
-		   private final int PORT = 1234;
-		   
-		   public ClientStreamThread(String ip) {
-			   ipAddress = ip; 
-		   }
-		   
-	    	public void run() {
-	     		try {
-	      			String ipAddr = ipAddress;
-	      			Uri uri = Uri.parse("http://" + ipAddr + ":" + PORT + "STREAMSONG");
-	      			System.out.println(uri.toString());
-					mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-					mediaPlayer.setDataSource(getApplicationContext(), uri);
-					mediaPlayer.prepare();
-					mediaPlayer.start();
-	      		}
-	      		catch (IOException e) {
-	      			e.printStackTrace();
-	      		}
-	    	}
-	    }
-	
-		
+
 	/*
 	 * Returns a list of all artists.
 	 * 
@@ -119,7 +93,7 @@ public class Globals extends Application {
 	public ArrayList<Artist> getArtistList() {
 		return artistList;
 	}
-	
+
 	/*
 	 * Adds an artist to the list.
 	 * 
@@ -129,7 +103,7 @@ public class Globals extends Application {
 		artistList.add(artist);
 		artistMap.put(artist.getName(), artist);
 	}	
-	
+
 	/*
 	 * Returns an Artist given the artist's name.
 	 * 
@@ -138,7 +112,7 @@ public class Globals extends Application {
 	public Artist getArtistByName(String artistName) {
 		return artistMap.get(artistName);
 	}
-	
+
 	/*
 	 * Returns a list of all albums.
 	 * 
@@ -147,7 +121,7 @@ public class Globals extends Application {
 	public ArrayList<Album> getAlbumList() {
 		return albumList;
 	}
-	
+
 	/*
 	 * Adds an album to the album list.
 	 * 
@@ -156,8 +130,8 @@ public class Globals extends Application {
 	public void addAlbum(Album album) {
 		albumList.add(album);
 	}
-	
-	
+
+
 	/*
 	 * Gets the current artist.
 	 * 
@@ -166,7 +140,7 @@ public class Globals extends Application {
 	public Artist getCurrentArtist() {
 		return this.currentArtist;
 	}
-	
+
 	/*
 	 * Sets the current artist.
 	 * 
@@ -175,7 +149,7 @@ public class Globals extends Application {
 	public void setCurrentArtist(Artist artist) {
 		this.currentArtist = artist;
 	}
-	
+
 	/*
 	 * Gets the current album.
 	 * 
@@ -193,21 +167,21 @@ public class Globals extends Application {
 	public void setCurrentAlbum(Album album) {
 		this.currentAlbum = album;
 	}
-	
+
 	/*
 	 * Associates a song with a unique key in the song map.
 	 */
 	public void addSong(Song song) {
 		songMap.put(Utils.getUniqueKeyForSong(song), song);
 	}
-	
+
 	/*
 	 * Gets a song associated with a specific key.
 	 */
 	public Song getSongForUniqueKey(String key) {
 		return songMap.get(key);
 	}
-	
+
 	/*
 	 * Gets the current library of artists/albums/songs as JSON. 
 	 * 
