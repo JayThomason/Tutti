@@ -108,6 +108,7 @@ public class ViewJamActivity extends Activity {
 			public void onClick(View arg0) {
                 Globals g = (Globals) getApplication();
 				g.jam.start();
+				(new PassMessageThread(g.jam.getOtherIP(), "/jam/start")).start(); 
 			}
 		});
 	}
@@ -122,6 +123,7 @@ public class ViewJamActivity extends Activity {
 			public void onClick(View arg0) {
                 Globals g = (Globals) getApplication();
 				g.jam.pause();
+				(new PassMessageThread(g.jam.getOtherIP(), "/jam/pause")).start(); 
 			}
 		});
 	}
