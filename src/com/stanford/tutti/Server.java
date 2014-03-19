@@ -76,8 +76,8 @@ public class Server extends NanoHTTPD {
                           Map<String, String> files)  {
     	logRequest(uri, method, header, parameters, files);
     	if (uri.startsWith(JOIN_JAM)) {
-    		g.otherIP = header.get(HTTP_CLIENT_IP);
-    		return joinJamResponse(g.otherIP);
+    		g.jam.setOtherIP(header.get(HTTP_CLIENT_IP));
+    		return joinJamResponse(g.jam.getOtherIP());
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { // assume requests are well-formed with just one / at beginning of uri
     		return getLocalLibraryResponse();
@@ -138,7 +138,7 @@ public class Server extends NanoHTTPD {
 		g.jam.addSong(song);
 		if (g.jam.getCurrentSong() == null) {
 			g.jam.setCurrentSong(song);
-			g.playCurrentSong();
+			g.jam.playCurrentSong();
 		}
 		return new NanoHTTPD.Response("Added to jam");
 	}

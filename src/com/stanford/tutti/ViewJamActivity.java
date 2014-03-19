@@ -69,7 +69,7 @@ public class ViewJamActivity extends Activity {
 				  
 	              Globals g = (Globals) getApplication();  
 	              g.jam.setCurrentSongByIndex(position);
-	              g.playCurrentSong(); 
+	              g.jam.playCurrentSong(); 
 	              //setCurrentSongIndex? 
 	                
 				  // MainActivity.jam.addSong(item);
@@ -104,7 +104,7 @@ public class ViewJamActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
                 Globals g = (Globals) getApplication();
-				g.mediaPlayer.start();
+				g.jam.start();
 			}
 		});
 	}
@@ -118,7 +118,7 @@ public class ViewJamActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
                 Globals g = (Globals) getApplication();
-				g.mediaPlayer.pause();
+				g.jam.pause();
 			}
 		});
 	}
@@ -129,7 +129,7 @@ public class ViewJamActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 	            Globals g = (Globals) getApplication();
-				g.mediaPlayer.seekTo(0);
+				g.jam.seekTo(0);
 				
 			}
 		});

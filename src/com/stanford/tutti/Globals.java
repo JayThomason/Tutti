@@ -27,9 +27,7 @@ public class Globals extends Application {
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	private Artist currentArtist;
 	private Album currentAlbum;
-	public MediaPlayer mediaPlayer = new MediaPlayer();
 	public Jam jam = new Jam(); 
-	public String otherIP; 
 	
 	private static Context context; 
 	
@@ -37,67 +35,12 @@ public class Globals extends Application {
 	public void onCreate() {
 		super.onCreate();
 		Globals.context = getApplicationContext(); 
-		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-            	if (jam.iterateCurrentSong()) 
-            		playCurrentSong();
-            }
-        });
 	}
 	
 	public static Context getAppContext() {
         return Globals.context;
     }
 
-	/*
-	 * Plays the current song. 
-	 * 
-	 * @return True (success) or false (failure)
-	 */
-	public boolean playCurrentSong() {
-		if (jam.getCurrentSong() != null) {
-			mediaPlayer.reset();
-		}
-
-		try {
-			String ipAddr = otherIP; 
-			int port = 1234;
-			Uri myUri = Uri.parse(jam.getCurrentSong().getPath());
-			boolean local = jam.getCurrentSong().isLocal();
-			if (!local)
-				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + jam.getCurrentSong().getPath());
-			
-			System.out.println("PLAYING SONG: " + myUri.toString()); 
-			System.out.println("SONG LIST: "); 
-			ArrayList<Song> songList = jam.getSongList(); 
-			for (int i = 0; i < songList.size(); i++) {
-				System.out.println(i + ". " + songList.get(i).getArtist().getName() + ": " + songList.get(i).getTitle()); 
-			}
-			
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mediaPlayer.setDataSource(getApplicationContext(), myUri);
-			if (local) {
-				mediaPlayer.prepare();
-				mediaPlayer.start();
-			}
-			else {
-				mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-					@Override
-					public void onPrepared(MediaPlayer mp) {
-						mp.start();
-					}
-				});
-				mediaPlayer.prepareAsync();
-			}
-			System.out.println(myUri);
-			return true; 
-		}
-		catch (Exception e) {
-			System.out.println(e.getMessage());
-			return false; 
-		}
-	}
 
 	/*
 	 * Returns a list of all artists.

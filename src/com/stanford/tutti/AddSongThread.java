@@ -37,10 +37,10 @@ class AddSongThread extends Thread {
 	public void run() {
 		HttpClient httpClient = new DefaultHttpClient();
 		String path = "/jam/add/" + Utils.getUniqueKeyForSong(song);
-		String uri = "http://" + g.otherIP + ":" + PORT + path;
+		String uri = "http://" + g.jam.getOtherIP() + ":" + PORT + path;
 		HttpGet get = new HttpGet(uri.toString());
 		try {
-			System.out.println("NewJamActivity: Sending 'add to jam' message to other phone at " + g.otherIP);
+			System.out.println("NewJamActivity: Sending 'add to jam' message to other phone at " + g.jam.getOtherIP());
 			System.out.println(uri.toString()); 
 			HttpResponse response = httpClient.execute(get);
 			System.out.println("RESPONSE:"); 
