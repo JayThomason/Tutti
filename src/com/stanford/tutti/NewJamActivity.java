@@ -119,7 +119,7 @@ public class NewJamActivity extends Activity {
 				} else {*/
 					// If we're not the master, send messages to the other phone
 					// instead of doing local playback ourselves
-					new PassSongThread(g.jam.getOtherIP(), song, "/jam/add").start(); 
+					new PassMessageThread(g.jam.getOtherIP(), "/jam/add/" + Utils.getUniqueKeyForSong(song)).start(); 
 				//}
 
 				return false;

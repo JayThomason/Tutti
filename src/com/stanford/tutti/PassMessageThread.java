@@ -19,28 +19,26 @@ import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 import android.net.Uri;
 
-class PassSongThread extends Thread {
+class PassMessageThread extends Thread {
 
 	private String ipAddress;
 	private final int PORT = 1234;
 	private Globals g; 
-	private Song song; 
-	private String method; 
+	private String path; 
 
-	public PassSongThread(String ip, Song song, String method) {
+	public PassMessageThread(String ip, String path) {
 		ipAddress = ip; 
 		g = (Globals) Globals.getAppContext(); 
-		this.song = song; 
-		this.method = method; 
+		this.path = path; 
 	}
 
 	public void run() {
 		HttpClient httpClient = new DefaultHttpClient();
-		String path = method + "/" + Utils.getUniqueKeyForSong(song);
+		// String path = method + "/" + Utils.getUniqueKeyForSong(song);
 		String uri = "http://" + g.jam.getOtherIP() + ":" + PORT + path;
 		HttpGet get = new HttpGet(uri.toString());
 		try {
-			System.out.println("NewJamActivity: Sending 'add to jam' message to other phone at " + g.jam.getOtherIP());
+			System.out.println("Sending message to other phone at " + g.jam.getOtherIP() + " : " + path);
 			System.out.println(uri.toString()); 
 			HttpResponse response = httpClient.execute(get);
 			System.out.println("RESPONSE:"); 
