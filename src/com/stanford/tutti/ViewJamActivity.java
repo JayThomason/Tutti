@@ -135,7 +135,7 @@ public class ViewJamActivity extends Activity {
 			public void onClick(View arg0) {
 	            Globals g = (Globals) getApplication();
 				g.jam.seekTo(0);
-				
+				(new PassMessageThread(g.jam.getOtherIP(), "/jam/restart")).start(); 
 			}
 		});
 	}

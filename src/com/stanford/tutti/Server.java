@@ -22,6 +22,7 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_SET_SONG = "/set"; 
 	private static final String JAM_START = "/start"; 
 	private static final String JAM_PAUSE = "/pause"; 
+	private static final String JAM_RESTART = "/restart"; 
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private int port;
 	private Globals g = null;
@@ -133,6 +134,8 @@ public class Server extends NanoHTTPD {
     		return jamStartResponse(); 
     	} else if (path.startsWith(JAM_PAUSE)) {
     		return jamPauseResponse(); 
+    	} else if (path.startsWith(JAM_RESTART)) {
+    		return jamRestartResponse(); 
     	}
         return badRequestResponse();
     }
@@ -165,7 +168,7 @@ public class Server extends NanoHTTPD {
 	}
 	
     /*
-     * Sends a message to start playing the Jam. 
+     * Start playing the Jam. 
      */
 	private Response jamStartResponse() {
 		g.jam.start(); 
@@ -173,11 +176,19 @@ public class Server extends NanoHTTPD {
 	}
 	
     /*
-     * Sends a message to pause the Jam. 
+     * Pause the Jam. 
      */
 	private Response jamPauseResponse() {
 		g.jam.pause(); 
 		return new NanoHTTPD.Response("Paused playback of jam");
+	}
+	
+    /*
+     * Restart the currently playing song in the Jam. 
+     */
+	private Response jamRestartResponse() {
+		g.jam.seekTo(0);
+		return new NanoHTTPD.Response("Moved to previous song in jam");
 	}
 
 	/*
