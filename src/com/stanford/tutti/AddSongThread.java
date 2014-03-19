@@ -27,9 +27,9 @@ class AddSongThread extends Thread {
 	private Song song; 
 	boolean isMasterPhone;
 
-	public AddSongThread(String ip, Globals g, boolean isMasterPhone, Song song) {
+	public AddSongThread(String ip, boolean isMasterPhone, Song song) {
 		ipAddress = ip; 
-		this.g = g; 
+		g = (Globals) Globals.getAppContext(); 
 		this.isMasterPhone = isMasterPhone;
 		this.song = song; 
 	}

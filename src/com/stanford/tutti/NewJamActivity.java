@@ -116,7 +116,7 @@ public class NewJamActivity extends Activity {
 				} else {
 					// If we're not the master, send messages to the other phone
 					// instead of doing local playback ourselves
-					new AddSongThread(g.otherIP, g, master, song).start(); 
+					new AddSongThread(g.otherIP, master, song).start(); 
 				}
 
 				return false;

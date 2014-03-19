@@ -6,6 +6,7 @@ import java.util.*;
 import org.json.*; 
 
 import android.app.Application;
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -30,9 +31,12 @@ public class Globals extends Application {
 	public Jam jam = new Jam(); 
 	public String otherIP; 
 	
+	private static Context context; 
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Globals.context = getApplicationContext(); 
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -41,6 +45,10 @@ public class Globals extends Application {
             }
         });
 	}
+	
+	public static Context getAppContext() {
+        return Globals.context;
+    }
 
 	/*
 	 * Plays the current song. 

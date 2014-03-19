@@ -26,9 +26,9 @@ class JoinJamThread extends Thread {
 	private Globals g; 
 	boolean isMasterPhone;
 
-	public JoinJamThread(String ip, Globals g, boolean isMasterPhone) {
+	public JoinJamThread(String ip, boolean isMasterPhone) {
 		ipAddress = ip; 
-		this.g = g; 
+		g = (Globals) Globals.getAppContext(); 
 		this.isMasterPhone = isMasterPhone;
 	}
 

@@ -88,7 +88,7 @@ public class JoinJamActivity extends Activity {
 				String ip = editText.getText().toString(); 
 				Globals g = (Globals) getApplication(); 
 				g.otherIP = ip; 
-				Thread joinJamThread = new JoinJamThread(ip, g, false);
+				Thread joinJamThread = new JoinJamThread(ip, false);
 				try {
 					server.start();
 					joinJamThread.start();

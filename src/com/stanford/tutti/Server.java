@@ -102,7 +102,7 @@ public class Server extends NanoHTTPD {
      * sync jam libraries.
      */
     private Response joinJamResponse(String otherIpAddress) {
-    	Thread getLibraryThread = new JoinJamThread(otherIpAddress, g, true);
+    	Thread getLibraryThread = new JoinJamThread(otherIpAddress, true);
     	getLibraryThread.start();
     	try {
 			getLibraryThread.join();
