@@ -71,10 +71,9 @@ public class NewJamActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		int value = b.getInt("host");
 		master = (value == 1); 
-
 		
-		// Set up the server thread to listen for "join jam" requests
 		g = (Globals) getApplication(); 
+		g.jam.setMaster(master); 
 
 		// Show the unique code for "join jam" requests
 		EditText editText = (EditText) this.findViewById(R.id.ip_address);
@@ -108,16 +107,16 @@ public class NewJamActivity extends Activity {
 						+ " added to Jam", Toast.LENGTH_SHORT)
 						.show();                
 
-				if (master) {
+				/*if (master) {
 					if (g.jam.getCurrentSong() == null) {
 						g.jam.setCurrentSong(song);
 						g.jam.playCurrentSong();
 					}          
-				} else {
+				} else {*/
 					// If we're not the master, send messages to the other phone
 					// instead of doing local playback ourselves
 					new AddSongThread(g.jam.getOtherIP(), master, song).start(); 
-				}
+				//}
 
 				return false;
 			}

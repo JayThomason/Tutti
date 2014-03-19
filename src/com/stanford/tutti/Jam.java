@@ -13,11 +13,12 @@ public class Jam implements Serializable {
 	ArrayList<Song> songs;
 	private Song currentSong;
 	private int currentSongIndex; 
+	private boolean master; 
 	public MediaPlayer mediaPlayer; 
 	private String otherIP; 
 
 	
-	Jam() {
+	public Jam() {
 		songs = new ArrayList<Song>();
 		currentSong = null; 
 		currentSongIndex = -1; 
@@ -43,6 +44,14 @@ public class Jam implements Serializable {
 	
 	public void setOtherIP(String ip) {
 		otherIP = ip; 
+	}
+	
+	public boolean checkMaster() {
+		return master; 
+	}
+	
+	public void setMaster(boolean master) {
+		this.master = master; 
 	}
 	
 	public void start() {
@@ -101,6 +110,9 @@ public class Jam implements Serializable {
 	 * @return True (success) or false (failure)
 	 */
 	public boolean playCurrentSong() {
+		if (!master)
+			return false; 
+		
 		if (getCurrentSong() != null) {
 			mediaPlayer.reset();
 		}
