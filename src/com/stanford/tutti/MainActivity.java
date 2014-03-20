@@ -1,7 +1,5 @@
 package com.stanford.tutti;
 
-import org.json.JSONException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,9 +48,5 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, HelpMenuActivity.class);
 		startActivity(intent);
 	}
-	
-	public void testNetworking(View view) {
-		Intent intent = new Intent(this, StreamSongTestActivity.class);
-		startActivity(intent);
-	}
+
 }
