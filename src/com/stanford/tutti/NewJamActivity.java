@@ -81,7 +81,7 @@ public class NewJamActivity extends Activity {
 
 		// Show the unique code for "join jam" requests
 		EditText editText = (EditText) this.findViewById(R.id.ip_address);
-		editText.setText("Your Jam ID is: " + getIpAddr());
+		editText.setText("Your Jam ID is: " + g.getIpAddr());
 
 		// get the listview
 		expListView = (ExpandableListView) findViewById(R.id.listView1);
@@ -149,26 +149,6 @@ public class NewJamActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-	
-	/*
-	 * Return a string representation of the current device's IP address. 
-	 */
-	public String getIpAddr() {
-		WifiManager wifiManager = 
-				(WifiManager) getSystemService(WIFI_SERVICE);
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		int ip = wifiInfo.getIpAddress();
-
-		String ipString = String.format(
-				"%d.%d.%d.%d",
-				(ip & 0xff),
-				(ip >> 8 & 0xff),
-				(ip >> 16 & 0xff),
-				(ip >> 24 & 0xff));
-
-		return ipString;
-	}
-
 
 	/*
 	 * Set up the nested/expandable ListView

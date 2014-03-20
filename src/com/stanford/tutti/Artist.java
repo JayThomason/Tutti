@@ -29,6 +29,14 @@ public class Artist {
 		return local;
 	}
 	
+	
+	/*
+	 * Converts this artist and their albums
+	 * and songs into a nested JSONObject. 
+	 * Used for sending artist metadata to remote phones.  
+	 * 
+	 * @return JSONObject artist
+	 */
 	public JSONObject toJSON(boolean justLocal) {
 		JSONObject json = new JSONObject(); 
 		try {
@@ -43,7 +51,6 @@ public class Artist {
 			}
 			json.put("albums", albumArray); 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return json; 

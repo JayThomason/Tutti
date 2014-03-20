@@ -7,8 +7,8 @@ import org.json.*;
 public class Album {
 	private String title;
 	private Artist artist;
-	private ArrayList<Song> songList = new ArrayList<Song>();
 	private boolean local;
+	private ArrayList<Song> songList = new ArrayList<Song>();
 	
 	public Album(String title, Artist artist, boolean local) {
 		this.title = title;
@@ -28,7 +28,7 @@ public class Album {
 		return songList;
 	}
 	
-	public void setSongs(ArrayList<Song> songList) {
+	public void setSongList(ArrayList<Song> songList) {
 		this.songList = songList;
 	}
 	
@@ -41,6 +41,13 @@ public class Album {
 		return local;
 	}
 	
+	/*
+	 * Converts this album and its list
+	 * of songs into a JSONObject. 
+	 * Used for sending album metadata to remote phones. 
+	 * 
+	 * @return JSONObject album
+	 */
 	public JSONObject toJSON(boolean justLocal) {
 		JSONObject json = new JSONObject(); 
 		try {
@@ -55,7 +62,6 @@ public class Album {
 			}
 			json.put("songs", songArray); 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return json;

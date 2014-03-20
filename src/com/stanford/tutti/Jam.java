@@ -8,7 +8,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 
 public class Jam {
-	ArrayList<Song> songs;
+	ArrayList<Song> songList;
 	private Song currentSong;
 	private int currentSongIndex; 
 	private boolean master; 
@@ -17,7 +17,7 @@ public class Jam {
 
 	
 	public Jam() {
-		songs = new ArrayList<Song>();
+		songList = new ArrayList<Song>();
 		currentSong = null; 
 		currentSongIndex = -1; 
 		mediaPlayer = new MediaPlayer(); 
@@ -74,11 +74,7 @@ public class Jam {
 	}
 	
 	public void addSong(Song song) {
-		songs.add(song);
-	}
-	
-	public ArrayList<Song> getSongList() {
-		return songs;
+		songList.add(song);
 	}
 	
 	public Song getCurrentSong() {
@@ -91,28 +87,32 @@ public class Jam {
 	
 	public boolean iterateCurrentSong() {
 		currentSongIndex++;
-		if (currentSongIndex >= songs.size()) {
+		if (currentSongIndex >= songList.size()) {
             currentSongIndex = 0;
 			return false;
         }
-    	currentSong = songs.get(currentSongIndex); 
+    	currentSong = songList.get(currentSongIndex); 
     	return true;
 	}
 	
 	public void setCurrentSong(Song song) {
 		currentSong = song; 
-		currentSongIndex = songs.indexOf(song); 
+		currentSongIndex = songList.indexOf(song); 
 	}
 	
 	public void setCurrentSongByIndex(int index) {
-		if (index < songs.size()) {
+		if (index < songList.size()) {
 			currentSongIndex = index; 
-			currentSong = songs.get(index); 
+			currentSong = songList.get(index); 
 		}
 	}
 	
 	public Song getSongByIndex(int index) {
-		return songs.get(index); 
+		return songList.get(index); 
+	}
+	
+	public int getJamSize() {
+		return songList.size(); 
 	}
 	
 	/*
@@ -135,13 +135,6 @@ public class Jam {
 			boolean local = getCurrentSong().isLocal();
 			if (!local)
 				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + getCurrentSong().getPath());
-			
-			System.out.println("PLAYING SONG: " + myUri.toString()); 
-			System.out.println("SONG LIST: "); 
-			ArrayList<Song> songList = getSongList(); 
-			for (int i = 0; i < songList.size(); i++) {
-				System.out.println(i + ". " + songList.get(i).getArtist().getName() + ": " + songList.get(i).getTitle()); 
-			}
 			
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource((Globals) Globals.getAppContext(), myUri);

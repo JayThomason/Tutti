@@ -51,31 +51,6 @@ public class JoinJamActivity extends Activity {
 		editText = (EditText) this.findViewById(R.id.ip_address);
 		g = (Globals) getApplication();
 		configureJoinJamButton(); 
-		
-		/*
-		ListView listView2 = (ListView) findViewById(R.id.listView2);
-		String[] items = { "Audrey's Galaxy Note", "Jay's Nexus 7" };
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-		listView2.setAdapter(adapter);
-		
-		listView2.setOnItemClickListener(new OnItemClickListener() {
-			  @Override
-			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				  String item = ((TextView)view).getText().toString();
-				  new AlertDialog.Builder(view.getContext())
-		            .setMessage("Join "+item+"?")
-		            .setNegativeButton("No", null)
-				  	.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-							Intent intent = new Intent(JoinJamActivity.this, ViewJamActivity.class);  
-					        startActivity(intent);
-						}
-					}) .show();
-			  }
-			});
-		*/
 	}
 	
 	

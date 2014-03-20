@@ -11,6 +11,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 
 /* 
  * Stores any state which must be globally accessible, eg. variables which cannot
@@ -25,8 +27,6 @@ public class Globals extends Application {
 	private ArrayList<Album> albumList = new ArrayList<Album>();
 	private HashMap<String, Artist> artistMap = new HashMap<String, Artist>();
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
-	private Artist currentArtist;
-	private Album currentAlbum;
 	public Jam jam = new Jam(); 
 	
 	private static Context context; 
@@ -88,43 +88,6 @@ public class Globals extends Application {
 		albumList.add(album);
 	}
 
-
-	/*
-	 * Gets the current artist.
-	 * 
-	 * @return Artist artist
-	 */
-	public Artist getCurrentArtist() {
-		return this.currentArtist;
-	}
-
-	/*
-	 * Sets the current artist.
-	 * 
-	 * @param Artist artist
-	 */
-	public void setCurrentArtist(Artist artist) {
-		this.currentArtist = artist;
-	}
-
-	/*
-	 * Gets the current album.
-	 * 
-	 * @return Album
-	 */
-	public Album getCurrentAlbum() {
-		return this.currentAlbum;
-	}
-
-	/*
-	 * Sets the current album.
-	 * 
-	 * @param Album album
-	 */
-	public void setCurrentAlbum(Album album) {
-		this.currentAlbum = album;
-	}
-
 	/*
 	 * Associates a song with a unique key in the song map.
 	 */
@@ -162,5 +125,24 @@ public class Globals extends Application {
 			e.printStackTrace();
 		} 
 		return json; 
+	}
+	
+	/*
+	 * Return a string representation of the current device's IP address. 
+	 */
+	public String getIpAddr() {
+		WifiManager wifiManager = 
+				(WifiManager) getSystemService(WIFI_SERVICE);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		int ip = wifiInfo.getIpAddress();
+
+		String ipString = String.format(
+				"%d.%d.%d.%d",
+				(ip & 0xff),
+				(ip >> 8 & 0xff),
+				(ip >> 16 & 0xff),
+				(ip >> 24 & 0xff));
+
+		return ipString;
 	}
 }

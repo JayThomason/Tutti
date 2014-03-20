@@ -46,12 +46,13 @@ public class ViewJamActivity extends Activity {
 		ListView listView = (ListView) findViewById(R.id.listView3);
 		
         Globals g = (Globals) getApplication();  
-		ArrayList<Song> songList = g.jam.getSongList(); 
-		
+
+        int jamSize = g.jam.getJamSize(); 
+        
 		// Eventually want to abstract this so the Jam is maintaining its own string list
 		ArrayList<String> songStringList = new ArrayList<String>(); 
-		for (int i = 0; i < songList.size(); i++) {
-			songStringList.add(songList.get(i).getArtist().getName() + ": " + songList.get(i).getTitle()); 
+		for (int i = 0; i < jamSize; i++) {
+			songStringList.add(g.jam.getSongByIndex(i).getArtist().getName() + ": " + g.jam.getSongByIndex(i).getTitle()); 
 		}
 		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songStringList);

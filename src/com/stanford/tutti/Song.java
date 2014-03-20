@@ -4,8 +4,7 @@ import org.json.*;
 
 /*
  * Stores all metadata associated with a given song. Also includes references
- * to the album which includes the song and the artist who plays the song. This
- * information is not currently very relevant but it could be later.
+ * to the album which includes the song and the artist who plays the song. 
  */
 public class Song {
 	
@@ -109,9 +108,10 @@ public class Song {
 	}
 	
 	/*
-	 * Returns a JSON string for the song. 
+	 * Converts this song and its data to a JSONObject. 
+	 * Used for sending song metadata to remote phones.  
 	 * 
-	 * @return String
+	 * @return JSONObject artist
 	 */
 	public JSONObject toJSON() {
 		JSONObject json = new JSONObject(); 
