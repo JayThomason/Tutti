@@ -73,7 +73,7 @@ public class ViewJamActivity extends Activity {
 	              
 	              Song song = g.jam.getSongByIndex(position); 
 	              
-				  new PassMessageThread(g.jam.getOtherIP(), "/jam/set/" + Utils.getUniqueKeyForSong(song)).start(); 
+				  new PassMessageThread(g.jam.getOtherIP(), "/jam/set/" + song.getUniqueKey()).start(); 
 
 	                
 			  }

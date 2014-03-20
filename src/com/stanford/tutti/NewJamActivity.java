@@ -119,7 +119,7 @@ public class NewJamActivity extends Activity {
 				} 
 				
 				// Send a message to the other phone to add the song to its version of the jam
-				new PassMessageThread(g.jam.getOtherIP(), "/jam/add/" + Utils.getUniqueKeyForSong(song)).start(); 
+				new PassMessageThread(g.jam.getOtherIP(), "/jam/add/" + song.getUniqueKey()).start(); 
 
 				return false;
 			}

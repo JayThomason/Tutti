@@ -129,7 +129,7 @@ public class Globals extends Application {
 	 * Associates a song with a unique key in the song map.
 	 */
 	public void addSong(Song song) {
-		songMap.put(Utils.getUniqueKeyForSong(song), song);
+		songMap.put(song.getUniqueKey(), song);
 	}
 
 	/*
