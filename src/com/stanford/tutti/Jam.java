@@ -1,6 +1,5 @@
 package com.stanford.tutti;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.media.AudioManager;
@@ -8,8 +7,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 
-public class Jam implements Serializable {
-	
+public class Jam {
 	ArrayList<Song> songs;
 	private Song currentSong;
 	private int currentSongIndex; 
