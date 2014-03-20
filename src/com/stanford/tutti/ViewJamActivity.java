@@ -94,8 +94,7 @@ public class ViewJamActivity extends Activity {
 	}
 	
 	public void addSongs(View view) {
-		Intent intent = new Intent(this, NewJamActivity.class);
-		startActivity(intent);
+		finish(); 
 	}
 	
 	
