@@ -34,15 +34,11 @@ class PassMessageThread extends Thread {
 
 	public void run() {
 		HttpClient httpClient = new DefaultHttpClient();
-		// String path = method + "/" + Utils.getUniqueKeyForSong(song);
 		String uri = "http://" + g.jam.getOtherIP() + ":" + PORT + path;
 		HttpGet get = new HttpGet(uri.toString());
 		try {
-			System.out.println("Sending message to other phone at " + g.jam.getOtherIP() + " : " + path);
-			System.out.println(uri.toString()); 
+			// Right now we're not doing anything with this response. 
 			HttpResponse response = httpClient.execute(get);
-			System.out.println("RESPONSE:"); 
-			System.out.println(response.toString());
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
