@@ -37,7 +37,8 @@ class PassMessageThread extends Thread {
 		HttpGet get = new HttpGet(uri.toString());
 		try {
 			// Right now we're not doing anything with this response. 
-			HttpResponse response = httpClient.execute(get);
+			// later we may want to ensure we get an OK back
+			httpClient.execute(get);
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
