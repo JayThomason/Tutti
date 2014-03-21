@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/gradient"
     tools:context=".ViewJamActivity" >
 
     <TextView
@@ -15,66 +15,62 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/audrey_jam"
-        android:textColor="#ffffff" 
+        android:textColor="#ffffff"
         android:textSize="28sp" />
-    
+
     <ListView
         android:id="@+id/listView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/player_footer"
         android:layout_below="@+id/textView3"
         android:background="#ff0927"
-        android:textColor="#ffffff" 
-        android:layout_centerHorizontal="true" >
+        android:textColor="#ffffff" >
 
     </ListView>
-    
-<LinearLayout
+
+    <LinearLayout
         android:id="@+id/player_footer"
         android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"
-        android:gravity="center">    
-        
-    <ImageButton
-        android:id="@+id/song_media_player_back_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/tutti_back_button"
-        />
-    
-    <ImageButton
-        android:id="@+id/song_media_player_start_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/tutti_play_button"
-        />
+        android:gravity="center" >
 
-    <ImageButton
-        android:id="@+id/song_media_player_pause_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp" 
-        android:background="@drawable/tutti_pause_button"
-        />
-    
-    <ImageButton
-        android:id="@+id/song_media_player_next_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/tutti_next_button"
-        />
- </LinearLayout>
-    
-        <Button
+        <ImageButton
+            android:id="@+id/song_media_player_back_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/tutti_back_button" />
+
+        <ImageButton
+            android:id="@+id/song_media_player_start_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/tutti_play_button" />
+
+        <ImageButton
+            android:id="@+id/song_media_player_pause_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/tutti_pause_button" />
+
+        <ImageButton
+            android:id="@+id/song_media_player_next_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/tutti_next_button" />
+    </LinearLayout>
+
+    <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView3"
         android:layout_alignBottom="@+id/textView3"
         android:layout_alignParentRight="true"
-        android:textColor="#ffffff" 
-        android:text="add +" 
-        android:onClick="addSongs"/>
+        android:onClick="addSongs"
+        android:text="add +"
+        android:textColor="#ffffff" />
 
     <Button
         android:id="@+id/secretButton"
