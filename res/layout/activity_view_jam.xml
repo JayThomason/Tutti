@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:text="@string/current_jam"
         android:textColor="#ffffff"
-        android:textSize="28sp" />
+        android:textSize="24sp" />
 
     <ListView
         android:id="@+id/listView3"
@@ -32,32 +32,38 @@
     <LinearLayout
         android:id="@+id/player_footer"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        style="@android:style/ButtonBar"
         android:gravity="center" >
 
         <ImageButton
             android:id="@+id/song_media_player_back_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_back_button" />
 
         <ImageButton
             android:id="@+id/song_media_player_start_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_play_button" />
 
         <ImageButton
             android:id="@+id/song_media_player_pause_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_pause_button" />
 
         <ImageButton
             android:id="@+id/song_media_player_next_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_next_button" />
     </LinearLayout>
 
@@ -73,14 +79,14 @@
         android:onClick="popupJoinRequest"
         android:text="" />
 
-    <Button
+    <ImageButton
         android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignRight="@+id/textView3"
-        android:onClick="addSongs"
-        android:text="add +"
-        android:textColor="#ffffff" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        
+        android:contentDescription="@string/imgdesc"
+        android:background="@drawable/add_button"
+        android:onClick="addSongs" />
 
 </RelativeLayout>

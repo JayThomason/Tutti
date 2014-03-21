@@ -29,5 +29,6 @@
     <string name="title_activity_menu">Menu</string>
     <string name="add_fake_music">Add Fake Music</string>
     <string name="song_media_player">Song Media Player</string>
+    <string name="imgdesc">Image Bar Button</string>
 
 </resources>
