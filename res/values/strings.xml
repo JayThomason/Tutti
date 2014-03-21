@@ -22,9 +22,6 @@
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
-    <string name="title_activity_artist_list_view">ArtistListView</string>
-    <string name="title_activity_artist_album_list_view">ArtistAlbumListView</string>
-    <string name="title_activity_artist_album_song_list_view">ArtistAlbumSongListView</string>
     <string name="artist">ARTIST</string>
     <string name="artist_key">ARTIST_KEY</string>
     <string name="album">ALBUM</string>
