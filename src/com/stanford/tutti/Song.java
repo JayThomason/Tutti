@@ -124,15 +124,8 @@ public class Song {
 		return json; 
 	}
 	
-	/*
-	 * Builds a unique key from a song. We claim that a song can be uniquely
-	 * identified by its artist, album, and title.
-	 * 
-	 * @param Song song
-	 * 
-	 * @return String uniqueKey
-	 */
-	public String getUniqueKey() {
+	@Override
+	public int hashCode() {
 		StringBuilder keyBuilder = new StringBuilder("");
 		Artist artist = getArtist();
 		if (artist != null)
@@ -141,6 +134,21 @@ public class Song {
 		if (album != null) 
 			keyBuilder.append(album.getTitle());
 		keyBuilder.append(getTitle());
-		return String.valueOf(keyBuilder.toString().hashCode()); 
+		return keyBuilder.toString().hashCode();
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		Song s = (Song) o;
+		if (o == null)
+			return false;
+		if (!s.getTitle().equals(this.title))
+			return false;
+		if (!s.getArtist().equals(this.artist))
+			return false;
+		if (!s.getAlbum().equals(this.album))
+			return false;
+		return true;
+	}
+
 }

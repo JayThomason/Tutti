@@ -92,7 +92,7 @@ public class Globals extends Application {
 	 * Associates a song with a unique key in the song map.
 	 */
 	public void addSong(Song song) {
-		songMap.put(song.getUniqueKey(), song);
+		songMap.put(Integer.toString(song.hashCode()), song);
 	}
 
 	/*
@@ -121,7 +121,6 @@ public class Globals extends Application {
 		try {
 			json.put("artists", artistArray);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return json; 

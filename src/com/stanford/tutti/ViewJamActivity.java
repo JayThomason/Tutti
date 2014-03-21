@@ -59,26 +59,22 @@ public class ViewJamActivity extends Activity {
 		listView.setAdapter(adapter);
 		
 		listView.setOnItemClickListener(new OnItemClickListener() {
-			  @Override
-			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				  String item = ((TextView)view).getText().toString();
-				  
-	              Toast.makeText(
-	                        getApplicationContext(),
-	                        "Now playing: " + item, Toast.LENGTH_SHORT)
-	                        .show();
-				  
-	              Globals g = (Globals) getApplication();  
-	              g.jam.setCurrentSongByIndex(position);
-	              g.jam.playCurrentSong(); 
-	              
-	              Song song = g.jam.getSongByIndex(position); 
-	              
-				  new PassMessageThread(g.jam.getOtherIP(), "/jam/set/" + song.getUniqueKey()).start(); 
-
-	                
-			  }
-			});
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, 
+					int position, long id) {
+				String item = ((TextView)view).getText().toString();
+				Toast.makeText(
+						getApplicationContext(),
+						"Now playing: " + item, Toast.LENGTH_SHORT)
+						.show();
+				Globals g = (Globals) getApplication();  
+				g.jam.setCurrentSongByIndex(position);
+				g.jam.playCurrentSong(); 
+				Song song = g.jam.getSongByIndex(position); 
+				new PassMessageThread(g.jam.getOtherIP(), 
+						"/jam/set/" + Integer.toString(song.hashCode())).start(); 
+			}
+		});
 	}
 
 	@Override
