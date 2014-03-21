@@ -8,6 +8,9 @@ import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.os.Build;
 
+/*
+ * Displays a small help page accessible from the main menu of the app.
+ */
 public class HelpMenuActivity extends Activity {
 
 	@Override
