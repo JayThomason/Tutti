@@ -12,8 +12,15 @@ import android.os.Message;
 
 import com.stanford.tutti.NanoHTTPD.Response.Status;
 
+/*
+ * This class extends the NanoHTTPD HTTP server. It implements the API used
+ * to maintain and update the shared libraries and playlists in each jam and
+ * to control the media player. Since the API is still in flux we will not
+ * be providing a complete documentation of the API endpoints yet.
+ */
 public class Server extends NanoHTTPD {
 	//probably want to make this a better global later, maybe in @strings
+	/* These strings define the API endpoints for the tutti API. */
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
@@ -24,13 +31,11 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
-	private int port;
 	private Globals g = null;
 	private Handler handler = null;
 	
 	public Server(int port, Globals g, Handler handler) {
 		super(port);
-		this.port = port;
 		this.g = g;
 		this.handler = handler;
 	}
@@ -41,14 +46,6 @@ public class Server extends NanoHTTPD {
 	private Response badRequestResponse() {
 		return new NanoHTTPD.Response(NanoHTTPD.Response.Status.BAD_REQUEST, 
 				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Bad Request".getBytes()));
-	}
-
-	/*
-	 * Returns an INTERAL_ERROR HTTP response.
-	 */
-	private Response internalErrorResponse() {
-		return new NanoHTTPD.Response(NanoHTTPD.Response.Status.INTERNAL_ERROR, 
-				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Internal Error".getBytes()));
 	}
 	
 	/*
@@ -83,7 +80,7 @@ public class Server extends NanoHTTPD {
     		g.jam.setOtherIP(header.get(HTTP_CLIENT_IP));
     		return joinJamResponse(g.jam.getOtherIP());
     	}
-    	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { // assume requests are well-formed with just one / at beginning of uri
+    	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
     	}
     	else if (uri.startsWith(GET_SONG)) {
