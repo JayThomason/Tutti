@@ -165,4 +165,11 @@ public class ViewJamActivity extends Activity {
 		});
 	}
 
+	/*
+	 * This is an onclick being set in the layout XML itself. 
+	 * We should configure it here like the other buttons eventually. 
+	 */
+ 	public void addSongs(View view) {
+  		finish(); 
+  	}
 }
