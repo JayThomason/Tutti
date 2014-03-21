@@ -1,16 +1,11 @@
 package com.stanford.tutti;
 
-import java.io.IOException;
 import java.util.*; 
 
 import org.json.*; 
 
 import android.app.Application;
 import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
