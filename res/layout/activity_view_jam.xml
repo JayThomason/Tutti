@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/audrey_jam"
+        android:text="@string/current_jam"
         android:textColor="#ffffff"
         android:textSize="28sp" />
 
@@ -62,17 +62,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignParentRight="true"
-        android:onClick="addSongs"
-        android:text="add +"
-        android:textColor="#ffffff" />
-
-    <Button
         android:id="@+id/secretButton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -83,5 +72,15 @@
         android:background="@android:color/transparent"
         android:onClick="popupJoinRequest"
         android:text="" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignRight="@+id/textView3"
+        android:onClick="addSongs"
+        android:text="add +"
+        android:textColor="#ffffff" />
 
 </RelativeLayout>
