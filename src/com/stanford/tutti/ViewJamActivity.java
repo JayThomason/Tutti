@@ -18,46 +18,60 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/*
+ * When a user views the current songs in the jam this activity is used. It
+ * displays a list of the songs in the jam and a bottom control menu with 
+ * play, pause, prev, and next buttons. When a song in the list is clicked on
+ * it begins to play.
+ */
 public class ViewJamActivity extends Activity {
+	private ImageButton startButton;
+	private ImageButton pauseButton;
+	private ImageButton backButton;
+	private ImageButton nextButton;
+	private ListView listView;
 
-	ImageButton startButton;
-	ImageButton pauseButton;
-	ImageButton backButton;
-	ImageButton nextButton;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_jam);
-		
-		// setupActionBar();
-		
-	//	jam = (Jam)getIntent().getExtras().getSerializable("jam");
-		backButton = (ImageButton) this.findViewById(R.id.song_media_player_back_btn);
-		startButton =  (ImageButton)this.findViewById(R.id.song_media_player_start_btn);
-		pauseButton = (ImageButton) this.findViewById(R.id.song_media_player_pause_btn);
-		
-		nextButton = (ImageButton) this.findViewById(R.id.song_media_player_next_btn);
-		configureBackButton();
-		configureStartButton(); 
-		configurePauseButton(); 
-		//configureNextButton();
-				
-		ListView listView = (ListView) findViewById(R.id.listView3);
-		
-        Globals g = (Globals) getApplication();  
+		assignButtons();
+		configureButtons();
+		listView = (ListView) findViewById(R.id.listView3);
+		initializeArtistSongList();
+	}
 
-        int jamSize = g.jam.getJamSize(); 
-        
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.view_jam, menu);
+		return true;
+	}
+
+	/*
+	 * Initializes the listView with a list of the current songs in the jam.
+	 */
+	private void initializeArtistSongList() {
+		Globals g = (Globals) getApplication();  
+		int jamSize = g.jam.getJamSize();
+		
 		// Eventually want to abstract this so the Jam is maintaining its own string list
 		ArrayList<String> songStringList = new ArrayList<String>(); 
 		for (int i = 0; i < jamSize; i++) {
-			songStringList.add(g.jam.getSongByIndex(i).getArtist().getName() + ": " + g.jam.getSongByIndex(i).getTitle()); 
+			songStringList.add(g.jam.getSongByIndex(i).getArtist().getName() + 
+					": " + g.jam.getSongByIndex(i).getTitle()); 
 		}
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songStringList);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_1, songStringList);
 		listView.setAdapter(adapter);
-		
+		setSongListItemClickListener();
+	}
+	
+	/*
+	 * Adds an onItemClickListener to the items in the listView that will
+	 * play the song which is clicked on.
+	 */
+	private void setSongListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
@@ -76,24 +90,26 @@ public class ViewJamActivity extends Activity {
 			}
 		});
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.view_jam, menu);
-		return true;
-	}
-
-	public void popupJoinRequest(View view) {
-		new AlertDialog.Builder(view.getContext()).setMessage("Harrison wants to join your jam")
-		.setNegativeButton("Decline", null)
-	  	.setPositiveButton("Accept", null).show();
-	}
 	
-	public void addSongs(View view) {
-		finish(); 
+	/*
+	 * Initializes the play, pause, back, and next buttons on the page.
+	 */
+	private void assignButtons() {
+		backButton = (ImageButton) this.findViewById(R.id.song_media_player_back_btn);
+		startButton =  (ImageButton)this.findViewById(R.id.song_media_player_start_btn);
+		pauseButton = (ImageButton) this.findViewById(R.id.song_media_player_pause_btn);
+		nextButton = (ImageButton) this.findViewById(R.id.song_media_player_next_btn);
 	}
-	
+
+	/*
+	 * Configures each individual button.
+	 */
+	private void configureButtons() {
+		configureBackButton();
+		configureStartButton(); 
+		configurePauseButton(); 
+		configureNextButton();
+	}
 	
 	/*
 	 * Sets the OnClickListener for the play button.
@@ -102,14 +118,14 @@ public class ViewJamActivity extends Activity {
 		startButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-                Globals g = (Globals) getApplication();
+				Globals g = (Globals) getApplication();
 				g.jam.start();
 				(new PassMessageThread(g.jam.getOtherIP(), "/jam/start")).start(); 
 			}
 		});
 	}
-	
-	
+
+
 	/*
 	 * Sets the OnClickListener for the pause button.
 	 */
@@ -117,36 +133,39 @@ public class ViewJamActivity extends Activity {
 		pauseButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-                Globals g = (Globals) getApplication();
+				Globals g = (Globals) getApplication();
 				g.jam.pause();
 				(new PassMessageThread(g.jam.getOtherIP(), "/jam/pause")).start(); 
 			}
 		});
 	}
 
-
+	/*
+	 * Sets the OnClickListener for the back (prev song) button.
+	 */
 	private void configureBackButton() {
 		backButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-	            Globals g = (Globals) getApplication();
+				Globals g = (Globals) getApplication();
 				g.jam.seekTo(0);
 				(new PassMessageThread(g.jam.getOtherIP(), "/jam/restart")).start(); 
 			}
 		});
 	}
-	
 
-	/*private void configureNextButton() {
-		backButton.setOnClickListener(new OnClickListener() {
+	/*
+	 * Sets the OnClickListener for the next (next song) button.
+	 */
+	private void configureNextButton() {
+		nextButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 	            Globals g = (Globals) getApplication();
-	            g.mediaPlayer.seekTo(g.mediaPlayer.getDuration());
-	            
-				
+	            g.jam.iterateCurrentSong();
+	            g.jam.playCurrentSong();
 			}
 		});
-	}*/
+	}
 
 }
