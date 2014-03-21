@@ -30,3 +30,6 @@ lint.xml
 
 # old tuttiUI folder
 tuttiUI/
+
+# .DS_Store for eclipse
+.DS_Store
