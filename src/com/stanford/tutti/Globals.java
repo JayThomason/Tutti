@@ -25,6 +25,7 @@ public class Globals extends Application {
 	public Jam jam = new Jam(); 
 	
 	private static Context context; 
+	public Server server = null;
 	
 	@Override
 	public void onCreate() {

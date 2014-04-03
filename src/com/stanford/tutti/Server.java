@@ -3,6 +3,7 @@ package com.stanford.tutti;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -213,5 +214,17 @@ public class Server extends NanoHTTPD {
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;
+	}
+	
+	@Override
+	public void start() throws IOException {
+		super.start();
+		try {
+			throw new Exception();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("SERVER: STARTING");
 	}
 }

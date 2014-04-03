@@ -51,9 +51,10 @@ class JoinJamThread extends Thread {
 		String uri = "http://" + ipAddress + ":" + PORT + path;
 		HttpGet get = new HttpGet(uri.toString());
 		try {
-			System.out.println("JoinJamThread: Requesting to join jam");
+			System.out.println("JoinJamThread: Requesting to join jam: " + uri);
 			HttpResponse response = httpClient.execute(get);
 			System.out.println(response.toString());
+			response.getEntity().consumeContent();
 			return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -79,6 +80,7 @@ class JoinJamThread extends Thread {
 			JSONArray artists = jsonArtistList.getJSONArray("artists");     			
 			loadMusicFromJSON(artists); 
 			System.out.println(response.toString());
+			response.getEntity().consumeContent();
 			return true;
 		}
 		catch (IOException e) {

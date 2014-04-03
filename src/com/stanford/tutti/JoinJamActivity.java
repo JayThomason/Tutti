@@ -1,46 +1,30 @@
 package com.stanford.tutti;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
 public class JoinJamActivity extends Activity {
 	private Button joinButton; 
-	private static final int PORT = 1234;
+	private static final int PORT = 12345;
 	private EditText editText;
 	private Server server;
 	private Globals g;
+	private NsdHelper mNsdHelper;
+	private Handler h;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,40 +35,57 @@ public class JoinJamActivity extends Activity {
 		editText = (EditText) this.findViewById(R.id.ip_address);
 		g = (Globals) getApplication();
 		configureJoinJamButton(); 
+		h = new Handler() {
+		    @Override
+		    public void handleMessage(Message msg) {
+		       if (msg.getData().getInt("what") == 0) {
+		    	   String ip = msg.getData().getString("ip");
+		    	   int port = msg.getData().getInt("port");
+		    	   joinDiscoveredJam(ip, port);
+		       }
+		    }
+		};
+		mNsdHelper = new NsdHelper(Globals.getAppContext(), h, false);
+		mNsdHelper.initializeNsd();
+        mNsdHelper.discoverServices();
 	}
 	
+	private void joinDiscoveredJam(String ip, int port) {
+		Globals g = (Globals) getApplication();
+	    server = new Server(PORT, g, null);
+	    g.server = server;
+		g.jam.setOtherIP(ip);
+		Thread joinJamThread = new JoinJamThread(ip, false);
+		try {
+			server.start();
+			joinJamThread.start();
+			joinJamThread.join();
+		} catch (InterruptedException e) {
+			// probably want to log some message to user: unable to join jam
+			e.printStackTrace();
+		} catch (IOException e) {
+			// unable to start server
+			// in either failure case we can't join the jam and thus we should display
+			// a message to the user and back out to the main menu or just stay here...
+			e.printStackTrace();
+		}
+		
+		// Load the new jam screen as a slave
+		Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);
+		Bundle b = new Bundle();
+		b.putInt("host", 0); //Your id
+		intent.putExtras(b);
+		startActivity(intent);
+		finish();
+	}
 	
 	private void configureJoinJamButton() {
 		joinButton = (Button) this.findViewById(R.id.join_jam_btn);
 		joinButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-			    server = new Server(PORT, g, null);
 				String ip = editText.getText().toString(); 
-				Globals g = (Globals) getApplication(); 
-				g.jam.setOtherIP(ip); 
-				Thread joinJamThread = new JoinJamThread(ip, false);
-				try {
-					server.start();
-					joinJamThread.start();
-					joinJamThread.join();
-				} catch (InterruptedException e) {
-					// probably want to log some message to user: unable to join jam
-					e.printStackTrace();
-				} catch (IOException e) {
-					// unable to start server
-					// in either failure case we can't join the jam and thus we should display
-					// a message to the user and back out to the main menu or just stay here...
-					e.printStackTrace();
-				}
-				
-				// Load the new jam screen as a slave
-				Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);
-				Bundle b = new Bundle();
-				b.putInt("host", 0); //Your id
-				intent.putExtras(b);
-				startActivity(intent);
-				finish();
+				joinDiscoveredJam(ip, PORT);
 			}
 		});		
 	}
@@ -123,4 +124,27 @@ public class JoinJamActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+	protected void onPause() {
+		if (mNsdHelper != null) {
+			mNsdHelper.stopDiscovery();
+		}
+		super.onPause();
+	}
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNsdHelper != null) {
+            mNsdHelper.discoverServices();
+        }
+    }
+
+	
+	@Override
+    protected void onDestroy() {
+        mNsdHelper.tearDown();
+        super.onDestroy();
+    }
 }

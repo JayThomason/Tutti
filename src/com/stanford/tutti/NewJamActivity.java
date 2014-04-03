@@ -37,6 +37,7 @@ public class NewJamActivity extends Activity {
 	private Globals g; 
 	private Handler handler;
 	private boolean master; 
+	private JamBroadcaster broadcaster = null;
 	// We should really be building this up as a global
 	HashMap<String, Song> songMap; 
 
@@ -61,6 +62,9 @@ public class NewJamActivity extends Activity {
 		setItemOnClickListener();
 		setUpHandler();
 		setUpServer();
+		if (master) {
+			broadcaster = new JamBroadcaster();
+		}
 	}
 	
 	/*
@@ -90,11 +94,17 @@ public class NewJamActivity extends Activity {
 	 * Starts the embedded NanoHttpd server.
 	 */
 	private void setUpServer() {
-		server = new Server(PORT, g, handler);
-		try {
-			server.start();
-		} catch (IOException e) {
-			e.printStackTrace();
+		Globals g = (Globals) getApplication();
+		if (g.server == null) {
+			server = new Server(PORT, g, handler);
+			try {
+				server.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			server = g.server;
 		}
 	}
 
@@ -209,5 +219,29 @@ public class NewJamActivity extends Activity {
 		Bundle bundle = new Bundle();    	
 		intent.putExtras(bundle);
 		startActivity(intent);
+	}
+	
+	@Override
+    protected void onPause() {
+        if (master) {
+            broadcaster.onPause();
+        }
+        super.onPause();
+    }
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (master) {
+			broadcaster.onResume();
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		if (master) {
+			broadcaster.onDestroy();
+		}
+		super.onDestroy();
 	}
 }
