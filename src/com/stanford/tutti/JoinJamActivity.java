@@ -19,7 +19,7 @@ import android.widget.EditText;
 
 public class JoinJamActivity extends Activity {
 	private Button joinButton; 
-	private static final int PORT = 12345;
+	private static final int PORT = 1234;
 	private EditText editText;
 	private Server server;
 	private Globals g;
