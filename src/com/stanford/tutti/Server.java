@@ -219,12 +219,6 @@ public class Server extends NanoHTTPD {
 	@Override
 	public void start() throws IOException {
 		super.start();
-		try {
-			throw new Exception();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 		System.out.println("SERVER: STARTING");
 	}
 }

@@ -1,5 +1,21 @@
 package com.stanford.tutti;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceInfo;
+import android.util.Log;
+
 
 /*
  * Periodically broadcasts the jam information using UDP. 
@@ -7,101 +23,68 @@ package com.stanford.tutti;
  * Should only be performed by the master phone.
  */
 public class JamBroadcaster {
-	private NsdHelper mNsdHelper;
-	private final int port = 1234;
+	
+	private final String TAG = "JamBroadcaster";
+	private WifiP2pManager manager;
+	private Channel channel;
+	private Globals g;
+	
+	// TXT RECORD properties
+	public static final String TXTRECORD_PROP_AVAILABLE = "available";
+	public static final String SERVICE_INSTANCE = "_tutti_test";
+	public static final String SERVICE_REG_TYPE = "_http._tcp";
 
-	public JamBroadcaster() {
-		// eventually want to put in a handler to notify UI thread when users join jam
-		mNsdHelper = new NsdHelper(Globals.getAppContext(), null, true);
-		mNsdHelper.initializeNsd();
-        mNsdHelper.registerService(port); // repetetive to unregister if not properly closed
-        mNsdHelper.tearDown();
-		mNsdHelper.initializeNsd();
-        mNsdHelper.registerService(port);
+	public static final int MESSAGE_READ = 0x400 + 1;
+	public static final int MY_HANDLE = 0x400 + 2;
+
+	public JamBroadcaster(Globals g) {
+		this.g = g;
+        manager = (WifiP2pManager) Globals.getAppContext().getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = manager.initialize(Globals.getAppContext(), Globals.getAppContext().getMainLooper(), null);
+        manager.clearLocalServices(channel, null);
+		startRegistration();
 	}
 	
-    public void onPause() {
-        if (mNsdHelper != null) {
-            mNsdHelper.tearDown();
-        }
-    }
-    
-    public void onResume() {
-        if (mNsdHelper != null) {
-            mNsdHelper.registerService(port);
-        }
-    }
-    
-    public void onDestroy() {
-        mNsdHelper.tearDown();
-    }
+	private void startRegistration() {
+        Map<String, String> record = new HashMap<String, String>();
+        record.put(TXTRECORD_PROP_AVAILABLE, "visible");
+        record.put("ip", g.getIpAddr());
 
+        WifiP2pDnsSdServiceInfo service = WifiP2pDnsSdServiceInfo.newInstance(
+                SERVICE_INSTANCE, SERVICE_REG_TYPE, record);
+        /*ArrayList<String> services = new ArrayList<String>();
+        services.add("c");
+        WifiP2pUpnpServiceInfo service = 
+        		WifiP2pUpnpServiceInfo.newInstance(
+        				"uuid:6859dede-8574-59ab-9332-123456789012::urn:schemas-upnp-org:device:", 
+        				"b", services);
+        				*/
+        manager.addLocalService(channel, service, new ActionListener() {
+
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "Added Local Service");
+            }
+
+            @Override
+            public void onFailure(int error) {
+                Log.d(TAG, "Failed to add a service");
+            }
+        });
+    }
+	
+	public void stop() {
+		manager.clearLocalServices(channel, new ActionListener() {
+            @Override
+            public void onSuccess() {
+            	System.out.println("Unregistered p2p services");
+            }
+
+            @Override
+            public void onFailure(int arg0) {
+            	System.out.println("ERROR: failure to unregister p2p services in broadcaster.");
+            }
+		});
+	}
+	
 }
-
-
-
-
-/*     // UDP CODE -- DOESNT WORK ON NEXUS 5
-	private InetAddress addr = null;
-	private ScheduledExecutorService scheduler = null;
-	private static final int BCAST_PORT = 8779;
-	DatagramSocket socket = null;
-	WifiManager wifi = null;
-	WifiManager.MulticastLock lock = null;
-
-	public JamBroadcaster() {
-		wifi = (WifiManager) 
-				Globals.getAppContext().getSystemService(Context.WIFI_SERVICE);
-//		lock = wifi.createMulticastLock("Log_Tag");
-//	    lock.acquire();
-		try {
-			addr = getBroadcastAddress();
-			System.out.println(addr);
-			socket = new DatagramSocket(BCAST_PORT);
-			socket.setBroadcast(true);
-			scheduler = Executors.newScheduledThreadPool(1);
-			scheduler.scheduleAtFixedRate(new Runnable() {
-				public void run() {
-					sendUDPBroadcast();
-					System.out.println("SENT UDP BROADCAST"); // for testing only
-				}
-			}, 0, 1, TimeUnit.SECONDS);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
- 	public void stop() {
-		scheduler.shutdownNow();
-		socket.close();
-//		lock.release();
-	}
-
-
-	private InetAddress getBroadcastAddress() throws IOException {
-		DhcpInfo dhcp = wifi.getDhcpInfo();
-		// handle null somehow
-
-		int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
-		byte[] quads = new byte[4];
-		for (int k = 0; k < 4; k++)
-			quads[k] = (byte) ((broadcast >> k * 8) & 0xFF);
-		return InetAddress.getByAddress(quads);
-	}
-
-	private void sendUDPBroadcast() {
-		try {
-			System.out.println("JAM BROADCAST TESTER");
-			String data = "TESTING UDP BROADCAST";
-			DatagramPacket packet = new DatagramPacket(data.getBytes(), 
-					data.length(), addr, BCAST_PORT);
-			socket.send(packet);
-			System.out.println("JAM BROADCAST TESTER END");
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-}
- */

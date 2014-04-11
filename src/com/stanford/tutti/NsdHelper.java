@@ -176,7 +176,7 @@ public class NsdHelper {
         
         mNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
-        
+        Log.d(TAG, "Tutti Service Registered");
     }
 
     public void discoverServices() {

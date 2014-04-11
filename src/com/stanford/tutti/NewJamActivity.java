@@ -63,7 +63,7 @@ public class NewJamActivity extends Activity {
 		setUpHandler();
 		setUpServer();
 		if (master) {
-			broadcaster = new JamBroadcaster();
+			broadcaster = new JamBroadcaster(g);
 		}
 	}
 	
@@ -222,26 +222,11 @@ public class NewJamActivity extends Activity {
 	}
 	
 	@Override
-    protected void onPause() {
-        if (master) {
-            broadcaster.onPause();
-        }
-        super.onPause();
-    }
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (master) {
-			broadcaster.onResume();
-		}
-	}
-	
-	@Override
 	protected void onDestroy() {
 		if (master) {
-			broadcaster.onDestroy();
+			broadcaster.stop();
 		}
 		super.onDestroy();
 	}
+	
 }
