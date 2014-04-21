@@ -151,8 +151,12 @@ public class NewJamActivity extends Activity {
 		listDataChild = new HashMap<String, List<String>>();
 		songMap = new HashMap<String, Song>(); 
 		Globals g = (Globals) getApplication();
-		ArrayList<Artist> artists = g.getArtistList();
+		
+		//ArrayList<Artist> artists = g.getArtistList();
 
+		List<Song> songs = g.db.getAllSongs(); 
+		
+		/*
 		for (int i = 0; i < artists.size(); ++i) {
 			listDataHeader.add(artists.get(i).getName());
 			ArrayList<Album> albums = artists.get(i).getAlbumList(); 
@@ -166,6 +170,15 @@ public class NewJamActivity extends Activity {
 				}
 			}
 			listDataChild.put(listDataHeader.get(i), songs);
+		}
+		*/
+		
+		for (int i = 0; i < songs.size(); ++i) {
+			listDataHeader.add(songs.get(i).getArtist()); 
+			songMap.put(songs.get(i).getTitle(), songs.get(i));
+			List<String> songList = new ArrayList<String>(); 
+			songList.add(songs.get(i).getTitle()); 
+			listDataChild.put(listDataHeader.get(i), songList);
 		}
 	}
 

@@ -133,6 +133,8 @@ class JoinJamThread extends Thread {
 							song.setAlbum(album.getTitle()); 
 							g.addSong(song);
 							album.addSong(song); 
+							
+							g.db.addSong(song); 
 						}
 					}
 					artist.addAlbum(album); 

@@ -106,6 +106,8 @@ public class MusicLibraryLoader {
 	            song.setArtist(album.getArtist());
 	            g.addSong(song);
 	            album.addSong(song);
+	            
+	            g.db.addSong(song); 
 			}
 		}
 	}

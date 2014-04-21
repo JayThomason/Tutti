@@ -24,6 +24,7 @@ public class Globals extends Application {
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	public Jam jam = new Jam(); 
 	
+	DatabaseHandler db; 
 	private int nextSongId = 1; 
 	
 	private static Context context; 
@@ -32,6 +33,7 @@ public class Globals extends Application {
 	public void onCreate() {
 		super.onCreate();
 		Globals.context = getApplicationContext(); 
+		db = new DatabaseHandler(this);
 	}
 	
 	public static Context getAppContext() {
