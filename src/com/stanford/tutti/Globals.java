@@ -24,6 +24,8 @@ public class Globals extends Application {
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	public Jam jam = new Jam(); 
 	
+	private int nextSongId = 1; 
+	
 	private static Context context; 
 	
 	@Override
@@ -95,6 +97,14 @@ public class Globals extends Application {
 	 */
 	public Song getSongForUniqueKey(String key) {
 		return songMap.get(key);
+	}
+	
+	/*
+	 * Get the integer primary key for the next song
+	 * to be stored in the database, and increment. 
+	 */
+	public int nextSongId() {
+		return nextSongId++; 
 	}
 
 	/*

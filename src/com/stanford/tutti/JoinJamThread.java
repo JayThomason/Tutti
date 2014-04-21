@@ -128,7 +128,7 @@ class JoinJamThread extends Thread {
 							}
 						}
 						if (!songExists) {
-							Song song = new Song(songTitle, songPath, false);
+							Song song = new Song(songTitle, songPath, g.nextSongId(), false);
 							song.setArtist(artist.getName()); 
 							song.setAlbum(album.getTitle()); 
 							g.addSong(song);
