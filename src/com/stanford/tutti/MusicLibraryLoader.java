@@ -71,7 +71,7 @@ public class MusicLibraryLoader {
 	        while (cursor.moveToNext()) {
 	            String albumTitle = cursor.getString(
 	            		cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
-	            Album album = new Album(albumTitle, artist, true);
+	            Album album = new Album(albumTitle, artist.getName(), true);
 	            artist.addAlbum(album);
 	            g.addAlbum(album);
 	        }
@@ -103,7 +103,7 @@ public class MusicLibraryLoader {
 	            		cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 	            Song song = new Song(songTitle, path, true);
 	            System.out.println(song.getPath());
-	            song.setAlbum(album);
+	            song.setAlbum(album.getTitle());
 	            song.setArtist(album.getArtist());
 	            g.addSong(song);
 	            album.addSong(song);

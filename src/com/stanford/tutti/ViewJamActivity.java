@@ -55,7 +55,7 @@ public class ViewJamActivity extends Activity {
 		// Eventually want to abstract this so the Jam is maintaining its own string list
 		ArrayList<String> songStringList = new ArrayList<String>(); 
 		for (int i = 0; i < jamSize; i++) {
-			songStringList.add(g.jam.getSongByIndex(i).getArtist().getName() + 
+			songStringList.add(g.jam.getSongByIndex(i).getArtist() + 
 					": " + g.jam.getSongByIndex(i).getTitle()); 
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 

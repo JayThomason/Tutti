@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 import org.json.*; 
 
-public class Album {
+public class AlbumOld {
 	private String title;
-	private String artist;
+	private Artist artist;
 	private boolean local;
 	private ArrayList<Song> songList = new ArrayList<Song>();
 	
-	public Album(String title, String artist, boolean local) {
+	public AlbumOld(String title, Artist artist, boolean local) {
 		this.title = title;
 		this.artist = artist;
 		this.local = local;
 	}
 	
-	public String getArtist() {
+	public Artist getArtist() {
 		return artist;
 	}
 	
@@ -72,9 +72,9 @@ public class Album {
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof Album))
+        if (!(obj instanceof AlbumOld))
             return false;
-        Album a = (Album) obj;
+        AlbumOld a = (AlbumOld) obj;
         if (!a.getTitle().equals(this.title))
         	return false;
         if (!a.getArtist().equals(this.artist))

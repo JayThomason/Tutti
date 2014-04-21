@@ -113,7 +113,7 @@ class JoinJamThread extends Thread {
 						if (albumList.get(k).getTitle().equals(albumTitle))
 							album = albumList.get(k);
 					if (album == null)
-						album = new Album(albumTitle, artist, false);
+						album = new Album(albumTitle, artist.getName(), false);
 					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
 					for (int k = 0; k < songs.length(); k++) {
 						JSONObject jsonSong = songs.getJSONObject(k); 
@@ -129,8 +129,8 @@ class JoinJamThread extends Thread {
 						}
 						if (!songExists) {
 							Song song = new Song(songTitle, songPath, false);
-							song.setArtist(artist); 
-							song.setAlbum(album); 
+							song.setArtist(artist.getName()); 
+							song.setAlbum(album.getTitle()); 
 							g.addSong(song);
 							album.addSong(song); 
 						}

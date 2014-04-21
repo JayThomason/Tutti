@@ -6,16 +6,16 @@ import org.json.*;
  * Stores all metadata associated with a given song. Also includes references
  * to the album which includes the song and the artist who plays the song. 
  */
-public class Song {
+public class SongOld {
 	
 	/* The title of the song. */
 	private String title;
 	
 	/* A reference to the artist whose song this is. */
-	private String artist;
+	private Artist artist;
 	
 	/* A reference to the album the song is on. */
-	private String album;
+	private Album album;
 	
 	/* The path on the disk/sdcard to the raw song data or file. */
 	private String path; 
@@ -28,7 +28,7 @@ public class Song {
 	 * 
 	 * @param String title
 	 */
-	public Song(String title, boolean local) {
+	public SongOld(String title, boolean local) {
 		this.title = title;
 		this.local = local;
 	}
@@ -38,7 +38,7 @@ public class Song {
 	 * 
 	 * @param String title, String path
 	 */
-	public Song(String title, String path, boolean local) {
+	public SongOld(String title, String path, boolean local) {
 		this.title = title;
 		this.path = path;
 		this.local = local;
@@ -58,7 +58,7 @@ public class Song {
 	 * 
 	 * @return Artist
 	 */
-	public String getArtist() {
+	public Artist getArtist() {
 		return artist;
 	}
 	
@@ -67,7 +67,7 @@ public class Song {
 	 * 
 	 * @return Album
 	 */
-	public String getAlbum() {
+	public Album getAlbum() {
 		return album;
 	}
 	
@@ -76,7 +76,7 @@ public class Song {
 	 * 
 	 * @param Artist artist
 	 */
-	public void setArtist(String artist) {
+	public void setArtist(Artist artist) {
 		this.artist = artist;
 	}
 	
@@ -85,7 +85,7 @@ public class Song {
 	 * 
 	 * @param Album album
 	 */
-	public void setAlbum(String album) {
+	public void setAlbum(Album album) {
 		this.album = album;
 	}
 	
@@ -127,19 +127,19 @@ public class Song {
 	@Override
 	public int hashCode() {
 		StringBuilder keyBuilder = new StringBuilder("");
-		String artist = getArtist();
+		Artist artist = getArtist();
 		if (artist != null)
-			keyBuilder.append(artist);
-		String album = getAlbum();
+			keyBuilder.append(artist.getName());
+		Album album = getAlbum();
 		if (album != null) 
-			keyBuilder.append(album);
+			keyBuilder.append(album.getTitle());
 		keyBuilder.append(getTitle());
 		return keyBuilder.toString().hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		Song s = (Song) o;
+		SongOld s = (SongOld) o;
 		if (o == null)
 			return false;
 		if (!s.getTitle().equals(this.title))
