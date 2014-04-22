@@ -25,12 +25,20 @@ public class MainActivity extends Activity {
     }
     
     public void makeNewJam(View view) {
+    	Globals g = (Globals) getApplication();
+    	Bundle b = new Bundle();
+		b.putInt("host", 1); //Your id
+		Intent intent = new Intent(this, NewJamActivity.class);
+		intent.putExtras(b);    	
+		startActivity(intent);
+    }
+    
+    public void exploreMusic(View view) {
     	Intent intent = new Intent(this, ViewArtistsActivity.class);
 		Bundle b = new Bundle();
 		b.putInt("host", 1); //Your id
 		intent.putExtras(b);
 		startActivity(intent);
-		finish();
     }
 
 

@@ -36,5 +36,7 @@
     <string name="view_songs">Songs</string>
     <string name="view_artists">Artists</string>
     <string name="view_albums">Albums</string>
+    <string name="explore_music">Explore Music</string>
+    <string name="ec2_server">ec2-54-237-148-102.compute-1.amazonaws.com</string>
 
 </resources>

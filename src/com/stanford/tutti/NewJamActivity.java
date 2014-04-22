@@ -60,7 +60,11 @@ public class NewJamActivity extends Activity {
 		expListView.setAdapter(listAdapter);
 		setItemOnClickListener();
 		setUpHandler();
-		setUpServer();
+		if (master) {
+			setUpServer();
+			System.out.println("booted server!");
+			(new CreateJamInDatabaseThread(getString(R.string.ec2_server), g.getIpAddr())).start();
+		}
 	}
 	
 	/*
