@@ -166,7 +166,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAlbumsByArtist(String artist) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + artist + "' GROUP BY " + KEY_ALBUM; 
+    	String escapedArtist = artist.replace("'",  "''");
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -175,7 +176,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getSongsByAlbum(String album) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " = '" + album + "'"; 
+    	String escapedAlbum = album.replace("'", "''");
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -186,7 +188,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // IN THE LONG TERM
     // WE NEED TO BE USING GET SONG BY ID
     public Song getSongByTitle(String title) {
-    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " = '" + title + "'"; 
+    	String escapedTitle = title.replace("'",  "''");
+    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " = '" + escapedTitle + "'"; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
