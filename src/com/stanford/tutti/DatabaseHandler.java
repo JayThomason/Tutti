@@ -157,7 +157,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAlbumsByArtist(String artist) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + artist + "%'"; 
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + artist + "%' GROUP BY " + KEY_ALBUM; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
