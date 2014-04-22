@@ -48,6 +48,10 @@
             android:label="@string/title_activity_view_jam" >
         </activity>
         <activity
+            android:name="com.stanford.tutti.ViewArtistsActivity"
+            android:label="@string/title_activity_view_artists" >
+        </activity>
+        <activity
             android:name="com.stanford.tutti.SettingsMenuActivity"
             android:label="@string/title_activity_settings_menu"
             android:parentActivityName="com.stanford.tutti.MainActivity" >

@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     }
     
     public void makeNewJam(View view) {
-    	Intent intent = new Intent(this, NewJamActivity.class);
+    	Intent intent = new Intent(this, ViewArtistsActivity.class);
 		Bundle b = new Bundle();
 		b.putInt("host", 1); //Your id
 		intent.putExtras(b);

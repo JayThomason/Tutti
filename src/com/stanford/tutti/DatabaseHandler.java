@@ -1,5 +1,6 @@
 package com.stanford.tutti;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,11 +9,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 5;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -21,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "songs";
  
     // Table Columns names
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_ARTIST = "artist";
     private static final String KEY_ALBUM = "album";
@@ -116,7 +118,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Song song = rowToSong(cursor);
 
         // 5. close cursor
-        cursor.close(); 
+        //cursor.close(); 
         
         // 6. return Song
         return song; 
@@ -126,13 +128,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Song> songs = new LinkedList<Song>();
   
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME;
   
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
   
-        // 3. go over each row, build book and add it to list
+        // 3. go over each row, build song and add it to list
         Song song = null;
         if (cursor.moveToFirst()) {
             do {
@@ -141,10 +143,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         
-        cursor.close(); 
+        //cursor.close(); 
    
-        // return songs
         return songs;
+    }
+    
+    public Cursor getAllArtists() {
+        //String query = "SELECT DISTINCT " + KEY_ARTIST + " FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ARTIST; 
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        
+        Log.w("TUTTI", "COLUMN NAME 0: " + cursor.getColumnName(0) + " WITH NUM_COL: " + cursor.getColumnCount()); 
+    	
+    	return cursor; 
     }
     
     public void deleteSong(Song song) {
