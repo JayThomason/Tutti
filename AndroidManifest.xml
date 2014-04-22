@@ -51,6 +51,10 @@
             android:name="com.stanford.tutti.ViewArtistsActivity"
             android:label="@string/title_activity_view_artists" >
         </activity>
+         <activity
+            android:name="com.stanford.tutti.ViewAlbumsActivity"
+            android:label="@string/title_activity_view_albums" >
+        </activity>
         <activity
             android:name="com.stanford.tutti.SettingsMenuActivity"
             android:label="@string/title_activity_settings_menu"

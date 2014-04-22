@@ -154,9 +154,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        
-        Log.w("TUTTI", "COLUMN NAME 0: " + cursor.getColumnName(0) + " WITH NUM_COL: " + cursor.getColumnCount()); 
+           	
+    	return cursor; 
+    }
+    
+    public Cursor getAlbumsByArtist(String artist) {
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + artist + "%'"; 
     	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+           	
     	return cursor; 
     }
     

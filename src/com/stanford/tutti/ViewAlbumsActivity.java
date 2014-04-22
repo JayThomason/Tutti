@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
@@ -18,15 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ViewArtistsActivity extends Activity {
+public class ViewAlbumsActivity extends Activity {
 	private ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_view_artists);
-		listView = (ListView) findViewById(R.id.listView4);
-		initializeArtistList();
+		setContentView(R.layout.activity_view_albums);
+		listView = (ListView) findViewById(R.id.listView5);
+		initializeAlbumList();
 	}
 
 	@Override
@@ -36,18 +35,26 @@ public class ViewArtistsActivity extends Activity {
 		return true;
 	}
 
-	private void initializeArtistList() {
+	private void initializeAlbumList() {
 		Globals g = (Globals) getApplication();  
 		
-		Cursor cursor = g.db.getAllArtists(); 
+		String artist; 
+		Bundle b = getIntent().getExtras();
+		if (b != null && b.containsKey("artist")) {
+			artist = b.getString("artist");
+		} else {
+			artist = ""; 
+		}
 		
-		String[] columns = new String[] { "artist" };
+		Cursor cursor = g.db.getAlbumsByArtist(artist); 
+		
+		String[] columns = new String[] { "album" };
 	    int[] to = new int[] { android.R.id.text1 };
 
 	    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    listView.setAdapter(mAdapter);
 		
-		setArtistListItemClickListener();
+		// setArtistListItemClickListener();
 	}
 	
 	/*
@@ -60,13 +67,10 @@ public class ViewArtistsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
-				String artist = ((TextView)view).getText().toString();
+				String item = ((TextView)view).getText().toString();
+				Globals g = (Globals) getApplication();  
 				
-		    	Intent intent = new Intent(ViewArtistsActivity.this, ViewAlbumsActivity.class);
-				Bundle b = new Bundle();
-				b.putString("artist", artist); //Your id
-				intent.putExtras(b);
-				startActivity(intent);
+				
 			}
 		});
 	}
