@@ -7,11 +7,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +32,7 @@ public class ViewAlbumsActivity extends Activity {
 		setContentView(R.layout.activity_view_albums);
 		all = (ListView) findViewById(R.id.allAlbums);
 		initializeAllButton(); 
-		listView = (ListView) findViewById(R.id.listView5);
+		listView = (ListView) findViewById(R.id.albumListView);
 		initializeAlbumList();
 	}
 	
@@ -75,8 +79,32 @@ public class ViewAlbumsActivity extends Activity {
 		String[] columns = new String[] { "album" };
 	    int[] to = new int[] { android.R.id.text1 };
 
-	    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-	    listView.setAdapter(mAdapter);
+	    SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    listView.setAdapter(adapter);
+	    listView.setFastScrollEnabled(true);
+	    listView.setTextFilterEnabled(true);
+	    
+	    EditText etext = (EditText)findViewById(R.id.album_search_box);
+	    etext.addTextChangedListener(new TextWatcher() {
+	        public void onTextChanged(CharSequence s, int start, int before, int count) {
+	        }
+
+	        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	        }
+
+	        public void afterTextChanged(Editable s) {
+	            ListView lv = (ListView)findViewById(R.id.albumListView);
+	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)lv.getAdapter();
+	            filterAdapter.getFilter().filter(s.toString());
+	        }
+	    });
+
+	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
+	        public Cursor runQuery(CharSequence constraint) {
+	        	Globals g = (Globals) getApplication(); 
+	            return g.db.searchAlbums(constraint);
+	        }
+	    });
 		
 		setAlbumListItemClickListener();
 	}

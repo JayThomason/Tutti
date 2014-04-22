@@ -10,18 +10,26 @@
     tools:context=".ViewSongsActivity" >
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/songTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Songs"
         android:textColor="#ffffff"
         android:textSize="24sp" />
 
+    <EditText
+	    android:id="@+id/song_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/songTitle"
+	    android:inputType="text" 
+	    android:textColor="#ffffff" />
+    
     <ListView
-        android:id="@+id/listView6"
+        android:id="@+id/songListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView6"
+        android:layout_below="@+id/songTitle"
         android:background="#ff0927"
         android:textColor="#ffffff" >
 
@@ -31,8 +39,8 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView6"
-        android:layout_alignBottom="@+id/textView6"
+        android:layout_alignBaseline="@+id/songTitle"
+        android:layout_alignBottom="@+id/songTitle"
         android:layout_alignParentRight="true"
         android:textColor="#ffffff" 
         android:text="»" 

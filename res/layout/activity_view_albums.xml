@@ -10,7 +10,7 @@
     tools:context=".ViewAlbumsActivity" >
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/albumTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -18,18 +18,26 @@
         android:textColor="#ffffff"
         android:textSize="24sp" />
 
+    <EditText
+	    android:id="@+id/album_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/albumTitle"
+	    android:inputType="text" 
+	    android:textColor="#ffffff" />
+    
     <ListView
         android:id="@+id/allAlbums"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView5"
+        android:layout_below="@+id/albumTitle"
         android:background="#ff0927"
         android:textColor="#ffffff" >
 
     </ListView>
     
     <ListView
-        android:id="@+id/listView5"
+        android:id="@+id/albumListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/allAlbums"
@@ -42,8 +50,8 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView5"
-        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignBaseline="@+id/albumTitle"
+        android:layout_alignBottom="@+id/albumTitle"
         android:layout_alignParentRight="true"
         android:textColor="#ffffff" 
         android:text="»" 

@@ -10,7 +10,7 @@
     tools:context=".ViewArtistsActivity" >
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/artistTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -18,18 +18,26 @@
         android:textColor="#ffffff"
         android:textSize="24sp" />
 
+    <EditText
+	    android:id="@+id/artist_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/artistTitle"
+	    android:inputType="text" 
+	    android:textColor="#ffffff" />
+    
     <ListView
         android:id="@+id/allArtists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView4"
+        android:layout_below="@+id/artistTitle"
         android:background="#ff0927"
         android:textColor="#ffffff" >
 
     </ListView>
     
     <ListView
-        android:id="@+id/listView4"
+        android:id="@+id/artistListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/allArtists"
@@ -42,8 +50,8 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView4"
-        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignBaseline="@+id/artistTitle"
+        android:layout_alignBottom="@+id/artistTitle"
         android:layout_alignParentRight="true"
         android:textColor="#ffffff" 
         android:text="»" 

@@ -7,12 +7,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,7 +30,7 @@ public class ViewSongsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_songs);
-		listView = (ListView) findViewById(R.id.listView6);
+		listView = (ListView) findViewById(R.id.songListView);
 		initializeSongList();
 	}
 
@@ -52,8 +56,32 @@ public class ViewSongsActivity extends Activity {
 		String[] columns = new String[] { "title" };
 	    int[] to = new int[] { android.R.id.text1 };
 
-	    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-	    listView.setAdapter(mAdapter);
+	    SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    listView.setAdapter(adapter);
+	    listView.setFastScrollEnabled(true);
+	    listView.setTextFilterEnabled(true);
+	    
+	    EditText etext = (EditText)findViewById(R.id.song_search_box);
+	    etext.addTextChangedListener(new TextWatcher() {
+	        public void onTextChanged(CharSequence s, int start, int before, int count) {
+	        }
+
+	        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	        }
+
+	        public void afterTextChanged(Editable s) {
+	            ListView lv = (ListView)findViewById(R.id.songListView);
+	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)lv.getAdapter();
+	            filterAdapter.getFilter().filter(s.toString());
+	        }
+	    });
+
+	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
+	        public Cursor runQuery(CharSequence constraint) {
+	        	Globals g = (Globals) getApplication(); 
+	            return g.db.searchSongs(constraint);
+	        }
+	    });
 		
 		setSongListItemClickListener();
 	}

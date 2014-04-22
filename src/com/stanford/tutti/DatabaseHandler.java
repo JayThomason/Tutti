@@ -14,7 +14,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -201,7 +201,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	if (constraint == null || constraint.length() == 0) {
     		query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ARTIST; 
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' + GROUP BY " + KEY_ARTIST; 
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ARTIST; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -215,7 +215,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	if (constraint == null || constraint.length() == 0) {
     		query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ALBUM; 
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' + GROUP BY " + KEY_ALBUM; 
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
