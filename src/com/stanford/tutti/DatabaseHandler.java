@@ -167,6 +167,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return cursor; 
     }
     
+    public Cursor getSongsByAlbum(String album) {
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " LIKE '%" + album + "%'"; 
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+           	
+    	return cursor; 
+    }
+    
     public void deleteSong(Song song) {
     	 
         // 1. get reference to writable DB

@@ -51,9 +51,22 @@
             android:name="com.stanford.tutti.ViewArtistsActivity"
             android:label="@string/title_activity_view_artists" >
         </activity>
-         <activity
+        <activity
             android:name="com.stanford.tutti.ViewAlbumsActivity"
-            android:label="@string/title_activity_view_albums" >
+            android:label="@string/title_activity_view_albums" 
+            android:parentActivityName="com.stanford.tutti.ViewArtistsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.stanford.tutti.ViewArtistsActivity" />
+        </activity>
+        <activity
+            android:name="com.stanford.tutti.ViewSongsActivity"
+            android:label="@string/title_activity_view_songs" 
+            android:parentActivityName="com.stanford.tutti.ViewAlbumsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.stanford.tutti.ViewAlbumsActivity" />
+            
         </activity>
         <activity
             android:name="com.stanford.tutti.SettingsMenuActivity"

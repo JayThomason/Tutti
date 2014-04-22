@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
@@ -18,15 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ViewAlbumsActivity extends Activity {
+public class ViewSongsActivity extends Activity {
 	private ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_view_albums);
-		listView = (ListView) findViewById(R.id.listView5);
-		initializeAlbumList();
+		setContentView(R.layout.activity_view_songs);
+		listView = (ListView) findViewById(R.id.listView6);
+		initializeSongList();
 	}
 
 	@Override
@@ -36,46 +35,42 @@ public class ViewAlbumsActivity extends Activity {
 		return true;
 	}
 
-	private void initializeAlbumList() {
+	private void initializeSongList() {
 		Globals g = (Globals) getApplication();  
 		
-		String artist; 
+		String album; 
 		Bundle b = getIntent().getExtras();
-		if (b != null && b.containsKey("artist")) {
-			artist = b.getString("artist");
+		if (b != null && b.containsKey("album")) {
+			album = b.getString("album");
 		} else {
-			artist = ""; 
+			album = ""; 
 		}
 		
-		Cursor cursor = g.db.getAlbumsByArtist(artist); 
+		Cursor cursor = g.db.getSongsByAlbum(album); 
 		
-		String[] columns = new String[] { "album" };
+		String[] columns = new String[] { "title" };
 	    int[] to = new int[] { android.R.id.text1 };
 
 	    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    listView.setAdapter(mAdapter);
 		
-		setAlbumListItemClickListener();
+		// setArtistListItemClickListener();
 	}
 	
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
-	 * move to the ViewSongsActivity and filter on the selected album. 
+	 * move to the ViewAlbumsActivity and filter on the selected artist. 
 	 */
 	
-	private void setAlbumListItemClickListener() {
+	private void setArtistListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
+				String item = ((TextView)view).getText().toString();
+				Globals g = (Globals) getApplication();  
 				
-				String album = ((TextView)view).getText().toString();
 				
-		    	Intent intent = new Intent(ViewAlbumsActivity.this, ViewSongsActivity.class);
-				Bundle b = new Bundle();
-				b.putString("album", album); //Your id
-				intent.putExtras(b);
-				startActivity(intent);
 			}
 		});
 	}

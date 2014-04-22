@@ -17,6 +17,7 @@
     <string name="title_activity_view_jam">ViewJamActivity</string>
     <string name="title_activity_view_artists">ViewArtistsActivity</string>
     <string name="title_activity_view_albums">ViewAlbumsActivity</string>
+    <string name="title_activity_view_songs">ViewSongsActivity</string>
     <string name="current_jam">Current Jam</string>
     <string name="title_activity_help_menu">HelpMenuActivity</string>
     <string name="help_text"/>
