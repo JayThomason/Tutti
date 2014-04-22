@@ -154,7 +154,7 @@ public class NewJamActivity extends Activity {
 		
 		//ArrayList<Artist> artists = g.getArtistList();
 
-		List<Song> songs = g.db.getAllSongs(); 
+		List<Song> songs = new ArrayList<Song>(); // g.db.getAllSongs(); 
 		
 		/*
 		for (int i = 0; i < artists.size(); ++i) {

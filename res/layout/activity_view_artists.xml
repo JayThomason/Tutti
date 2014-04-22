@@ -19,10 +19,20 @@
         android:textSize="24sp" />
 
     <ListView
-        android:id="@+id/listView4"
+        android:id="@+id/allArtists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView4"
+        android:background="#ff0927"
+        android:textColor="#ffffff" >
+
+    </ListView>
+    
+    <ListView
+        android:id="@+id/listView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/allArtists"
         android:background="#ff0927"
         android:textColor="#ffffff" >
 

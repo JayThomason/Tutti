@@ -40,15 +40,16 @@ public class ViewSongsActivity extends Activity {
 		Globals g = (Globals) getApplication();  
 		
 		String album; 
+		Cursor cursor; 
 		Bundle b = getIntent().getExtras();
 		if (b != null && b.containsKey("album")) {
 			album = b.getString("album");
+			cursor = g.db.getSongsByAlbum(album); 
 		} else {
 			album = ""; 
+			cursor = g.db.getAllSongs(); 
 		}
-		
-		Cursor cursor = g.db.getSongsByAlbum(album); 
-		
+				
 		String[] columns = new String[] { "title" };
 	    int[] to = new int[] { android.R.id.text1 };
 

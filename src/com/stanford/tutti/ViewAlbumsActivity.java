@@ -19,14 +19,38 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ViewAlbumsActivity extends Activity {
+	private ListView all; 
 	private ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_albums);
+		all = (ListView) findViewById(R.id.allAlbums);
+		initializeAllButton(); 
 		listView = (ListView) findViewById(R.id.listView5);
 		initializeAlbumList();
+	}
+	
+	private void initializeAllButton() {
+		ArrayList<String> stringList = new ArrayList<String>(); 
+		stringList.add("All"); 
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_1, stringList);
+		all.setAdapter(adapter);
+		
+		setAllClickListener(); 
+	}
+	
+	private void setAllClickListener() {
+		all.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, 
+					int position, long id) {
+		    	Intent intent = new Intent(ViewAlbumsActivity.this, ViewSongsActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -40,15 +64,16 @@ public class ViewAlbumsActivity extends Activity {
 		Globals g = (Globals) getApplication();  
 		
 		String artist; 
+		Cursor cursor; 
 		Bundle b = getIntent().getExtras();
 		if (b != null && b.containsKey("artist")) {
 			artist = b.getString("artist");
+			cursor = g.db.getAlbumsByArtist(artist); 
 		} else {
 			artist = ""; 
+			cursor = g.db.getAllAlbums(); 
 		}
-		
-		Cursor cursor = g.db.getAlbumsByArtist(artist); 
-		
+				
 		String[] columns = new String[] { "album" };
 	    int[] to = new int[] { android.R.id.text1 };
 

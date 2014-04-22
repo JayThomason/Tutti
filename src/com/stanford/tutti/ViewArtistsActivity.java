@@ -19,12 +19,15 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ViewArtistsActivity extends Activity {
+	private ListView all; 
 	private ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_artists);
+		all = (ListView) findViewById(R.id.allArtists);
+		initializeAllButton(); 
 		listView = (ListView) findViewById(R.id.listView4);
 		initializeArtistList();
 	}
@@ -35,6 +38,28 @@ public class ViewArtistsActivity extends Activity {
 		getMenuInflater().inflate(R.menu.view_jam, menu);
 		return true;
 	}
+	
+	private void initializeAllButton() {
+		ArrayList<String> stringList = new ArrayList<String>(); 
+		stringList.add("All"); 
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_1, stringList);
+		all.setAdapter(adapter);
+		
+		setAllClickListener(); 
+	}
+	
+	private void setAllClickListener() {
+		all.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, 
+					int position, long id) {
+		    	Intent intent = new Intent(ViewArtistsActivity.this, ViewAlbumsActivity.class);
+				startActivity(intent);
+			}
+		});
+	}
+
 
 	private void initializeArtistList() {
 		Globals g = (Globals) getApplication();  
@@ -54,7 +79,6 @@ public class ViewArtistsActivity extends Activity {
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * move to the ViewAlbumsActivity and filter on the selected artist. 
 	 */
-	
 	private void setArtistListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override

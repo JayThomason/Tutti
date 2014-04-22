@@ -19,10 +19,20 @@
         android:textSize="24sp" />
 
     <ListView
-        android:id="@+id/listView5"
+        android:id="@+id/allAlbums"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView5"
+        android:background="#ff0927"
+        android:textColor="#ffffff" >
+
+    </ListView>
+    
+    <ListView
+        android:id="@+id/listView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/allAlbums"
         android:background="#ff0927"
         android:textColor="#ffffff" >
 

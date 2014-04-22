@@ -124,7 +124,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return song; 
     }
     
-    public List<Song> getAllSongs() {
+    public Cursor getAllSongs() {
         List<Song> songs = new LinkedList<Song>();
   
         // 1. build the query
@@ -134,23 +134,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
   
-        // 3. go over each row, build song and add it to list
-        Song song = null;
-        if (cursor.moveToFirst()) {
-            do {
-                song = rowToSong(cursor); 
-                songs.add(song);
-            } while (cursor.moveToNext());
-        }
-        
-        //cursor.close(); 
-   
-        return songs;
+        return cursor; 
     }
     
     public Cursor getAllArtists() {
         //String query = "SELECT DISTINCT " + KEY_ARTIST + " FROM " + TABLE_NAME;
         String query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ARTIST; 
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+           	
+    	return cursor; 
+    }
+    
+    public Cursor getAllAlbums() {
+        String query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ALBUM; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
