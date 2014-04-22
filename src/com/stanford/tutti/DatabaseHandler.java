@@ -196,6 +196,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return rowToSong(cursor);  
     }
     
+    public Cursor searchArtists(CharSequence constraint) {
+    	String query; 
+    	if (constraint == null || constraint.length() == 0) {
+    		query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ARTIST; 
+    	} else {
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' + GROUP BY " + KEY_ARTIST; 
+    	}
+  
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+    	
+        return cursor; 
+    }
+    
+    public Cursor searchAlbums(CharSequence constraint) {
+    	String query; 
+    	if (constraint == null || constraint.length() == 0) {
+    		query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ALBUM; 
+    	} else {
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' + GROUP BY " + KEY_ALBUM; 
+    	}
+  
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+    	
+        return cursor; 
+    }
+    
+    public Cursor searchSongs(CharSequence constraint) {
+    	String query; 
+    	if (constraint == null || constraint.length() == 0) {
+    		query = "SELECT * FROM " + TABLE_NAME;  
+    	} else {
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%'"; 
+    	}
+  
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+    	
+        return cursor; 
+    }
+    
     public void deleteSong(Song song) {
     	 
         // 1. get reference to writable DB
