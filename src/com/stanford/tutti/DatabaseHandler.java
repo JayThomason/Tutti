@@ -124,6 +124,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return song; 
     }
     
+    public Cursor getSongsByArtist(String artist) {
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + artist + "'";
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+  
+        return cursor; 
+    }
+    
     public Cursor getAllSongs() {
         List<Song> songs = new LinkedList<Song>();
   
@@ -157,7 +166,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAlbumsByArtist(String artist) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + artist + "%' GROUP BY " + KEY_ALBUM; 
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + artist + "' GROUP BY " + KEY_ALBUM; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -166,7 +175,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getSongsByAlbum(String album) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " LIKE '%" + album + "%'"; 
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " = '" + album + "'"; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);

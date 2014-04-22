@@ -24,6 +24,9 @@ public class Globals extends Application {
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	public Jam jam = new Jam(); 
 	
+	public String currentArtistView = ""; 
+	public String currentAlbumView = ""; 
+	
 	DatabaseHandler db; 
 	private int nextSongId = 1; 
 	

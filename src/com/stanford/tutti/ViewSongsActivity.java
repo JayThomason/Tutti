@@ -39,14 +39,12 @@ public class ViewSongsActivity extends Activity {
 	private void initializeSongList() {
 		Globals g = (Globals) getApplication();  
 		
-		String album; 
 		Cursor cursor; 
-		Bundle b = getIntent().getExtras();
-		if (b != null && b.containsKey("album")) {
-			album = b.getString("album");
-			cursor = g.db.getSongsByAlbum(album); 
+		if (g.currentAlbumView != "") {
+			cursor = g.db.getSongsByAlbum(g.currentAlbumView); 
+		} else if (g.currentArtistView != "") {
+			cursor = g.db.getSongsByArtist(g.currentArtistView); 
 		} else {
-			album = ""; 
 			cursor = g.db.getAllSongs(); 
 		}
 				

@@ -54,6 +54,8 @@ public class ViewArtistsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
+				Globals g = (Globals) getApplication(); 
+				g.currentArtistView = ""; 
 		    	Intent intent = new Intent(ViewArtistsActivity.this, ViewAlbumsActivity.class);
 				startActivity(intent);
 			}
@@ -85,11 +87,10 @@ public class ViewArtistsActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
 				String artist = ((TextView)view).getText().toString();
+				Globals g = (Globals) getApplication(); 
+				g.currentArtistView = artist; 
 				
 		    	Intent intent = new Intent(ViewArtistsActivity.this, ViewAlbumsActivity.class);
-				Bundle b = new Bundle();
-				b.putString("artist", artist); //Your id
-				intent.putExtras(b);
 				startActivity(intent);
 			}
 		});

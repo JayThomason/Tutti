@@ -47,6 +47,8 @@ public class ViewAlbumsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
+				Globals g = (Globals) getApplication(); 
+				g.currentAlbumView = ""; 
 		    	Intent intent = new Intent(ViewAlbumsActivity.this, ViewSongsActivity.class);
 				startActivity(intent);
 			}
@@ -63,14 +65,10 @@ public class ViewAlbumsActivity extends Activity {
 	private void initializeAlbumList() {
 		Globals g = (Globals) getApplication();  
 		
-		String artist; 
 		Cursor cursor; 
-		Bundle b = getIntent().getExtras();
-		if (b != null && b.containsKey("artist")) {
-			artist = b.getString("artist");
-			cursor = g.db.getAlbumsByArtist(artist); 
+		if (g.currentArtistView != "") {
+			cursor = g.db.getAlbumsByArtist(g.currentArtistView); 
 		} else {
-			artist = ""; 
 			cursor = g.db.getAllAlbums(); 
 		}
 				
@@ -95,11 +93,10 @@ public class ViewAlbumsActivity extends Activity {
 					int position, long id) {
 				
 				String album = ((TextView)view).getText().toString();
+				Globals g = (Globals) getApplication(); 
+				g.currentAlbumView = album; 
 				
 		    	Intent intent = new Intent(ViewAlbumsActivity.this, ViewSongsActivity.class);
-				Bundle b = new Bundle();
-				b.putString("album", album); //Your id
-				intent.putExtras(b);
 				startActivity(intent);
 			}
 		});
