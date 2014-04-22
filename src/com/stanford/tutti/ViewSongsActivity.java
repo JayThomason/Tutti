@@ -69,8 +69,12 @@ public class ViewSongsActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
 				String title = ((TextView)view).getText().toString();
-				Globals g = (Globals) getApplication();  
+				Globals g = (Globals) getApplication(); 
+				
+				// IN THE LONG TERM
+				// WE NEED TO BE USING GETSONGBYID
 				Song song = g.db.getSongByTitle(title); 
+				
 				g.jam.addSong(song); 
 				Toast.makeText(getApplicationContext(),
 						song.getArtist()

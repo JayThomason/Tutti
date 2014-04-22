@@ -183,6 +183,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return cursor; 
     }
     
+    // IN THE LONG TERM
+    // WE NEED TO BE USING GET SONG BY ID
     public Song getSongByTitle(String title) {
     	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " = '" + title + "'"; 
     	
