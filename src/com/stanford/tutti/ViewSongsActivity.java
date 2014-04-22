@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
@@ -75,4 +76,10 @@ public class ViewSongsActivity extends Activity {
 		});
 	}
 	
+	public void viewJam(View view) {
+		Intent intent = new Intent(this, ViewJamActivity.class);
+		Bundle bundle = new Bundle();    	
+		intent.putExtras(bundle);
+		startActivity(intent);
+	}
 }

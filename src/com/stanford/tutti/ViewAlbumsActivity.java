@@ -80,4 +80,11 @@ public class ViewAlbumsActivity extends Activity {
 		});
 	}
 	
+	
+	public void viewJam(View view) {
+		Intent intent = new Intent(this, ViewJamActivity.class);
+		Bundle bundle = new Bundle();    	
+		intent.putExtras(bundle);
+		startActivity(intent);
+	}
 }
