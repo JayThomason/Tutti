@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,7 +55,7 @@ public class ViewSongsActivity extends Activity {
 	    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    listView.setAdapter(mAdapter);
 		
-		// setArtistListItemClickListener();
+		setSongListItemClickListener();
 	}
 	
 	/*
@@ -62,15 +63,27 @@ public class ViewSongsActivity extends Activity {
 	 * move to the ViewAlbumsActivity and filter on the selected artist. 
 	 */
 	
-	private void setArtistListItemClickListener() {
+	private void setSongListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
-				String item = ((TextView)view).getText().toString();
+				String title = ((TextView)view).getText().toString();
 				Globals g = (Globals) getApplication();  
-				
-				
+				Song song = g.db.getSongByTitle(title); 
+				g.jam.addSong(song); 
+				Toast.makeText(getApplicationContext(),
+						song.getArtist()
+						+ " : " + song.getTitle()
+						+ " added to Jam", Toast.LENGTH_SHORT).show();                
+				//if (master) {
+					if (g.jam.getCurrentSong() == null) {
+						g.jam.setCurrentSong(song);
+						g.jam.playCurrentSong();
+					}          
+				//} 
+				//new PassMessageThread(g.jam.getOtherIP(), 
+				//		"/jam/add/" + Integer.toString(song.hashCode())).start(); 
 			}
 		});
 	}

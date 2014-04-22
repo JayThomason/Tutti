@@ -183,6 +183,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return cursor; 
     }
     
+    public Song getSongByTitle(String title) {
+    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " = '" + title + "'"; 
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+                    	
+        cursor.moveToFirst(); 
+        
+    	return rowToSong(cursor);  
+    }
+    
     public void deleteSong(Song song) {
     	 
         // 1. get reference to writable DB

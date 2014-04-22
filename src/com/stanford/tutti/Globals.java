@@ -23,6 +23,7 @@ public class Globals extends Application {
 	private HashMap<String, Artist> artistMap = new HashMap<String, Artist>();
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	public Jam jam = new Jam(); 
+	public Boolean master = false; 
 	
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 

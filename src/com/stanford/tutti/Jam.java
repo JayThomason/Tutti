@@ -121,8 +121,8 @@ public class Jam {
 	 * @return True (success) or false (failure)
 	 */
 	public boolean playCurrentSong() {
-		if (!master)
-			return false; 
+		//if (!master)
+		//	return false; 
 		
 		if (getCurrentSong() != null) {
 			mediaPlayer.reset();
