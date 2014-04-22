@@ -94,6 +94,7 @@ public class NewJamActivity extends Activity {
 	 * Starts the embedded NanoHttpd server.
 	 */
 	private void setUpServer() {
+		g.uiUpdateHandler = handler;
 		server = new Server(PORT, g, handler);
 		try {
 			server.start();

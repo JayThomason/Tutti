@@ -8,6 +8,7 @@ import android.app.Application;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
 
 /* 
  * Stores any state which must be globally accessible, eg. variables which cannot
@@ -32,6 +33,8 @@ public class Globals extends Application {
 	private int nextSongId = 1; 
 	
 	private static Context context; 
+	
+	Handler uiUpdateHandler = null;
 	
 	@Override
 	public void onCreate() {
