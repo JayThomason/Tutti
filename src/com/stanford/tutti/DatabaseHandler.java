@@ -57,7 +57,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		+ KEY_ALBUM + " TEXT,"
         		+ KEY_PATH + " TEXT,"
                 + KEY_LOCAL + " INTEGER," 
-        		+ KEY_HASH + " INTEGER" + ")";
+        		+ KEY_HASH + " INTEGER," 
+                + " UNIQUE (" 
+        		+ KEY_TITLE + ", " 
+                + KEY_ARTIST + ", "
+                + KEY_ALBUM + ")"
+                + " ON CONFLICT IGNORE)";
         db.execSQL(CREATE_SONGS_TABLE);
     }
  
@@ -75,9 +80,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	// 1. get reference to writable DB
     	SQLiteDatabase db = this.getWritableDatabase();
     	
+    	// Replaced by UNIQUE constraint on columns
+    	/*
     	if (this.containsSong(song.hashCode())) {
     		return; 
     	}
+    	*/
 
     	// 2. create ContentValues to add key "column"/value
     	// key/value -> keys = column names/ values = column values
