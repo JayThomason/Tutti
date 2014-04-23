@@ -17,14 +17,6 @@
         android:textColor="#ffffff"
         android:textSize="24sp" />
 
-    <EditText
-	    android:id="@+id/song_search_box"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/songTitle"
-	    android:inputType="text" 
-	    android:textColor="#ffffff" />
-    
     <ListView
         android:id="@+id/songListView"
         android:layout_width="match_parent"
@@ -34,6 +26,17 @@
         android:textColor="#ffffff" >
 
     </ListView>
+    
+    <EditText
+	    android:id="@+id/song_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="#ffffff"
+	    android:inputType="textFilter" 
+	    android:hint="Search songs"
+	    android:textColor="#000000" />
+    
 
     <Button
         android:id="@+id/button1"

@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ViewArtistsActivity extends Activity {
 	private ListView all; 
 	private ListView listView;
+	private EditText searchBox; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +80,8 @@ public class ViewArtistsActivity extends Activity {
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
 	    
-	    EditText etext = (EditText)findViewById(R.id.artist_search_box);
-	    etext.addTextChangedListener(new TextWatcher() {
+	    searchBox = (EditText)findViewById(R.id.artist_search_box);
+	    searchBox.addTextChangedListener(new TextWatcher() {
 	        public void onTextChanged(CharSequence s, int start, int before, int count) {
 	        }
 
@@ -93,6 +94,7 @@ public class ViewArtistsActivity extends Activity {
 	            filterAdapter.getFilter().filter(s.toString());
 	        }
 	    });
+	    
 
 	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {

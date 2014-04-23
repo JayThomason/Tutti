@@ -17,14 +17,7 @@
         android:text="Artists"
         android:textColor="#ffffff"
         android:textSize="24sp" />
-
-    <EditText
-	    android:id="@+id/artist_search_box"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/artistTitle"
-	    android:inputType="text" 
-	    android:textColor="#ffffff" />
+    
     
     <ListView
         android:id="@+id/allArtists"
@@ -32,9 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/artistTitle"
         android:background="#ff0927"
-        android:textColor="#ffffff" >
-
-    </ListView>
+        android:textColor="#ffffff" />
     
     <ListView
         android:id="@+id/artistListView"
@@ -42,10 +33,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/allArtists"
         android:background="#ff0927"
-        android:textColor="#ffffff" >
-
-    </ListView>
-
+        android:textColor="#ffffff" />
+    
+     <EditText
+	    android:id="@+id/artist_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="#ffffff"
+	    android:inputType="textFilter" 
+	    android:hint="Search artists"
+	    android:textColor="#000000" />
+    
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
