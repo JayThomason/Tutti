@@ -14,7 +14,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -29,6 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ALBUM = "album";
     private static final String KEY_PATH = "path";
     private static final String KEY_LOCAL = "local";
+    private static final String KEY_HASH = "hash"; 
     
     // Table Columns indices
     private static final int COL_ID = 0; 
@@ -37,8 +38,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int COL_ALBUM = 3; 
     private static final int COL_PATH = 4; 
     private static final int COL_LOCAL = 5; 
+    private static final int COL_HASH = 6; 
     
-    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL};
+    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_HASH};
 
  
     public DatabaseHandler(Context context) {
@@ -54,7 +56,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		+ KEY_ARTIST + " TEXT,"
         		+ KEY_ALBUM + " TEXT,"
         		+ KEY_PATH + " TEXT,"
-                + KEY_LOCAL + " INTEGER" + ")";
+                + KEY_LOCAL + " INTEGER," 
+        		+ KEY_HASH + " INTEGER" + ")";
         db.execSQL(CREATE_SONGS_TABLE);
     }
  
@@ -71,6 +74,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void addSong(Song song){
     	// 1. get reference to writable DB
     	SQLiteDatabase db = this.getWritableDatabase();
+    	
+    	if (this.containsSong(song.hashCode())) {
+    		return; 
+    	}
 
     	// 2. create ContentValues to add key "column"/value
     	// key/value -> keys = column names/ values = column values
@@ -80,6 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_ARTIST, song.getArtist());
     	values.put(KEY_ALBUM, song.getAlbum());
     	values.put(KEY_PATH, song.getPath());
+    	values.put(KEY_HASH, song.hashCode()); 
     	
     	int local = 0; 
     	if (song.isLocal()) {
@@ -122,6 +130,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         
         // 6. return Song
         return song; 
+    }
+    
+    public Cursor getSongByHash(int hash) {
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_HASH + " = " + hash;
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+  
+        return cursor;  	
     }
     
     public Cursor getSongsByArtist(String artist) {
@@ -239,6 +256,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
     	
         return cursor; 
+    }
+    
+    public boolean containsSong(int hash) {
+    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_HASH + " = " + hash; 
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        
+        if (cursor.getCount() > 0) {
+        	return true; 
+        } else {
+        	return false; 
+        }
     }
     
     public void deleteSong(Song song) {

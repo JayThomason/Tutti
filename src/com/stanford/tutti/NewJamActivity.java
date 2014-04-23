@@ -48,9 +48,12 @@ public class NewJamActivity extends Activity {
 		getMasterBoolFromBundle();
 		g = (Globals) getApplication(); 
 		g.jam.setMaster(master); 
+		
 		// Show the unique code (ip) for "join jam" requests
 		EditText editText = (EditText) this.findViewById(R.id.ip_address);
 		editText.setText("Your Jam ID is: " + g.getIpAddr());
+		
+		/*
 		// get the listview
 		expListView = (ExpandableListView) findViewById(R.id.listView1);
 		// preparing list data
@@ -59,12 +62,15 @@ public class NewJamActivity extends Activity {
 		// setting list adapter
 		expListView.setAdapter(listAdapter);
 		setItemOnClickListener();
-		setUpHandler();
+		setUpHandler();*/
 		if (master) {
 			setUpServer();
 			System.out.println("booted server!");
 			(new CreateJamInDatabaseThread(getString(R.string.ec2_server), g.getIpAddr())).start();
 		}
+		
+		Intent intent = new Intent(this, ViewArtistsActivity.class);
+		startActivity(intent);
 	}
 	
 	/*
