@@ -27,6 +27,7 @@ public class ViewJamActivity extends Activity {
 	private ImageButton backButton;
 	private ImageButton nextButton;
 	private ListView listView;
+	private final int port = 1234;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +83,8 @@ public class ViewJamActivity extends Activity {
 				g.jam.setCurrentSongByIndex(position);
 				g.jam.playCurrentSong(); 
 				Song song = g.jam.getSongByIndex(position); 
-				new PassMessageThread(g.jam.getOtherIP(), 
-						"/jam/set/" + Integer.toString(song.hashCode())).start(); 
+				new PassMessageThread(g.jam.getOtherIP(), port,
+						"/jam/set/" + Integer.toString(song.hashCode()), "").start(); 
 			}
 		});
 	}
@@ -117,7 +118,7 @@ public class ViewJamActivity extends Activity {
 			public void onClick(View arg0) {
 				Globals g = (Globals) getApplication();
 				g.jam.start();
-				(new PassMessageThread(g.jam.getOtherIP(), "/jam/start")).start(); 
+				(new PassMessageThread(g.jam.getOtherIP(), port, "/jam/start", "")).start(); 
 			}
 		});
 	}
@@ -132,7 +133,7 @@ public class ViewJamActivity extends Activity {
 			public void onClick(View arg0) {
 				Globals g = (Globals) getApplication();
 				g.jam.pause();
-				(new PassMessageThread(g.jam.getOtherIP(), "/jam/pause")).start(); 
+				(new PassMessageThread(g.jam.getOtherIP(), port, "/jam/pause", "")).start(); 
 			}
 		});
 	}
@@ -146,7 +147,7 @@ public class ViewJamActivity extends Activity {
 			public void onClick(View arg0) {
 				Globals g = (Globals) getApplication();
 				g.jam.seekTo(0);
-				(new PassMessageThread(g.jam.getOtherIP(), "/jam/restart")).start(); 
+				(new PassMessageThread(g.jam.getOtherIP(), port, "/jam/restart", "")).start(); 
 			}
 		});
 	}

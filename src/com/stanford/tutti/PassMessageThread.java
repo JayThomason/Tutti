@@ -14,17 +14,20 @@ import org.apache.http.impl.client.DefaultHttpClient;
  */
 class PassMessageThread extends Thread {
 	private String ipAddress;
-	private final int PORT = 1234;
-	private String path; 
+	private int port;
+	private String path;
+	private String query;
 
 	/*
 	 * Creates a new PassMessageThread for the ip/path pair.
 	 * Note: the path should begin with a '/' (it must be
 	 * an absolute path on the server).
 	 */
-	public PassMessageThread(String ip, String path) {
+	public PassMessageThread(String ip, int port, String path, String query) {
 		ipAddress = ip;
 		this.path = path; 
+		this.port = port;
+		this.query = query;
 	}
 
 	/*
@@ -33,7 +36,7 @@ class PassMessageThread extends Thread {
 	 */
 	public void run() {
 		HttpClient httpClient = new DefaultHttpClient();
-		String uri = "http://" + ipAddress + ":" + PORT + path;
+		String uri = "http://" + ipAddress + ":" + port + path + query;
 		HttpGet get = new HttpGet(uri.toString());
 		try {
 			// Right now we're not doing anything with this response. 

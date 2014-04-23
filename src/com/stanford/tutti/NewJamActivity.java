@@ -133,8 +133,8 @@ public class NewJamActivity extends Activity {
 						g.jam.playCurrentSong();
 					}          
 				} 
-				new PassMessageThread(g.jam.getOtherIP(), 
-						"/jam/add/" + Integer.toString(song.hashCode())).start(); 
+				new PassMessageThread(g.jam.getOtherIP(), 1234, 
+						"/jam/add/" + Integer.toString(song.hashCode()), "").start(); 
 				return false;
 			}
 		});
