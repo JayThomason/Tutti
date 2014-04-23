@@ -29,7 +29,7 @@ public class Globals extends Application {
 	
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 
-	public Handler uiHandler; 
+	public Handler uiUpdateHandler; 
 	
 	DatabaseHandler db; 
 	private int nextSongId = 1; 
@@ -41,6 +41,7 @@ public class Globals extends Application {
 		super.onCreate();
 		Globals.context = getApplicationContext(); 
 		db = new DatabaseHandler(this);
+		uiUpdateHandler = new Handler(); 
 	}
 	
 	public static Context getAppContext() {

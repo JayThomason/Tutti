@@ -51,7 +51,7 @@ public class JoinJamActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-			    server = new Server(PORT, g, null);
+			    server = new Server(PORT, g);
 			    String ip = ((TextView) arg1).getText().toString();
 				Globals g = (Globals) getApplication(); 
 				g.jam.setOtherIP(ip); 

@@ -134,7 +134,7 @@ public class ViewArtistsActivity extends Activity {
 	 */
 	private void setUpHandler() {
 		Globals g = (Globals) getApplicationContext(); 
-		g.uiHandler = new Handler() {
+		g.uiUpdateHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				/*

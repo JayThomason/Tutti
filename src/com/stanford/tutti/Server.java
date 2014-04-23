@@ -32,12 +32,10 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_RESTART = "/restart"; 
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private Globals g = null;
-	private Handler handler = null;
 	
-	public Server(int port, Globals g, Handler handler) {
+	public Server(int port, Globals g) {
 		super(port);
 		this.g = g;
-		this.handler = handler;
 	}
 	
 	/*
@@ -107,10 +105,10 @@ public class Server extends NanoHTTPD {
     	getLibraryThread.start();
     	try {
 			getLibraryThread.join();
-			if (handler != null) {
-				Message msg = handler.obtainMessage();
+			if (g.uiUpdateHandler != null) {
+				Message msg = g.uiUpdateHandler.obtainMessage();
 				msg.what = 0; // fix this later to be constant
-				handler.sendMessage(msg);
+				g.uiUpdateHandler.sendMessage(msg);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

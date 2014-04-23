@@ -3,6 +3,8 @@ package com.stanford.tutti;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -32,6 +34,7 @@ public class ViewSongsActivity extends Activity {
 		setContentView(R.layout.activity_view_songs);
 		listView = (ListView) findViewById(R.id.songListView);
 		initializeSongList();
+		setUpHandler(); 
 	}
 
 	@Override
@@ -119,6 +122,28 @@ public class ViewSongsActivity extends Activity {
 			}
 		});
 	}
+	
+	/*
+	 * Initializes the handler. The handler is used to receive messages from
+	 * the server and to update the UI accordingly.
+	 */
+	private void setUpHandler() {
+		Globals g = (Globals) getApplicationContext(); 
+		g.uiUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from another phone that we have new
+				 * non-local music, we can update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					initializeSongList(); 
+				}
+				super.handleMessage(msg);
+			}
+		};		
+	}
+	
 	
 	public void viewJam(View view) {
 		Intent intent = new Intent(this, ViewJamActivity.class);
