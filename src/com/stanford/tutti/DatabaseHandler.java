@@ -142,7 +142,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getSongsByArtist(String artist) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + artist + "'";
+    	String escapedArtist = artist.replace("'", "''");
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
         
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
