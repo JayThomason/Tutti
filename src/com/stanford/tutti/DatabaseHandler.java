@@ -284,6 +284,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
     
+    public void dropTable(String table) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table, null, null); 
+    }
+    
     private Song rowToSong(Cursor cursor) {
     	boolean local = false; 
     	if (Integer.parseInt(cursor.getString(COL_LOCAL)) == 1) {

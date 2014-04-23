@@ -12,6 +12,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        Globals g = (Globals) getApplicationContext(); 
+        g.db.dropTable("songs"); 
 		MusicLibraryLoader musicLibraryLoader = new MusicLibraryLoader();
 		musicLibraryLoader.loadMusic(this);
     }
