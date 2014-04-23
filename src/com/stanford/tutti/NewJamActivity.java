@@ -35,7 +35,7 @@ public class NewJamActivity extends Activity {
 	private final int PORT = 1234;
 	private Server server;
 	private Globals g; 
-	private Handler handler;
+	private Handler uiUpdateHandler;
 	private boolean master; 
 	// We should really be building this up as a global
 	HashMap<String, Song> songMap; 
@@ -78,7 +78,7 @@ public class NewJamActivity extends Activity {
 	 * the server and to update the UI accordingly.
 	 */
 	private void setUpHandler() {
-		handler = new Handler() {
+		uiUpdateHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				/*
@@ -100,8 +100,7 @@ public class NewJamActivity extends Activity {
 	 * Starts the embedded NanoHttpd server.
 	 */
 	private void setUpServer() {
-		g.uiUpdateHandler = handler;
-		server = new Server(PORT, g, handler);
+		server = new Server(PORT, g, uiUpdateHandler);
 		try {
 			server.start();
 		} catch (IOException e) {
