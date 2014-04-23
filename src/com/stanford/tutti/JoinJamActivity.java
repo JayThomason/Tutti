@@ -7,19 +7,25 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class JoinJamActivity extends Activity {
-	private Button joinButton; 
+	private ListView jamListView;
 	private static final int PORT = 1234;
 	private EditText editText;
 	private Server server;
 	private Globals g;
+	private Handler h;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +35,24 @@ public class JoinJamActivity extends Activity {
 		setupActionBar();
 		editText = (EditText) this.findViewById(R.id.ip_address);
 		g = (Globals) getApplication();
-		configureJoinJamButton(); 
+		configureJamListView(); 
+		requestLocalJams();
 	}
 	
+	private void requestLocalJams() {
+		String serverHostname = getString(R.string.ec2_server);
+		(new RequestLocalJamThread(serverHostname, this)).start();
+	}
 	
-	private void configureJoinJamButton() {
-		joinButton = (Button) this.findViewById(R.id.join_jam_btn);
-		joinButton.setOnClickListener(new View.OnClickListener() {
+	private void configureJamListView() {
+		jamListView = (ListView) this.findViewById(R.id.jamListView);
+		jamListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onClick(View arg0) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
 			    server = new Server(PORT, g, null);
-				String ip = editText.getText().toString(); 
+			    String ip = ((TextView) arg1).getText().toString();
 				Globals g = (Globals) getApplication(); 
 				g.jam.setOtherIP(ip); 
 				Thread joinJamThread = new JoinJamThread(ip, false);
@@ -58,14 +71,15 @@ public class JoinJamActivity extends Activity {
 				}
 				
 				// Load the new jam screen as a slave
-				Intent intent = new Intent(JoinJamActivity.this, NewJamActivity.class);
+				Intent intent = new Intent(JoinJamActivity.this, ViewArtistsActivity.class);
 				Bundle b = new Bundle();
 				b.putInt("host", 0); //Your id
 				intent.putExtras(b);
 				startActivity(intent);
 				finish();
 			}
-		});		
+		});
+	
 	}
 
 	

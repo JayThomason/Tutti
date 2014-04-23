@@ -8,31 +8,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/gradient"
     tools:context=".JoinJamActivity" >
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Input Jam ID"
-        android:textColor="#ffffff" 
-        android:textSize="28sp" />
     
-    <EditText
-	    android:id="@+id/ip_address"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/textView2"
-	    android:inputType="text" 
-	    android:textColor="#ffffff" />
-    
-   <Button
-        android:id="@+id/join_jam_btn"
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/jamListView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ip_address"
-        android:textColor="#ffffff" 
-        android:hint="Enter the Jam ID"
-        android:text="Join Jam" />
+        android:background="#ff0927"
+        android:textColor="#ffffff"> 
+    </ListView>
+    
 
 </RelativeLayout>
