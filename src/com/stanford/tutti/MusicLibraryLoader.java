@@ -20,13 +20,14 @@ import android.util.Log;
  */
 public class MusicLibraryLoader {
 	
+	private ArrayList<String> artists; 
+	
 	/*
 	 * Loads all of the music into the Globals music metadata store.
 	 */
     public void loadMusic(Activity activity) {
     	Globals g = (Globals) activity.getApplication();
-		//loadAllArtists(activity, g);
-		//loadAllAlbums(activity, g);
+		loadAllArtists(activity, g);
 		loadAllSongs(activity, g);
 	}
 	
@@ -35,108 +36,31 @@ public class MusicLibraryLoader {
      * Globals metadata store.
      */
 	private void loadAllArtists(Activity activity, Globals g) {
-        Cursor cursor = activity.getContentResolver().query(
+        artists = new ArrayList<String>();
+		
+		Cursor cursor = activity.getContentResolver().query(
         	    MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, 
         	    null, 
         	    null, 
         	    null, 
         	    MediaStore.Audio.Artists.ARTIST + " ASC");
         
-        while (cursor.moveToNext()) {
-            String artistName = cursor.getString(
-            		cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
-            Artist artist = new Artist(artistName, true);
-            g.addArtist(artist);
-        }
-	}
-	
-	/*
-	 * Loads all of the albums for each artist into the Globals
-	 * metadata store.
-	 */
-	private void loadAllAlbums(Activity activity, Globals g) {
-		ArrayList<Artist> artistList = g.getArtistList();
-		for (int i = 0; i < artistList.size(); ++i) {
-			Artist artist = artistList.get(i);
-			final String where = MediaStore.Audio.AlbumColumns.ARTIST
-        		+ "='" + artist.getName().replace("'",  "''") + "'";
-        
-	        Cursor cursor = activity.getContentResolver().query(
-	        	    MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
-	        	    null, 
-	        	    where, 
-	        	    null, 
-	        	    MediaStore.Audio.Albums.ALBUM + " ASC");
-	        
-	        while (cursor.moveToNext()) {
-	            String albumTitle = cursor.getString(
-	            		cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
-	            Album album = new Album(albumTitle, artist.getName(), true);
-	            artist.addAlbum(album);
-	            g.addAlbum(album);
-	        }
-		}
-	}
-	
-	/*
-	 * Loads every song in the music store on the phone into
-	 * the Globals' metadata store.
-	 */
-	/*
-	private void loadAllSongs(Activity activity, Globals g) {
-		ArrayList<Album> albumList = g.getAlbumList();
-		for (int i = 0; i < albumList.size(); ++i) {
-			Album album = albumList.get(i);
-	    	final String where = MediaStore.Audio.Media.ALBUM
-	        		+ "='" + album.getTitle().replace("'", "''") + "'";
-	        
-	        Cursor cursor = activity.getContentResolver().query(
-	        	    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
-	        	    null, 
-	        	    where, 
-	        	    null, 
-	        	    MediaStore.Audio.Albums.ALBUM + " ASC");
-	        
-	        while (cursor.moveToNext()) {
-	            String songTitle = cursor.getString(
-	            		cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-	            String path = cursor.getString(
-	            		cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-	            Song song = new Song(songTitle, path, g.nextSongId(), true);
-	            song.setAlbum(album.getTitle());
-	            song.setArtist(album.getArtist());
-	            g.addSong(song);
-	            album.addSong(song);
-	            
-	            g.db.addSong(song); 
-			}
-		}
-	}
-	*/
-	
-	
-	private void loadAllSongs(Activity activity, Globals g) {
-        Cursor cursor = activity.getContentResolver().query(
-        	    MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, 
-        	    null, 
-        	    null, 
-        	    null, 
-        	    MediaStore.Audio.Artists.ARTIST + " ASC");
-        
-        ArrayList<String> artists = new ArrayList<String>();
         while (cursor.moveToNext()) {
             String artistName = cursor.getString(
             		cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
             artists.add(artistName); 
         }
-		
-		
+	}
+	
+	
+	private void loadAllSongs(Activity activity, Globals g) {
 		for (int i = 0; i < artists.size(); i++) {
+			
 			String artist = artists.get(i);
 			final String where = MediaStore.Audio.AlbumColumns.ARTIST
         		+ "='" + artist.replace("'",  "''") + "'";
 			
-	        cursor = activity.getContentResolver().query(
+	        Cursor cursor = activity.getContentResolver().query(
 	        	    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
 	        	    null, 
 	        	    where,
@@ -151,7 +75,6 @@ public class MusicLibraryLoader {
 	            Song song = new Song(songTitle, path, g.nextSongId(), true);
 	            song.setAlbum(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
 	            song.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
-	            g.addSong(song);
 	            
 	            g.db.addSong(song); 
 	        }
