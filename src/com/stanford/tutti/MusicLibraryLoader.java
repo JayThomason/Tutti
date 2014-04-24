@@ -25,8 +25,8 @@ public class MusicLibraryLoader {
 	 */
     public void loadMusic(Activity activity) {
     	Globals g = (Globals) activity.getApplication();
-		loadAllArtists(activity, g);
-		loadAllAlbums(activity, g);
+		//loadAllArtists(activity, g);
+		//loadAllAlbums(activity, g);
 		loadAllSongs(activity, g);
 	}
 	
@@ -82,6 +82,7 @@ public class MusicLibraryLoader {
 	 * Loads every song in the music store on the phone into
 	 * the Globals' metadata store.
 	 */
+	/*
 	private void loadAllSongs(Activity activity, Globals g) {
 		ArrayList<Album> albumList = g.getAlbumList();
 		for (int i = 0; i < albumList.size(); ++i) {
@@ -110,5 +111,51 @@ public class MusicLibraryLoader {
 	            g.db.addSong(song); 
 			}
 		}
+	}
+	*/
+	
+	
+	private void loadAllSongs(Activity activity, Globals g) {
+        Cursor cursor = activity.getContentResolver().query(
+        	    MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, 
+        	    null, 
+        	    null, 
+        	    null, 
+        	    MediaStore.Audio.Artists.ARTIST + " ASC");
+        
+        ArrayList<String> artists = new ArrayList<String>();
+        while (cursor.moveToNext()) {
+            String artistName = cursor.getString(
+            		cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
+            artists.add(artistName); 
+        }
+		
+		
+		for (int i = 0; i < artists.size(); i++) {
+			String artist = artists.get(i);
+			final String where = MediaStore.Audio.AlbumColumns.ARTIST
+        		+ "='" + artist.replace("'",  "''") + "'";
+			
+	        cursor = activity.getContentResolver().query(
+	        	    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, 
+	        	    null, 
+	        	    where,
+	        	    null, 
+	        	    MediaStore.Audio.Albums.ARTIST + " ASC");
+	        
+	        while (cursor.moveToNext()) {
+	            String songTitle = cursor.getString(
+	            		cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+	            String path = cursor.getString(
+	            		cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+	            Song song = new Song(songTitle, path, g.nextSongId(), true);
+	            song.setAlbum(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
+	            song.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+	            g.addSong(song);
+	            
+	            g.db.addSong(song); 
+	        }
+		}
+	
 	}
 }
