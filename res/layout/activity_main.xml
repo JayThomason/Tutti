@@ -36,26 +36,12 @@
         android:paddingLeft="15dip"
         android:textColor="#ffffff" 
         android:onClick="joinJam"/>
-    
-    <Button
+  
+     <Button
         android:id="@+id/Button03"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/Button02"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_button"
-        android:gravity="left|center_vertical"
-        android:text="@string/explore_music"
-        android:layout_marginTop="15dp"
-        android:paddingLeft="15dip"
-        android:textColor="#ffffff" 
-        android:onClick="exploreMusic"/>
-  
-     <Button
-        android:id="@+id/Button04"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/Button03"
         android:layout_centerHorizontal="true"
         android:background="@drawable/custom_button"
         android:gravity="left|center_vertical"
@@ -66,10 +52,10 @@
         android:onClick="settingsMenu"/>
      
     <Button
-        android:id="@+id/Button05"
+        android:id="@+id/Button04"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/Button04"
+        android:layout_below="@+id/Button03"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@drawable/custom_button"
