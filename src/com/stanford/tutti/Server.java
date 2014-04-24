@@ -103,12 +103,14 @@ public class Server extends NanoHTTPD {
     private Response joinJamResponse(String otherIpAddress) {
     	Thread getLibraryThread = new JoinJamThread(otherIpAddress, true);
     	getLibraryThread.start();
+		return new NanoHTTPD.Response("OK to join");
+/*
     	try {
 			getLibraryThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return new NanoHTTPD.Response("OK to join");
+		*/
 	}
     
     /*
