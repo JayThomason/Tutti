@@ -48,53 +48,6 @@ public class Globals extends Application {
         return Globals.context;
     }
 
-
-	/*
-	 * Returns a list of all artists.
-	 * 
-	 * @return ArrayList<Artist>
-	 */
-	public ArrayList<Artist> getArtistList() {
-		return artistList;
-	}
-
-	/*
-	 * Adds an artist to the list.
-	 * 
-	 * @param Artist
-	 */
-	public void addArtist(Artist artist) {
-		artistList.add(artist);
-		artistMap.put(artist.getName(), artist);
-	}	
-
-	/*
-	 * Returns an Artist given the artist's name.
-	 * 
-	 * @param String artistName
-	 */
-	public Artist getArtistByName(String artistName) {
-		return artistMap.get(artistName);
-	}
-
-	/*
-	 * Returns a list of all albums.
-	 * 
-	 * @return ArrayList<Album>
-	 */
-	public ArrayList<Album> getAlbumList() {
-		return albumList;
-	}
-
-	/*
-	 * Adds an album to the album list.
-	 * 
-	 * @param Album album
-	 */
-	public void addAlbum(Album album) {
-		albumList.add(album);
-	}
-
 	/*
 	 * Associates a song with a unique key in the song map.
 	 */

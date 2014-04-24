@@ -90,57 +90,32 @@ class JoinJamThread extends Thread {
 	}
 
 	/*
-	 * Load new music into the global library by
+	 * Load new music into the database library by
 	 * parsing the JSON response from another phone. 
 	 * 
-	 * Terribly inefficient right now; figure out how to make more efficient.
 	 */
 	public void loadMusicFromJSON(JSONArray artists) {    	
 		for (int i = 0; i < artists.length(); i++) {
 			try {
 				JSONObject jsonArtist = artists.getJSONObject(i); 
 				String artistName = (String)jsonArtist.get("name"); 
-				Artist artist = g.getArtistByName(artistName);
-				if (artist == null)
-					artist = new Artist(artistName, false);
 				JSONArray albums = jsonArtist.getJSONArray("albums"); 
 				for (int j = 0; j < albums.length(); j++) {
 					JSONObject jsonAlbum = albums.getJSONObject(j); 
 					String albumTitle = (String)jsonAlbum.get("title");
-					ArrayList<Album> albumList = artist.getAlbumList();
-					Album album = null;
-					for (int k = 0; k < albumList.size(); ++k)
-						if (albumList.get(k).getTitle().equals(albumTitle))
-							album = albumList.get(k);
-					if (album == null)
-						album = new Album(albumTitle, artist.getName(), false);
 					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
 					for (int k = 0; k < songs.length(); k++) {
 						JSONObject jsonSong = songs.getJSONObject(k); 
 						String songTitle = (String)jsonSong.get("title"); 
 						String songPath = (String)jsonSong.get("path");
-						ArrayList<Song> songList = album.getSongList();
-						boolean songExists = false;
-						for (int l = 0; l < songList.size(); ++l) {
-							if (songList.get(l).getTitle().equals(songTitle)) {
-								songExists = true;
-								break;
-							}
-						}
-						if (!songExists) {
-							Song song = new Song(songTitle, songPath, g.nextSongId(), false);
-							song.setArtist(artist.getName()); 
-							song.setAlbum(album.getTitle()); 
-							g.addSong(song);
-							album.addSong(song); 
-							
-							g.db.addSong(song); 
-						}
+						Song song = new Song(songTitle, songPath, g.nextSongId(), false);
+						song.setArtist(artistName); 
+						song.setAlbum(albumTitle); 
+						
+						g.addSong(song);	
+						g.db.addSong(song); 
 					}
-					artist.addAlbum(album); 
-					g.addAlbum(album); 
 				}
-				g.addArtist(artist);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
