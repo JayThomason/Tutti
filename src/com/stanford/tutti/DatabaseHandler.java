@@ -18,7 +18,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		+ KEY_ALBUM + " TEXT,"
         		+ KEY_PATH + " TEXT,"
                 + KEY_LOCAL + " INTEGER," 
-        		+ KEY_HASH + " INTEGER," 
+        		+ KEY_HASH + " TEXT," 
                 + " UNIQUE (" 
         		+ KEY_TITLE + ", " 
                 + KEY_ARTIST + ", "
@@ -98,7 +98,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_ARTIST, song.getArtist());
     	values.put(KEY_ALBUM, song.getAlbum());
     	values.put(KEY_PATH, song.getPath());
-    	values.put(KEY_HASH, song.hashCode()); 
+    	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
     	
     	int local = 0; 
     	if (song.isLocal()) {
@@ -140,13 +140,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return song; 
     }
     
-    public Cursor getSongByHash(int hash) {
+    public Song getSongByHash(String hash) {
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_HASH + " = " + hash;
         
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
   
-        return cursor;  	
+        cursor.moveToFirst(); 
+        
+        Song song = rowToSong(cursor); 
+        
+        return song;  	
     }
     
     public Cursor getSongsByArtist(String artist) {

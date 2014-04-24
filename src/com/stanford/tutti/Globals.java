@@ -21,7 +21,6 @@ import android.os.Message;
  * checking and setting the current artist, album, and song.
  */
 public class Globals extends Application {
-	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	public Jam jam = new Jam(); 
 	public Boolean master = false; 
 	
@@ -45,20 +44,6 @@ public class Globals extends Application {
         return Globals.context;
     }
 
-	/*
-	 * Associates a song with a unique key in the song map.
-	 */
-	public void addSong(Song song) {
-		songMap.put(Integer.toString(song.hashCode()), song);
-	}
-
-	/*
-	 * Gets a song associated with a specific key.
-	 */
-	public Song getSongForUniqueKey(String key) {
-		return songMap.get(key);
-	}
-	
 	/*
 	 * Return a string representation of the current device's IP address. 
 	 */

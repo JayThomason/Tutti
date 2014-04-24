@@ -28,6 +28,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ViewSongsActivity extends Activity {
 	private ListView listView;
 	private Cursor cursor; 
+	private final int port = 1234;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,14 +116,14 @@ public class ViewSongsActivity extends Activity {
 						song.getArtist()
 						+ " : " + song.getTitle()
 						+ " added to Jam", Toast.LENGTH_SHORT).show();                
-				//if (master) {
+				if (g.master) {
 					if (g.jam.getCurrentSong() == null) {
 						g.jam.setCurrentSong(song);
 						g.jam.playCurrentSong();
 					}          
-				//} 
-				//new PassMessageThread(g.jam.getOtherIP(), 
-				//		"/jam/add/" + Integer.toString(song.hashCode())).start(); 
+				} 
+				new PassMessageThread(g.jam.getOtherIP(), port,
+						"/jam/add/", Integer.toString(song.hashCode())).start(); 
 			}
 		});
 	}

@@ -116,6 +116,7 @@ public class Server extends NanoHTTPD {
      * Pause, play, skip song, set song, etc. 
      */
     private Response updateJamResponse(final String path) {
+    	System.out.println("SERVER RECEIVED UPDATE JAM REQUEST"); 
     	if (path.startsWith(JAM_ADD_SONG)) {
     		return jamAddSongResponse(path.substring(JAM_ADD_SONG.length())); 
     	} else if (path.startsWith(JAM_SET_SONG)) {
@@ -134,7 +135,7 @@ public class Server extends NanoHTTPD {
      * Adds the requested song to the jam.
      */
 	private Response jamAddSongResponse(String keyPath) {
-		Song song = g.getSongForUniqueKey(keyPath.substring(1));
+		Song song = g.db.getSongByHash(keyPath.substring(1));
 		if (song == null) 
 			return fileNotFoundResponse();
 		g.jam.addSong(song);
@@ -149,7 +150,7 @@ public class Server extends NanoHTTPD {
      * Sets the requested song to be the currently playing song. 
      */
 	private Response jamSetSongResponse(String keyPath) {
-		Song song = g.getSongForUniqueKey(keyPath.substring(1));
+		Song song = g.db.getSongByHash(keyPath.substring(1));
 		if (song == null) 
 			return fileNotFoundResponse();
 		g.jam.setCurrentSong(song);
