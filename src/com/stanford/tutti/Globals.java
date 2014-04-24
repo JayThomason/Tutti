@@ -6,6 +6,7 @@ import org.json.*;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -20,9 +21,6 @@ import android.os.Message;
  * checking and setting the current artist, album, and song.
  */
 public class Globals extends Application {
-	private ArrayList<Artist> artistList = new ArrayList<Artist>();
-	private ArrayList<Album> albumList = new ArrayList<Album>();
-	private HashMap<String, Artist> artistMap = new HashMap<String, Artist>();
 	private HashMap<String, Song> songMap = new HashMap<String, Song>();
 	public Jam jam = new Jam(); 
 	public Boolean master = false; 
@@ -32,7 +30,6 @@ public class Globals extends Application {
 	public Handler uiUpdateHandler; 
 	
 	DatabaseHandler db; 
-	private int nextSongId = 1; 
 	
 	private static Context context; 
 		
@@ -60,38 +57,6 @@ public class Globals extends Application {
 	 */
 	public Song getSongForUniqueKey(String key) {
 		return songMap.get(key);
-	}
-	
-	/*
-	 * Get the integer primary key for the next song
-	 * to be stored in the database, and increment. 
-	 */
-	public int nextSongId() {
-		return nextSongId++; 
-	}
-
-	/*
-	 * Gets the current library of artists/albums/songs as JSON. 
-	 * 
-	 * @param JSONObject object
-	 * @param boolean (whether we should just get music that is local) 
-	 */
-	public JSONObject getArtistsAsJSON(boolean justLocal) {
-		JSONObject json = new JSONObject(); 
-		JSONArray artistArray = new JSONArray(); 
-		for (int i = 0; i < artistList.size(); i++) {
-			Artist artist = artistList.get(i);
-			if (justLocal && artist.isLocal())
-				artistArray.put(artist.toJSON(justLocal));
-			else if (!justLocal) 
-				artistArray.put(artist.toJSON(justLocal));
-		}
-		try {
-			json.put("artists", artistArray);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} 
-		return json; 
 	}
 	
 	/*

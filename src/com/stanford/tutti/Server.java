@@ -207,7 +207,7 @@ public class Server extends NanoHTTPD {
      */
 	private Response getLocalLibraryResponse() {
 		System.out.println("Returning Local Library as JSON");
-		JSONObject jsonLibrary = g.getArtistsAsJSON(true);
+		JSONObject jsonLibrary = g.db.getLibraryAsJSON();
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;

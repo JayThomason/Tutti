@@ -108,11 +108,10 @@ class JoinJamThread extends Thread {
 						JSONObject jsonSong = songs.getJSONObject(k); 
 						String songTitle = (String)jsonSong.get("title"); 
 						String songPath = (String)jsonSong.get("path");
-						Song song = new Song(songTitle, songPath, g.nextSongId(), false);
+						Song song = new Song(songTitle, songPath, false);
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
 						
-						g.addSong(song);	
 						g.db.addSong(song); 
 					}
 				}

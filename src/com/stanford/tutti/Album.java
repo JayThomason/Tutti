@@ -41,32 +41,6 @@ public class Album {
 		return local;
 	}
 	
-	/*
-	 * Converts this album and its list
-	 * of songs into a JSONObject. 
-	 * Used for sending album metadata to remote phones. 
-	 * 
-	 * @return JSONObject album
-	 */
-	public JSONObject toJSON(boolean justLocal) {
-		JSONObject json = new JSONObject(); 
-		try {
-			json.put("title", title);
-			JSONArray songArray = new JSONArray(); 
-			for (int i = 0; i < songList.size(); i++) {
-				Song song = songList.get(i);
-				if (justLocal && song.isLocal())
-					songArray.put(song.toJSON());
-				else if (!justLocal)
-					songArray.put(song.toJSON());
-			}
-			json.put("songs", songArray); 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} 
-		return json;
-	}
-	
 	public boolean equals(Object obj) {
 		if (obj == null)
             return false;

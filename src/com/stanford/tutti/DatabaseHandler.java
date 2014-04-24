@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +18,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -90,7 +94,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	// 2. create ContentValues to add key "column"/value
     	// key/value -> keys = column names/ values = column values
     	ContentValues values = new ContentValues();
-    	values.put(KEY_ID, song.getId()); 
     	values.put(KEY_TITLE, song.getTitle()); 
     	values.put(KEY_ARTIST, song.getArtist());
     	values.put(KEY_ALBUM, song.getAlbum());
@@ -279,6 +282,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
     
+    /*
     public void deleteSong(Song song) {
     	 
         // 1. get reference to writable DB
@@ -292,6 +296,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // 3. close
         db.close();
     }
+    */
     
     public void dropTable(String table) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -303,10 +308,99 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	if (Integer.parseInt(cursor.getString(COL_LOCAL)) == 1) {
     		local = true; 
     	} 
-    	Song song = new Song(cursor.getString(COL_TITLE), cursor.getString(COL_PATH), 
-    							Integer.parseInt(cursor.getString(COL_ID)), local); 
+    	Song song = new Song(cursor.getString(COL_TITLE), cursor.getString(COL_PATH), local); 
         song.setArtist(cursor.getString(COL_ARTIST));
         song.setAlbum(cursor.getString(COL_ALBUM));
         return song; 
+    }
+    
+    public JSONObject getLibraryAsJSON() {
+		JSONObject json = new JSONObject(); 
+		
+		JSONArray artistArray = getArtistsAsJSON(); 
+		
+	    try {
+	    	json.put("artists", artistArray); 
+	    } catch (JSONException e) {
+	    	e.printStackTrace(); 
+	    }
+	    
+	    return json; 
+	    
+    }
+    
+    private JSONArray getArtistsAsJSON() {
+    	JSONArray artistArray = new JSONArray(); 
+		Cursor artistCursor = getAllArtists(); 
+		 
+	    if (artistCursor.moveToFirst()) {
+	        do {
+	        	String artistName = artistCursor.getString(COL_ARTIST); 	        	
+	    		JSONObject artist = new JSONObject(); 
+
+    			JSONArray albumArray = getAlbumsAsJSON(artistName); 
+	        	
+	        	try {
+	        		artist.put("name", artistName); 
+	        		artist.put("albums", albumArray); 
+	        		artistArray.put(artist); 
+	        	} catch (JSONException e) {
+	    			e.printStackTrace();
+	        	}
+	            
+	        } while (artistCursor.moveToNext());
+	    }
+	    
+	    return artistArray; 
+    }
+    
+    private JSONArray getAlbumsAsJSON(String artistName) {
+    	JSONArray albumArray = new JSONArray(); 
+    	Cursor albumCursor = getAlbumsByArtist(artistName); 
+		
+    	if (albumCursor.moveToFirst()) {
+    		do {
+	        	String albumTitle = albumCursor.getString(COL_ALBUM); 
+	        	JSONObject album = new JSONObject(); 
+	        	
+	        	JSONArray songArray = getSongsAsJSON(albumTitle); 
+    			
+	    		try {
+	    			album.put("title", albumTitle);
+	    			album.put("songs", songArray); 
+	    			albumArray.put(album); 
+	    		} catch (JSONException e) {
+	    			e.printStackTrace();
+	    		} 
+    			
+    		} while (albumCursor.moveToNext()); 
+    	}
+    	
+    	return albumArray; 
+    }
+    
+    private JSONArray getSongsAsJSON(String albumTitle) {
+    	JSONArray songArray = new JSONArray(); 
+		Cursor songCursor = getSongsByAlbum(albumTitle); 
+		
+		if (songCursor.moveToFirst()) {
+			do {
+				
+	        	JSONObject song = new JSONObject(); 
+	        	String title = songCursor.getString(COL_TITLE);
+	        	String path = songCursor.getString(COL_PATH);
+	        	
+	    		try {
+	    			song.put("title", title);
+	    			song.put("path", path); 
+	    			songArray.put(song); 
+	    		} catch (JSONException e) {
+	    			e.printStackTrace();
+	    		} 
+				
+			} while (songCursor.moveToNext()); 
+		}
+		
+		return songArray; 
     }
 }

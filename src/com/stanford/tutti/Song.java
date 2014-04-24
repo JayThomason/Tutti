@@ -20,9 +20,6 @@ public class Song {
 	/* The path on the disk/sdcard to the raw song data or file. */
 	private String path; 
 	
-	/* The primary id number of the song in the database */
-	private int id; 
-	
 	/* Indicates whether the song is local to this device. */
 	private boolean local; 
 	
@@ -31,10 +28,9 @@ public class Song {
 	 * 
 	 * @param String title, String path
 	 */
-	public Song(String title, String path, int id, boolean local) {
+	public Song(String title, String path, boolean local) {
 		this.title = title;
 		this.path = path;
-		this.id = id; 
 		this.local = local;
 	}
 	
@@ -91,16 +87,7 @@ public class Song {
 	public String getPath() {
 		return path;
 	}
-	
-	/*
-	 * Gets the primary id of the song in the database. 
-	 * 
-	 * @return int
-	 */
-	public int getId() {
-		return id; 
-	}
-	
+
 	/*
 	 * Gets whether the song is local to this phone. 
 	 * 
@@ -108,23 +95,6 @@ public class Song {
 	 */
 	public boolean isLocal() {
 		return local; 
-	}
-	
-	/*
-	 * Converts this song and its data to a JSONObject. 
-	 * Used for sending song metadata to remote phones.  
-	 * 
-	 * @return JSONObject artist
-	 */
-	public JSONObject toJSON() {
-		JSONObject json = new JSONObject(); 
-		try {
-			json.put("title", title); 
-			json.put("path", path); 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} 
-		return json; 
 	}
 	
 	@Override

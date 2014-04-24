@@ -72,7 +72,7 @@ public class MusicLibraryLoader {
 	            		cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
 	            String path = cursor.getString(
 	            		cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-	            Song song = new Song(songTitle, path, g.nextSongId(), true);
+	            Song song = new Song(songTitle, path, true);
 	            song.setAlbum(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
 	            song.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
 	            
