@@ -18,7 +18,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -33,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ALBUM = "album";
     private static final String KEY_PATH = "path";
     private static final String KEY_LOCAL = "local";
+    private static final String KEY_ART = "art";
     private static final String KEY_HASH = "hash"; 
     
     // Table Columns indices
@@ -42,9 +43,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int COL_ALBUM = 3; 
     private static final int COL_PATH = 4; 
     private static final int COL_LOCAL = 5; 
-    private static final int COL_HASH = 6; 
+    private static final int COL_ART = 6; 
+    private static final int COL_HASH = 7; 
     
-    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_HASH};
+    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH};
 
  
     public DatabaseHandler(Context context) {
@@ -61,6 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		+ KEY_ALBUM + " TEXT,"
         		+ KEY_PATH + " TEXT,"
                 + KEY_LOCAL + " INTEGER," 
+                + KEY_ART + " TEXT,"
         		+ KEY_HASH + " TEXT," 
                 + " UNIQUE (" 
         		+ KEY_TITLE + ", " 
@@ -98,6 +101,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_ARTIST, song.getArtist());
     	values.put(KEY_ALBUM, song.getAlbum());
     	values.put(KEY_PATH, song.getPath());
+    	values.put(KEY_ART, song.getAlbumArt());
     	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
     	
     	int local = 0; 

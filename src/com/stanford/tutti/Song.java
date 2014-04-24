@@ -23,6 +23,9 @@ public class Song {
 	/* Indicates whether the song is local to this device. */
 	private boolean local; 
 	
+	/* Path to the album art for the song, if any */
+	private String albumArt = ""; 
+	
 	/*
 	 * Constructor
 	 * 
@@ -95,6 +98,14 @@ public class Song {
 	 */
 	public boolean isLocal() {
 		return local; 
+	}
+	
+	public void setAlbumArt(String path) {
+		albumArt = path; 
+	}
+	
+	public String getAlbumArt() {
+		return albumArt; 
 	}
 	
 	@Override

@@ -60,10 +60,20 @@ public class ViewSongsActivity extends Activity {
 		} else {
 			cursor = g.db.getAllSongs(); 
 		}
-				
+			
 		String[] columns = new String[] { "title" };
 	    int[] to = new int[] { android.R.id.text1 };
 
+	    
+	    /*
+	    Bitmap b = ImageService.getBitmapFromURLWithScale(param[0]);
+        return b;
+        ImageView img = (ImageView) findViewById(R.id.img);
+        img.setImageBitmap(bitmap);
+        */
+        
+        
+	    
 	    SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    listView.setAdapter(adapter);
 	    listView.setFastScrollEnabled(true);
