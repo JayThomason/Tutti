@@ -27,7 +27,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ViewAlbumsActivity extends Activity {
 	private ListView all; 
 	private ListView listView;
-
+	private Cursor cursor; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,7 +73,9 @@ public class ViewAlbumsActivity extends Activity {
 	private void initializeAlbumList() {
 		Globals g = (Globals) getApplication();  
 		
-		Cursor cursor; 
+	    if (cursor != null) 
+	    	cursor.close(); 
+	    
 		if (g.currentArtistView != "") {
 			cursor = g.db.getAlbumsByArtist(g.currentArtistView); 
 		} else {

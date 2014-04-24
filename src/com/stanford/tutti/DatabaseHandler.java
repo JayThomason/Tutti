@@ -108,9 +108,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     	// 3. insert
     	db.insert(TABLE_NAME, null, values); 
-
-    	// 4. close
-    	db.close(); 
     }
     
     public Song getSongByID(int id){

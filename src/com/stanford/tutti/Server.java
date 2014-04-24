@@ -105,11 +105,6 @@ public class Server extends NanoHTTPD {
     	getLibraryThread.start();
     	try {
 			getLibraryThread.join();
-			if (g.uiUpdateHandler != null) {
-				Message msg = g.uiUpdateHandler.obtainMessage();
-				msg.what = 0; // fix this later to be constant
-				g.uiUpdateHandler.sendMessage(msg);
-			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

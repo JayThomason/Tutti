@@ -59,10 +59,10 @@ public class JoinJamActivity extends Activity {
 				try {
 					server.start();
 					joinJamThread.start();
-					joinJamThread.join();
+					/*joinJamThread.join();
 				} catch (InterruptedException e) {
 					// probably want to log some message to user: unable to join jam
-					e.printStackTrace();
+					e.printStackTrace();*/
 				} catch (IOException e) {
 					// unable to start server
 					// in either failure case we can't join the jam and thus we should display

@@ -14,8 +14,8 @@ public class MainActivity extends Activity {
         
         Globals g = (Globals) getApplicationContext(); 
         g.db.dropTable("songs"); 
-		MusicLibraryLoader musicLibraryLoader = new MusicLibraryLoader();
-		musicLibraryLoader.loadMusic(this);
+		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
+		loaderThread.run();
     }
 
 

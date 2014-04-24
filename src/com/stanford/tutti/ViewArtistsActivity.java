@@ -28,6 +28,7 @@ public class ViewArtistsActivity extends Activity {
 	private ListView all; 
 	private ListView listView;
 	private EditText searchBox; 
+	private Cursor cursor; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,9 @@ public class ViewArtistsActivity extends Activity {
 
 	private void initializeArtistList() {		
 	    Globals g = (Globals) getApplicationContext(); 
-		Cursor cursor = g.db.getAllArtists(); 
+	    if (cursor != null) 
+	    	cursor.close(); 
+		cursor = g.db.getAllArtists(); 
 		
 		String[] columns = new String[] { "artist" };
 	    int[] to = new int[] { android.R.id.text1 };

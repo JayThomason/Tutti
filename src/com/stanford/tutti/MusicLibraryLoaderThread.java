@@ -2,6 +2,9 @@ package com.stanford.tutti;
 
 import java.util.ArrayList;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -18,16 +21,26 @@ import android.util.Log;
  * artist, album, or song then we can load that memory into
  * the Global music objects using the sqllite queries here.
  */
-public class MusicLibraryLoader {
+public class MusicLibraryLoaderThread extends Thread {
 	
 	private ArrayList<String> artists; 
+	Activity activity; 
+	
+	public MusicLibraryLoaderThread(Activity activity) {
+		this.activity = activity; 
+	}
+
+	public void run() {
+		loadMusic(activity); 
+	}
+
 	
 	/*
 	 * Loads all of the music into the Globals music metadata store.
 	 */
     public void loadMusic(Activity activity) {
     	Globals g = (Globals) activity.getApplication();
-		loadAllArtists(activity, g);
+		loadAllArtists(activity);
 		loadAllSongs(activity, g);
 	}
 	
@@ -35,7 +48,7 @@ public class MusicLibraryLoader {
      * Loads all of the artists from the music store into the
      * Globals metadata store.
      */
-	private void loadAllArtists(Activity activity, Globals g) {
+	private void loadAllArtists(Activity activity) {
         artists = new ArrayList<String>();
 		
 		Cursor cursor = activity.getContentResolver().query(

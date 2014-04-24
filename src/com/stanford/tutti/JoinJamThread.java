@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 import android.net.Uri;
+import android.os.Message;
 
 class JoinJamThread extends Thread {
 
@@ -113,6 +114,11 @@ class JoinJamThread extends Thread {
 						song.setAlbum(albumTitle); 
 						
 						g.db.addSong(song); 
+						if (g.uiUpdateHandler != null) {
+							Message msg = g.uiUpdateHandler.obtainMessage();
+							msg.what = 0; // fix this later to be constant
+							g.uiUpdateHandler.sendMessage(msg);
+						}
 					}
 				}
 			} catch (JSONException e) {
