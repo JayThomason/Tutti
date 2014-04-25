@@ -1,13 +1,18 @@
 package com.stanford.tutti;
 
+import java.net.URI;
 import java.util.ArrayList;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,21 +67,13 @@ public class ViewSongsActivity extends Activity {
 			cursor = g.db.getAllSongs(); 
 		}
 			
-		String[] columns = new String[] { "title" };
-	    int[] to = new int[] { android.R.id.text1 };
+		String[] columns = new String[] { "art", "title" };
+	    int[] to = new int[] { R.id.browserArt, R.id.browserText };
 
 	    
-	    /*
-	    Bitmap b = ImageService.getBitmapFromURLWithScale(param[0]);
-        return b;
-        ImageView img = (ImageView) findViewById(R.id.img);
-        img.setImageBitmap(bitmap);
-        */
-        
-        
-	    
-	    SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-	    listView.setAdapter(adapter);
+	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    MusicBrowserAdapter adapter = new MusicBrowserAdapter(this, R.layout.list_layout, cursor, columns, to); 
+        listView.setAdapter(adapter);
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
 	    
@@ -114,11 +112,14 @@ public class ViewSongsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
-				String title = ((TextView)view).getText().toString();
+				TextView textView = (TextView) view.findViewById(R.id.browserText); 
+				String title = textView.getText().toString();
+				
 				Globals g = (Globals) getApplication(); 
 				
 				// IN THE LONG TERM
 				// WE NEED TO BE USING GETSONGBYID
+				// OR GETSONGBY UNIQUE HASH
 				Song song = g.db.getSongByTitle(title); 
 				
 				g.jam.addSong(song); 

@@ -82,10 +82,12 @@ public class ViewAlbumsActivity extends Activity {
 			cursor = g.db.getAllAlbums(); 
 		}
 				
-		String[] columns = new String[] { "album" };
-	    int[] to = new int[] { android.R.id.text1 };
+		String[] columns = new String[] { "art", "album" };
+	    int[] to = new int[] { R.id.browserArt, R.id.browserText };
 
-	    SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    
+	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    MusicBrowserAdapter adapter = new MusicBrowserAdapter(this, R.layout.list_layout, cursor, columns, to);
 	    listView.setAdapter(adapter);
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
@@ -125,8 +127,9 @@ public class ViewAlbumsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
+				TextView textView = (TextView) view.findViewById(R.id.browserText); 
+				String album = textView.getText().toString();
 				
-				String album = ((TextView)view).getText().toString();
 				Globals g = (Globals) getApplication(); 
 				g.currentAlbumView = album; 
 				

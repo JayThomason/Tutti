@@ -21,9 +21,10 @@
     <ListView
         android:id="@+id/allAlbums"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_below="@+id/albumTitle"
         android:background="#ff0927"
+        android:textSize="16dp"
         android:textColor="#ffffff" >
 
     </ListView>

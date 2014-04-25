@@ -78,10 +78,12 @@ public class ViewArtistsActivity extends Activity {
 	    	cursor.close(); 
 		cursor = g.db.getAllArtists(); 
 		
-		String[] columns = new String[] { "artist" };
-	    int[] to = new int[] { android.R.id.text1 };
+		String[] columns = new String[] { "art", "artist" };
+	    int[] to = new int[] { R.id.browserArt, R.id.browserText };
 
-	    SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    
+	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+	    MusicBrowserAdapter adapter = new MusicBrowserAdapter(this, R.layout.list_layout, cursor, columns, to);
 	    listView.setAdapter(adapter);
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
@@ -121,7 +123,8 @@ public class ViewArtistsActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
-				String artist = ((TextView)view).getText().toString();
+				TextView textView = (TextView) view.findViewById(R.id.browserText); 
+				String artist = textView.getText().toString();
 				Globals g = (Globals) getApplication(); 
 				g.currentArtistView = artist; 
 				

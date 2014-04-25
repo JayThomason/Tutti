@@ -16,7 +16,7 @@
         android:text="Songs"
         android:textColor="#ffffff"
         android:textSize="24sp" />
-
+    
     <ListView
         android:id="@+id/songListView"
         android:layout_width="match_parent"
