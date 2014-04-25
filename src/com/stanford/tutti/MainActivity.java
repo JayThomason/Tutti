@@ -33,15 +33,6 @@ public class MainActivity extends Activity {
 		intent.putExtras(b);    	
 		startActivity(intent);
     }
-    
-    public void exploreMusic(View view) {
-    	Intent intent = new Intent(this, ViewArtistsActivity.class);
-		Bundle b = new Bundle();
-		b.putInt("host", 1); //Your id
-		intent.putExtras(b);
-		startActivity(intent);
-    }
-
 
 	public void joinJam(View view) {
 		Intent intent = new Intent(this, JoinJamActivity.class);
