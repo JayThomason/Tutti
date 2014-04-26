@@ -46,7 +46,7 @@ public class MusicBrowserAdapter extends SimpleCursorAdapter {
         if (artPath != null && !artPath.equals("")) {
         	artView.setImageURI(Uri.parse(artPath)); 
         } else {
-        	int noArtImgID = context.getResources().getIdentifier("music_note", "drawable", context.getPackageName());
+        	int noArtImgID = context.getResources().getIdentifier("musicnote", "drawable", context.getPackageName());
             artView.setImageResource(noArtImgID);
         }
     }

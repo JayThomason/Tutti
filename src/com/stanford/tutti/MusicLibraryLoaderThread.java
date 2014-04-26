@@ -103,7 +103,7 @@ public class MusicLibraryLoaderThread extends Thread {
 	            }
 	            
 	            song.setAlbumArt(artPath); 
-
+	            artCursor.close(); 
 	            
 	            g.db.addSong(song); 
 	        }
