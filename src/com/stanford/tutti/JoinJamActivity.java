@@ -53,8 +53,13 @@ public class JoinJamActivity extends Activity {
 				// TODO Auto-generated method stub
 			    server = new Server(PORT, g);
 			    String ip = ((TextView) arg1).getText().toString();
-				Globals g = (Globals) getApplication(); 
-				g.jam.setOtherIP(ip); 
+				Globals g = (Globals) getApplication();
+				if (g.jam.checkMaster()) {
+					g.jam.addNewClientIpAddr(ip);
+				}
+				else {
+					g.jam.setMasterIp(ip);
+				}
 				Thread joinJamThread = new JoinJamThread(ip, false);
 				try {
 					server.start();

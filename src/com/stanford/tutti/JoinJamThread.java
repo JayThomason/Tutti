@@ -3,7 +3,7 @@ package com.stanford.tutti;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -15,9 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.stanford.tutti.NanoHTTPD.Response.Status;
-
-import android.net.Uri;
 import android.os.Message;
 
 class JoinJamThread extends Thread {
@@ -41,6 +38,14 @@ class JoinJamThread extends Thread {
 		else {
 			// display to user: unable to join jam in pop up box and go back to main menu
 		}
+		/*
+		if (isMasterPhone) {
+			Set<String> clientIpAddrSet = g.jam.getClientIpSet();
+			for (String clientIpAddr : clientIpAddrSet) {
+				// send message to ask them to refresh library
+			}
+		}
+		*/
 	}
 
 	/*

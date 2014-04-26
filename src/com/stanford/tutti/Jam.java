@@ -1,6 +1,7 @@
 package com.stanford.tutti;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -13,8 +14,8 @@ public class Jam {
 	private int currentSongIndex; 
 	private boolean master; 
 	public MediaPlayer mediaPlayer; 
-	private String otherIP; 
-
+	private HashSet<String> clientIpList; 
+	private String masterIpAddr;
 	
 	public Jam() {
 		songList = new ArrayList<Song>();
@@ -28,20 +29,27 @@ public class Jam {
             		playCurrentSong();
             }
         });
+		clientIpList = new HashSet<String>();
 	}
 	
-	/*
-	 * For now, returns the IP address of the 
-	 * other phone in the jam. 
-	 * Will eventually be extended and generalized to track
-	 * device IDs for a changing group of multiple phones. 
-	 */
-	public String getOtherIP() {
-		return otherIP; 
+	public String getMasterIpAddr() {
+		return masterIpAddr;
 	}
 	
-	public void setOtherIP(String ip) {
-		otherIP = ip; 
+	public void setMasterIp(String masterIpAddr) {
+		this.masterIpAddr = masterIpAddr;
+	}
+	
+	public HashSet<String> getClientIpSet() {
+		return clientIpList; // careful - set is mutable
+	}
+	
+	public void addNewClientIpAddr(String ip) {
+		clientIpList.add(ip);
+	}
+	
+	public void removeClientIpAddr(String ip) {
+		clientIpList.remove(ip);
 	}
 	
 	public boolean checkMaster() {

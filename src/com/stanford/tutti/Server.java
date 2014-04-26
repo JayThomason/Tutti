@@ -75,8 +75,7 @@ public class Server extends NanoHTTPD {
                           Map<String, String> files)  {
     	logRequest(uri, method, header, parameters, files);
     	if (uri.startsWith(JOIN_JAM)) {
-    		g.jam.setOtherIP(header.get(HTTP_CLIENT_IP));
-    		return joinJamResponse(g.jam.getOtherIP());
+    		return joinJamResponse(header.get(HTTP_CLIENT_IP));
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
@@ -100,17 +99,23 @@ public class Server extends NanoHTTPD {
      * client thread to request the local music on the joining phone and
      * sync jam libraries.
      */
-    private Response joinJamResponse(String otherIpAddress) {
-    	Thread getLibraryThread = new JoinJamThread(otherIpAddress, true);
+    private Response joinJamResponse(String otherIpAddr) {
+		if (g.jam.checkMaster()) {
+			g.jam.addNewClientIpAddr(otherIpAddr);
+		}
+		else {
+			System.out.println("Server: Attempt to join jam on client device -- error");
+		}
+    	Thread getLibraryThread = new JoinJamThread(otherIpAddr, true);
     	getLibraryThread.start();
 		return new NanoHTTPD.Response("OK to join");
-/*
+	/*
     	try {
 			getLibraryThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		*/
+	*/
 	}
     
     /*
@@ -141,7 +146,7 @@ public class Server extends NanoHTTPD {
 		if (song == null) 
 			return fileNotFoundResponse();
 		g.jam.addSong(song);
-		if (g.jam.getCurrentSong() == null) {
+		if (g.jam.getCurrentSong() == null && g.jam.checkMaster()) {
 			g.jam.setCurrentSong(song);
 			g.jam.playCurrentSong();
 		}

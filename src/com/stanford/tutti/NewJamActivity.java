@@ -47,11 +47,11 @@ public class NewJamActivity extends Activity {
 		getMasterBoolFromBundle();
 		g = (Globals) getApplication(); 
 		g.jam.setMaster(master); 
-		
+
 		// Show the unique code (ip) for "join jam" requests
 		EditText editText = (EditText) this.findViewById(R.id.ip_address);
 		editText.setText("Your Jam ID is: " + g.getIpAddr());
-		
+
 		/*
 		// get the listview
 		expListView = (ExpandableListView) findViewById(R.id.listView1);
@@ -67,11 +67,11 @@ public class NewJamActivity extends Activity {
 			System.out.println("booted server!");
 			(new CreateJamInDatabaseThread(getString(R.string.ec2_server), g.getIpAddr())).start();
 		}
-		
+
 		Intent intent = new Intent(this, ViewArtistsActivity.class);
 		startActivity(intent);
 	}
-	
+
 	/*
 	 * Initializes the handler. The handler is used to receive messages from
 	 * the server and to update the UI accordingly.
@@ -95,7 +95,7 @@ public class NewJamActivity extends Activity {
 			}
 		};		
 	}
-	
+
 	/*
 	 * Starts the embedded NanoHttpd server.
 	 */
@@ -131,14 +131,17 @@ public class NewJamActivity extends Activity {
 						g.jam.setCurrentSong(song);
 						g.jam.playCurrentSong();
 					}          
-				} 
-				new PassMessageThread(g.jam.getOtherIP(), 1234, 
-						"/jam/add/" + Integer.toString(song.hashCode()), "").start(); 
+				}
+				else {
+					new PassMessageThread(g.jam.getMasterIpAddr(), 1234, 
+							"/jam/add/" + Integer.toString(song.hashCode()), "").start(); 
+				}
+
 				return false;
 			}
 		});
 	}
-	
+
 	/*
 	 * Initializes the master boolean to either true or false depending on
 	 * whether the activity was started with a host variable in the 
@@ -161,11 +164,11 @@ public class NewJamActivity extends Activity {
 		listDataChild = new HashMap<String, List<String>>();
 		songMap = new HashMap<String, Song>(); 
 		Globals g = (Globals) getApplication();
-		
+
 		//ArrayList<Artist> artists = g.getArtistList();
 
 		List<Song> songs = new ArrayList<Song>(); // g.db.getAllSongs(); 
-		
+
 		/*
 		for (int i = 0; i < artists.size(); ++i) {
 			listDataHeader.add(artists.get(i).getName());
@@ -181,8 +184,8 @@ public class NewJamActivity extends Activity {
 			}
 			listDataChild.put(listDataHeader.get(i), songs);
 		}
-		*/
-		
+		 */
+
 		for (int i = 0; i < songs.size(); ++i) {
 			listDataHeader.add(songs.get(i).getArtist()); 
 			songMap.put(songs.get(i).getTitle(), songs.get(i));

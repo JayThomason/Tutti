@@ -32,7 +32,6 @@ public class RequestLocalJamThread extends Thread {
 		HttpGet get = new HttpGet(uri.toString());
 		try {
 			System.out.println("Request to get local jams for public ip addr.");
-			System.out.println(get.toString());
 			HttpResponse response = httpClient.execute(get);
 			System.out.println("Server response: "+ response.getStatusLine().getStatusCode());
 			if (response.getStatusLine().getStatusCode() == 200) {

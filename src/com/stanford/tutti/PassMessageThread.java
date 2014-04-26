@@ -47,5 +47,6 @@ class PassMessageThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("sent this: " + uri);
 	}
 }
