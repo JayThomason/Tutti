@@ -11,6 +11,7 @@
         android:layout_height="80dp"
         android:duplicateParentState="false"
         android:scaleType="fitXY"
+        android:background="#000000"
     />
    
      <TextView

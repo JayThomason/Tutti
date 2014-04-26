@@ -98,9 +98,8 @@ public class MusicLibraryLoaderThread extends Thread {
 	                    null);
 
 	            String artPath = ""; 
-	            if (artCursor.moveToFirst()) {
+	            if (artCursor.moveToFirst() && artCursor.getString(1) != null) {
 	            	artPath = artCursor.getString(1);
-	            	// do whatever you need to do
 	            }
 	            
 	            song.setAlbumArt(artPath); 

@@ -45,6 +45,9 @@ public class MusicBrowserAdapter extends SimpleCursorAdapter {
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 
         if (artPath != null && !artPath.equals("")) {
         	artView.setImageURI(Uri.parse(artPath)); 
+        } else {
+        	int noArtImgID = context.getResources().getIdentifier("music_note", "drawable", context.getPackageName());
+            artView.setImageResource(noArtImgID);
         }
     }
 	
