@@ -26,6 +26,9 @@ public class Song {
 	/* Path to the album art for the song, if any */
 	private String albumArt = ""; 
 	
+	/* IP address for the phone containing the song. Empty if local. */
+	private String ipAddr = "";
+	
 	/*
 	 * Constructor
 	 * 
@@ -106,6 +109,14 @@ public class Song {
 	
 	public String getAlbumArt() {
 		return albumArt; 
+	}
+	
+	public void setIpAddr(String ipAddr) {
+		this.ipAddr = ipAddr;
+	}
+	
+	public String getIpAddr() {
+		return ipAddr;
 	}
 	
 	@Override

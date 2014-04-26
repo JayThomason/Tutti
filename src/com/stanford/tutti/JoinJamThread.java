@@ -112,6 +112,7 @@ class JoinJamThread extends Thread {
 						Song song = new Song(songTitle, songPath, false);
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
+						song.setIpAddr(ipAddress);
 						
 						g.db.addSong(song); 
 						if (g.uiUpdateHandler != null) {

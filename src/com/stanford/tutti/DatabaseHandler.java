@@ -1,6 +1,5 @@
 package com.stanford.tutti;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,12 +12,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -35,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LOCAL = "local";
     private static final String KEY_ART = "art";
     private static final String KEY_HASH = "hash"; 
+    private static final String KEY_IP = "_ip";
     
     // Table Columns indices
     private static final int COL_ID = 0; 
@@ -45,8 +44,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int COL_LOCAL = 5; 
     private static final int COL_ART = 6; 
     private static final int COL_HASH = 7; 
+    private static final int COL_IP = 8;
     
-    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH};
+    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP};
 
  
     public DatabaseHandler(Context context) {
@@ -65,6 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCAL + " INTEGER," 
                 + KEY_ART + " TEXT,"
         		+ KEY_HASH + " TEXT," 
+        		+ KEY_IP + " TEXT,"
                 + " UNIQUE (" 
         		+ KEY_TITLE + ", " 
                 + KEY_ARTIST + ", "
@@ -103,6 +104,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_PATH, song.getPath());
     	values.put(KEY_ART, song.getAlbumArt());
     	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
+    	values.put(KEY_IP, song.getIpAddr());
     	
     	int local = 0; 
     	if (song.isLocal()) {
@@ -316,6 +318,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	Song song = new Song(cursor.getString(COL_TITLE), cursor.getString(COL_PATH), local); 
         song.setArtist(cursor.getString(COL_ARTIST));
         song.setAlbum(cursor.getString(COL_ALBUM));
+        song.setIpAddr(cursor.getString(COL_IP));
         return song; 
     }
     

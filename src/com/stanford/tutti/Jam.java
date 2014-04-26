@@ -129,10 +129,10 @@ public class Jam {
 		}
 
 		try {
-			String ipAddr = otherIP; 
 			int port = 1234;
 			Uri myUri = Uri.parse(getCurrentSong().getPath());
 			boolean local = getCurrentSong().isLocal();
+			String ipAddr = getCurrentSong().getIpAddr();
 			if (!local)
 				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + getCurrentSong().getPath());
 			
