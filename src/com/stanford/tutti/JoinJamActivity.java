@@ -22,7 +22,6 @@ import android.widget.TextView;
 public class JoinJamActivity extends Activity {
 	private ListView jamListView;
 	private static final int PORT = 1234;
-	private EditText editText;
 	private Server server;
 	private Globals g;
 	private Handler h;
@@ -33,7 +32,7 @@ public class JoinJamActivity extends Activity {
 		setContentView(R.layout.activity_join_jam);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		editText = (EditText) this.findViewById(R.id.ip_address);
+
 		g = (Globals) getApplication();
 		configureJamListView(); 
 		requestLocalJams();
@@ -75,11 +74,9 @@ public class JoinJamActivity extends Activity {
 					e.printStackTrace();
 				}
 				
-				// Load the new jam screen as a slave
+				// Load the music browser as a client phone
 				Intent intent = new Intent(JoinJamActivity.this, ViewArtistsActivity.class);
-				Bundle b = new Bundle();
-				b.putInt("host", 0); //Your id
-				intent.putExtras(b);
+				g.jam.setMaster(false); 
 				startActivity(intent);
 				finish();
 			}
