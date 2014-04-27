@@ -11,11 +11,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+                
+        loadLocalMusic(); 
+    }
+    
+    private void loadLocalMusic() {
         Globals g = (Globals) getApplicationContext(); 
         g.db.dropTable("songs"); 
 		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
-		loaderThread.run();
+		loaderThread.run();	
     }
 
 
