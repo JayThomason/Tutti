@@ -21,7 +21,7 @@
     <ListView
         android:id="@+id/allAlbums"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         android:layout_below="@+id/albumTitle"
         android:background="#ff0927"
         android:textSize="16dp"
@@ -35,7 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/allAlbums"
         android:background="#ff0927"
-        android:textColor="#ffffff" >
+        android:textColor="#ffffff" 
+        android:paddingBottom="25dp"
+    	android:clipToPadding="false">
 
     </ListView>
     

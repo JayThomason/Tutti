@@ -22,7 +22,7 @@
     <ListView
         android:id="@+id/allArtists"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         android:layout_below="@+id/artistTitle"
         android:background="#ff0927"
         android:textSize="16dp"
