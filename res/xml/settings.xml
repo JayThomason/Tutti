@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:background="@drawable/gradient">
+    
+   <PreferenceCategory android:title="@string/pref_user_profile" >
+        <EditTextPreference
+                android:title="@string/pref_user_name"
+                android:summary="@string/pref_user_name_summary"
+                android:key="prefUsername"/>
+    </PreferenceCategory>
+     
+</PreferenceScreen>
