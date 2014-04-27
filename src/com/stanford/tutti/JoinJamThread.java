@@ -81,8 +81,12 @@ class JoinJamThread extends Thread {
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 			String serverArtistList = reader.readLine();
-			JSONObject jsonArtistList = new JSONObject(serverArtistList);
-			JSONArray artists = jsonArtistList.getJSONArray("artists");     			
+			
+			JSONObject jsonLibrary = new JSONObject(serverArtistList);
+			JSONArray artists = jsonLibrary.getJSONArray("artists"); 
+			String username = jsonLibrary.getString("username"); 
+			g.jam.setIPUsername(ipAddress, username); 
+			
 			loadMusicFromJSON(artists); 
 			System.out.println(response.toString());
 			return true;

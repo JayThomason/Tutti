@@ -1,6 +1,7 @@
 package com.stanford.tutti;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import android.media.AudioManager;
@@ -15,6 +16,7 @@ public class Jam {
 	private boolean master; 
 	public MediaPlayer mediaPlayer; 
 	private HashSet<String> clientIpList; 
+	private HashMap<String, String> usernameMap; 
 	private String masterIpAddr;
 	
 	public Jam() {
@@ -29,7 +31,9 @@ public class Jam {
             		playCurrentSong();
             }
         });
+		master = false; 
 		clientIpList = new HashSet<String>();
+		usernameMap = new HashMap<String, String>(); 
 	}
 	
 	public String getMasterIpAddr() {
@@ -58,6 +62,14 @@ public class Jam {
 	
 	public void setMaster(boolean master) {
 		this.master = master; 
+	}
+	
+	public void setIPUsername(String ipAddress, String username) {
+		usernameMap.put(ipAddress, username); 
+	}
+	
+	public String getIPUsername(String ipAddress) {
+		return usernameMap.get(ipAddress); 
 	}
 	
 	public void start() {

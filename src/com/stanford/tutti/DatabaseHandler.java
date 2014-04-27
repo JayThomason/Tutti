@@ -221,6 +221,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return cursor; 
     }
     
+    public Cursor getSongsByArtistAndAlbum(String artist, String album) {
+    	String escapedArtist = artist.replace("'", "''"); 
+    	String escapedAlbum = album.replace("'", "''");
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+           	
+    	return cursor; 
+    }
+    
     // IN THE LONG TERM
     // WE NEED TO BE USING GET SONG BY ID
     public Song getSongByTitle(String title) {
@@ -326,7 +337,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		JSONObject json = new JSONObject(); 
 		
 		JSONArray artistArray = getArtistsAsJSON(); 
-		
+
 	    try {
 	    	json.put("artists", artistArray); 
 	    } catch (JSONException e) {

@@ -1,5 +1,6 @@
 package com.stanford.tutti;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -38,9 +39,17 @@ public class MusicBrowserAdapter extends SimpleCursorAdapter {
         super.bindView(view, context, cursor);
         
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
+        TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
         
         titleView.setText(cursor.getString(cursor.getColumnIndex(columns[1]))); 
+        
+        Globals g = (Globals) context.getApplicationContext(); 
+        String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
+        if (username == null || username == "") {
+        	username = "Self"; 
+        }
+        ownerView.setText(username); 
         
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 
         if (artPath != null && !artPath.equals("")) {

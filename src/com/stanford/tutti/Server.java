@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Handler;
@@ -211,6 +212,13 @@ public class Server extends NanoHTTPD {
 	private Response getLocalLibraryResponse() {
 		System.out.println("Returning Local Library as JSON");
 		JSONObject jsonLibrary = g.db.getLibraryAsJSON();
+		
+		try {
+			jsonLibrary.put("username", g.getUsername()); 
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;

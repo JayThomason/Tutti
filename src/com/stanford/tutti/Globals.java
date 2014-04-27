@@ -6,11 +6,13 @@ import org.json.*;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 
 /* 
  * Stores any state which must be globally accessible, eg. variables which cannot
@@ -22,7 +24,6 @@ import android.os.Message;
  */
 public class Globals extends Application {
 	public Jam jam = new Jam(); 
-	public Boolean master = false; 
 	
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 
@@ -61,5 +62,13 @@ public class Globals extends Application {
 				(ip >> 24 & 0xff));
 
 		return ipString;
+	}
+	
+	/*
+	 * Return the username from the user preferences. 
+	 */
+	public String getUsername() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		return preferences.getString("prefUsername", "anonymous"); 
 	}
 }

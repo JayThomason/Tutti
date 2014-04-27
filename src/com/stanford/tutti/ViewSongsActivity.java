@@ -60,7 +60,9 @@ public class ViewSongsActivity extends Activity {
 		if (cursor != null) 
 			cursor.close(); 
 
-		if (g.currentAlbumView != "") {
+		if (g.currentAlbumView != "" && g.currentArtistView != "") {
+			cursor = g.db.getSongsByArtistAndAlbum(g.currentArtistView, g.currentAlbumView); 
+		} else if (g.currentAlbumView != "") {
 			cursor = g.db.getSongsByAlbum(g.currentAlbumView); 
 		} else if (g.currentArtistView != "") {
 			cursor = g.db.getSongsByArtist(g.currentArtistView); 
