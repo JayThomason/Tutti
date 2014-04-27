@@ -3,6 +3,8 @@ package com.stanford.tutti;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.View;
@@ -36,7 +38,7 @@ public class ViewJamActivity extends Activity {
 		assignButtons();
 		configureButtons();
 		listView = (ListView) findViewById(R.id.listView3);
-		initializeArtistSongList();
+		initializeJamList();
 	}
 
 	@Override
@@ -49,27 +51,32 @@ public class ViewJamActivity extends Activity {
 	/*
 	 * Initializes the listView with a list of the current songs in the jam.
 	 */
-	private void initializeArtistSongList() {
+	private void initializeJamList() {
 		Globals g = (Globals) getApplication();  
 		int jamSize = g.jam.getJamSize();
 		
 		// Eventually want to abstract this so the Jam is maintaining its own string list
 		ArrayList<String> songStringList = new ArrayList<String>(); 
 		for (int i = 0; i < jamSize; i++) {
-			songStringList.add(g.jam.getSongByIndex(i).getArtist() + 
-					": " + g.jam.getSongByIndex(i).getTitle()); 
+			String songText = "";  
+			if (i == g.jam.getCurrentSongIndex()) {
+				songText = "Now Playing: "; 
+			}
+			songText += g.jam.getSongByIndex(i).getArtist() + 
+						": " + g.jam.getSongByIndex(i).getTitle();
+			songStringList.add(songText); 
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
 				android.R.layout.simple_list_item_1, songStringList);
 		listView.setAdapter(adapter);
-		setSongListItemClickListener();
+		setJamListItemClickListener();
 	}
 	
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * play the song which is clicked on.
 	 */
-	private void setSongListItemClickListener() {
+	private void setJamListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
@@ -87,8 +94,30 @@ public class ViewJamActivity extends Activity {
 									new PassMessageThread(g.jam.getMasterIpAddr(), port,
 						"/jam/set/" + Integer.toString(song.hashCode()), "").start(); 
 				}
+				initializeJamList(); 
 			}
 		});
+	}
+	
+	/*
+	 * Initializes the handler. The handler is used to receive messages from
+	 * the server and to update the UI accordingly.
+	 */
+	private void setUpHandler() {
+		Globals g = (Globals) getApplicationContext(); 
+		g.uiUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from another phone that we have new
+				 * non-local music, we can update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					initializeJamList(); 
+				}
+				super.handleMessage(msg);
+			}
+		};		
 	}
 	
 	/*
