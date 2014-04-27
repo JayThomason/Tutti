@@ -145,5 +145,20 @@ public class Song {
 			return false;
 		return true;
 	}
+	
+	public JSONObject toJSON() {
+		JSONObject song = new JSONObject(); 
+		
+		try {
+			song.put("title", title); 
+			song.put("artist", artist);
+			song.put("album", album); 
+			song.put("path", path); 
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		
+		return song; 
+	}
 
 }

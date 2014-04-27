@@ -215,6 +215,7 @@ public class Server extends NanoHTTPD {
 		
 		try {
 			jsonLibrary.put("username", g.getUsername()); 
+			jsonLibrary.put("jam", g.jam.toJSON()); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 

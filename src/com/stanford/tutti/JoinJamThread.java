@@ -83,11 +83,16 @@ class JoinJamThread extends Thread {
 			String serverArtistList = reader.readLine();
 			
 			JSONObject jsonLibrary = new JSONObject(serverArtistList);
-			JSONArray artists = jsonLibrary.getJSONArray("artists"); 
+			JSONArray artists = jsonLibrary.getJSONArray("artists");
+			
+			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+			
 			String username = jsonLibrary.getString("username"); 
 			g.jam.setIPUsername(ipAddress, username); 
 			
 			loadMusicFromJSON(artists); 
+			loadJamFromJSON(jam); 
+			
 			System.out.println(response.toString());
 			return true;
 		}
@@ -136,5 +141,35 @@ class JoinJamThread extends Thread {
 				e.printStackTrace();
 			} 
 		}
+	}
+	
+	/*
+	 * Load existing Jam state by parsing
+	 * the JSON response from another phone. 
+	 * 
+	 */
+	public void loadJamFromJSON(JSONObject jam) {    	
+		try {
+			g.jam.clearSongs(); 
+			JSONArray songs = jam.getJSONArray("songs");
+			int nowPlayingIndex = jam.getInt("current"); 
+			for (int i = 0; i < songs.length(); i++) {
+				JSONObject jsonSong = songs.getJSONObject(i); 
+				String songTitle = (String)jsonSong.get("title"); 
+				String songPath = (String)jsonSong.get("path");
+				Song song = new Song(songTitle, songPath, false);
+				song.setArtist((String)jsonSong.get("artist")); 
+				song.setAlbum((String)jsonSong.get("album")); 
+				song.setIpAddr(ipAddress);
+				
+				g.jam.addSong(song);
+				
+				if (i == nowPlayingIndex) {
+					g.jam.setCurrentSong(song);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
 	}
 }

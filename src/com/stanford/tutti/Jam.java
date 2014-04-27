@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -135,6 +139,14 @@ public class Jam {
 		return songList.size(); 
 	}
 	
+	
+	public void clearSongs() {
+		songList = new ArrayList(); 
+		currentSong = null; 
+		currentSongIndex = -1; 
+	}
+	
+	
 	/*
 	 * Plays the current song. 
 	 * 
@@ -178,5 +190,21 @@ public class Jam {
 			System.out.println(e.getMessage());
 			return false; 
 		}
+	}
+
+	public JSONObject toJSON() {
+		JSONObject jam = new JSONObject(); 
+		JSONArray songArray = new JSONArray(); 
+		for (int i = 0; i < getJamSize(); i++) {
+			Song song = getSongByIndex(i); 
+			songArray.put(song.toJSON());
+		}
+		try {
+			jam.put("songs", songArray);
+			jam.put("current", getCurrentSongIndex());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		return jam; 
 	}
 }
