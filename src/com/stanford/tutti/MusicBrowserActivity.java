@@ -42,6 +42,29 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
             actionBar.addTab(actionBar.newTab().setText(tab_name)
                     .setTabListener(this));
         }
+        
+    	
+    	/**
+    	 * on swiping the viewpager make respective tab selected
+    	 * */
+    	viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+    	 
+    	    @Override
+    	    public void onPageSelected(int position) {
+    	        // on changing the page
+    	        // make respected tab selected
+    	        actionBar.setSelectedNavigationItem(position);
+    	    }
+    	 
+    	    @Override
+    	    public void onPageScrolled(int arg0, float arg1, int arg2) {
+    	    }
+    	 
+    	    @Override
+    	    public void onPageScrollStateChanged(int arg0) {
+    	    }
+    	});
+
     }
 
 	@Override
@@ -82,21 +105,20 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
 	}
 
 	@Override
-	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+	public void onTabReselected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onTabSelected(Tab arg0, FragmentTransaction arg1) {
+	public void onTabSelected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
-		
+		viewPager.setCurrentItem(tab.getPosition());
 	}
 
 	@Override
-	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+	public void onTabUnselected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
 		
 	}
-
 }
