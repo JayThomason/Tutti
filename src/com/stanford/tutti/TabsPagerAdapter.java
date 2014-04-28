@@ -20,6 +20,8 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	            return new BrowseAlbumsFragment();
 	        case 2:
 	            return new BrowseSongsFragment();
+	        case 3: 
+	        	return new BrowseJamFragment();
         }
  
         return null;
@@ -28,6 +30,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // get item count - equal to number of tabs
-        return 3;
+        return 4;
     }
 }

@@ -34,7 +34,7 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     // Tab titles
-    private String[] tabs = { "Artists", "Albums", "Songs" };
+    private String[] tabs = { "Artists", "Albums", "Songs", "Jam" };
     
     private Globals g; 
  
