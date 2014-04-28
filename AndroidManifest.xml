@@ -6,8 +6,8 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
@@ -53,7 +53,7 @@
         </activity>
         <activity
             android:name="com.stanford.tutti.ViewAlbumsActivity"
-            android:label="@string/title_activity_view_albums" 
+            android:label="@string/title_activity_view_albums"
             android:parentActivityName="com.stanford.tutti.ViewArtistsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -61,12 +61,11 @@
         </activity>
         <activity
             android:name="com.stanford.tutti.ViewSongsActivity"
-            android:label="@string/title_activity_view_songs" 
+            android:label="@string/title_activity_view_songs"
             android:parentActivityName="com.stanford.tutti.ViewAlbumsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.stanford.tutti.ViewAlbumsActivity" />
-            
         </activity>
         <activity
             android:name="com.stanford.tutti.SettingsMenuActivity"
@@ -83,7 +82,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.stanford.tutti.MainActivity" />
-        </activity>   
-        </application>
+        </activity>
+        <activity
+            android:name="com.stanford.tutti.MusicBrowserActivity"
+            android:label="@string/title_activity_music_browser" >
+        </activity>
+        <activity
+            android:name="com.stanford.tutti.BrowseArtistsActivity"
+            android:label="@string/title_activity_browse_artists" >
+        </activity>
+    </application>
 
 </manifest>

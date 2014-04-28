@@ -56,7 +56,7 @@ public class NewJamActivity extends Activity {
 			(new CreateJamInDatabaseThread(getString(R.string.ec2_server), g.getIpAddr())).start();
 		}
 
-		Intent intent = new Intent(this, ViewArtistsActivity.class);
+		Intent intent = new Intent(this, MusicBrowserActivity.class);
 		startActivity(intent);
 	}
 

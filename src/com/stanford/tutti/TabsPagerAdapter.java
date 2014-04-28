@@ -1,5 +1,5 @@
 package com.stanford.tutti;
-
+ 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,14 +15,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
  
         switch (index) {
         case 0:
-            // Top Rated fragment activity
-            return new ViewArtistsActivity();
+            return new BrowseArtistsFragment();
         case 1:
-            // Games fragment activity
-            return new ViewSongsActivity();
+            return new BrowseAlbumsFragment();
         case 2:
-            // Movies fragment activity
-            return new ViewAlbumsActivity();
+            return new BrowseSongsFragment();
         }
  
         return null;
@@ -33,5 +30,4 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         // get item count - equal to number of tabs
         return 3;
     }
- 
 }

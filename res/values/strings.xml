@@ -20,7 +20,7 @@
     <string name="title_activity_view_songs">ViewSongsActivity</string>
     <string name="current_jam">Current Jam</string>
     <string name="title_activity_help_menu">HelpMenuActivity</string>
-    <string name="help_text"/>
+    <string name="help_text" />
     <string name="help_menu_title">Help Menu</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
@@ -41,5 +41,7 @@
     <string name="view_albums">Albums</string>
     <string name="explore_music">Explore Music</string>
     <string name="ec2_server">ec2-54-237-148-102.compute-1.amazonaws.com</string>
+    <string name="title_activity_music_browser">MusicBrowserActivity</string>
+    <string name="title_activity_browse_artists">BrowseArtistsActivity</string>
 
 </resources>
