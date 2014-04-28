@@ -83,7 +83,9 @@ public class BrowseArtistsFragment extends Fragment {
 				
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
 				String artist = textView.getText().toString();
+				
 				g.currentArtistView = artist; 
+				g.currentAlbumView = ""; 
 				
 				if (g.albumUpdateHandler != null) {
 					Message msg = g.albumUpdateHandler.obtainMessage();

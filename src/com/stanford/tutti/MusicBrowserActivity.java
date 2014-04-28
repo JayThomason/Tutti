@@ -92,7 +92,8 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
-		viewPager.setCurrentItem(tab.getPosition());
+		int index = tab.getPosition(); 
+		viewPager.setCurrentItem(index);
 	}
 
 	@Override
@@ -122,6 +123,12 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
     					Message msg = g.songUpdateHandler.obtainMessage();
     					msg.what = 0; // fix this later to be constant
     					g.songUpdateHandler.sendMessage(msg);
+    				}
+    	    	} else if (position == 3) {
+    				if (g.jamUpdateHandler != null) {
+    					Message msg = g.jamUpdateHandler.obtainMessage();
+    					msg.what = 0; // fix this later to be constant
+    					g.jamUpdateHandler.sendMessage(msg);
     				}
     	    	}
     	        actionBar.setSelectedNavigationItem(position);
