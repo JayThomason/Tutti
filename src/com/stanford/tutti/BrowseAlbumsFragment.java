@@ -97,10 +97,7 @@ public class BrowseAlbumsFragment extends Fragment {
 					Message msg = g.songUpdateHandler.obtainMessage();
 					msg.what = 0; // fix this later to be constant
 					g.songUpdateHandler.sendMessage(msg);
-				}
-				
-		        viewPager.setCurrentItem(2);
-				
+				}				
 			}
 		});
 	}
@@ -135,6 +132,7 @@ public class BrowseAlbumsFragment extends Fragment {
 				 */
 				if (msg.what == 0) {
 					initializeAlbumList(); 
+			        viewPager.setCurrentItem(1);
 				}
 				super.handleMessage(msg);
 			}

@@ -89,9 +89,9 @@ public class BrowseArtistsFragment extends Fragment {
 					Message msg = g.albumUpdateHandler.obtainMessage();
 					msg.what = 0; // fix this later to be constant
 					g.albumUpdateHandler.sendMessage(msg);
-				}
+				}				
 				
-		        viewPager.setCurrentItem(1);
+		        //viewPager.setCurrentItem(1);
 			}
 		});
 	}

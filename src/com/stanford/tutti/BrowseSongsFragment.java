@@ -167,6 +167,7 @@ public class BrowseSongsFragment extends Fragment {
 				 */
 				if (msg.what == 0) {
 					initializeSongList(); 
+			        viewPager.setCurrentItem(2);
 				}
 				super.handleMessage(msg);
 			}
