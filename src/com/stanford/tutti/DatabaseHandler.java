@@ -291,6 +291,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
+    public Cursor searchSongsByArtist(CharSequence constraint, String artist) {
+    	String escapedArtist = artist.replace("'", "''"); 
+    	String query; 
+    	if (constraint == null || constraint.length() == 0) {
+    		query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
+    	} else {
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "'"; 
+    	}
+  
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+    	
+        return cursor; 
+    }
+    
+    public Cursor searchSongsByArtistAndAlbum(CharSequence constraint, String artist, String album) {
+    	String escapedArtist = artist.replace("'", "''"); 
+    	String escapedAlbum = album.replace("'", "''");
+    	String query; 
+    	if (constraint == null || constraint.length() == 0) {
+    		query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'";
+    	} else {
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
+    	}
+  
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+    	
+        return cursor; 
+    }
+    
     public boolean containsSong(int hash) {
     	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_HASH + " = " + hash; 
         SQLiteDatabase db = this.getWritableDatabase();

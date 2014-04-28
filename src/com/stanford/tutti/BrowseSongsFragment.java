@@ -77,7 +77,14 @@ public class BrowseSongsFragment extends Fragment {
 
 		adapter.setFilterQueryProvider(new FilterQueryProvider() {
 			public Cursor runQuery(CharSequence constraint) {
-				return g.db.searchSongs(constraint);
+				if (g.currentAlbumView != "" && g.currentArtistView != "") {
+					cursor = g.db.searchSongsByArtistAndAlbum(constraint, g.currentArtistView, g.currentAlbumView); 
+				} else if (g.currentArtistView != "") {
+					cursor = g.db.searchSongsByArtist(constraint, g.currentArtistView); 
+				} else {
+					cursor = g.db.searchSongs(constraint); 
+				} 
+				return cursor; 
 			}
 		});
 
