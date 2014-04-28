@@ -8,6 +8,8 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -28,13 +30,13 @@ import android.os.Build;
 
 public class MusicBrowserActivity extends FragmentActivity implements ActionBar.TabListener {
 
-    private ViewPager viewPager;
+    public ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     // Tab titles
     private String[] tabs = { "Artists", "Albums", "Songs" };
     
-    private Cursor cursor = null; 
+    private Globals g; 
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
                     .setTabListener(this));
         }
         
-    	
+    	g = (Globals) getApplicationContext(); 
         setupTabHighlightListener(); 
 
     }
@@ -109,6 +111,19 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
     	    public void onPageSelected(int position) {
     	        // on changing the page
     	        // make respected tab selected
+    	    	if (position == 1) {
+    				if (g.albumUpdateHandler != null) {
+    					Message msg = g.albumUpdateHandler.obtainMessage();
+    					msg.what = 0; // fix this later to be constant
+    					g.albumUpdateHandler.sendMessage(msg);
+    				}
+    	    	} else if (position == 2) {
+    				if (g.songUpdateHandler != null) {
+    					Message msg = g.songUpdateHandler.obtainMessage();
+    					msg.what = 0; // fix this later to be constant
+    					g.songUpdateHandler.sendMessage(msg);
+    				}
+    	    	}
     	        actionBar.setSelectedNavigationItem(position);
     	    }
     	 

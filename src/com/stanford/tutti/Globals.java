@@ -28,6 +28,9 @@ public class Globals extends Application {
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 
 	public Handler uiUpdateHandler; 
+	public Handler artistUpdateHandler; 
+	public Handler albumUpdateHandler; 
+	public Handler songUpdateHandler; 
 	
 	DatabaseHandler db; 
 	

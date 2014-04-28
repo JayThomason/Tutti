@@ -3,10 +3,14 @@ package com.stanford.tutti;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,18 +26,24 @@ public class BrowseAlbumsFragment extends Fragment {
 	private Cursor cursor = null; 
 	private Globals g; 
 	private View rootView; 
-	private ListView listView; 
+	private ListView listView;
+	private ViewPager viewPager; 
+
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
- 
+    	 
         rootView = inflater.inflate(R.layout.fragment_browse_albums, container, false);
         listView = (ListView) rootView.findViewById(R.id.albumListView); 
         
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
+        viewPager = (ViewPager) container.findViewById(R.id.pager);
+        
         initializeAlbumList(); 
+        initializeSearchBar(); 
+        setupHandler();
         
         return rootView;
     }
@@ -58,20 +68,6 @@ public class BrowseAlbumsFragment extends Fragment {
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
 	    
-	    EditText etext = (EditText) rootView.findViewById(R.id.album_search_box);
-	    etext.addTextChangedListener(new TextWatcher() {
-	        public void onTextChanged(CharSequence s, int start, int before, int count) {
-	        }
-
-	        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	        }
-
-	        public void afterTextChanged(Editable s) {
-	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
-	            filterAdapter.getFilter().filter(s.toString());
-	        }
-	    });
-
 	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {
 	            return g.db.searchAlbums(constraint);
@@ -91,14 +87,58 @@ public class BrowseAlbumsFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
+				
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
 				String album = textView.getText().toString();
 				
 				g.currentAlbumView = album; 
 				
-		    	//Intent intent = new Intent(ViewAlbumsActivity.this, ViewSongsActivity.class);
-				//startActivity(intent);
+				if (g.songUpdateHandler != null) {
+					Message msg = g.songUpdateHandler.obtainMessage();
+					msg.what = 0; // fix this later to be constant
+					g.songUpdateHandler.sendMessage(msg);
+				}
+				
+		        viewPager.setCurrentItem(2);
+				
 			}
 		});
 	}
+	
+	private void initializeSearchBar() {
+	    EditText etext = (EditText) rootView.findViewById(R.id.album_search_box);
+	    etext.addTextChangedListener(new TextWatcher() {
+	        public void onTextChanged(CharSequence s, int start, int before, int count) {
+	        }
+
+	        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	        }
+
+	        public void afterTextChanged(Editable s) {
+	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
+	            filterAdapter.getFilter().filter(s.toString());
+	        }
+	    });
+	}
+	
+	/*
+	 * Initializes the handler. The handler is used to receive messages from
+	 * the server and to update the UI accordingly.
+	 */
+	private void setupHandler() {
+		g.albumUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from another phone that we have new
+				 * non-local music, we can update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					initializeAlbumList(); 
+				}
+				super.handleMessage(msg);
+			}
+		};		
+	}
+	
 }

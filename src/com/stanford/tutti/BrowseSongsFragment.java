@@ -4,6 +4,8 @@ import java.util.Set;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
@@ -36,6 +38,8 @@ public class BrowseSongsFragment extends Fragment {
         g = (Globals) rootView.getContext().getApplicationContext(); 
 
         initializeSongList(); 
+        initializeSearchBar(); 
+        setupHandler(); 
         
         return rootView;
     }
@@ -63,20 +67,6 @@ public class BrowseSongsFragment extends Fragment {
 		listView.setAdapter(adapter);
 		listView.setFastScrollEnabled(true);
 		listView.setTextFilterEnabled(true);
-
-		EditText etext = (EditText) rootView.findViewById(R.id.song_search_box);
-		etext.addTextChangedListener(new TextWatcher() {
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			public void afterTextChanged(Editable s) {
-				SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
-				filterAdapter.getFilter().filter(s.toString());
-			}
-		});
 
 		adapter.setFilterQueryProvider(new FilterQueryProvider() {
 			public Cursor runQuery(CharSequence constraint) {
@@ -133,4 +123,41 @@ public class BrowseSongsFragment extends Fragment {
 		});
 	}
 	*/
+	
+	private void initializeSearchBar() {
+		EditText etext = (EditText) rootView.findViewById(R.id.song_search_box);
+		etext.addTextChangedListener(new TextWatcher() {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			public void afterTextChanged(Editable s) {
+				SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
+				filterAdapter.getFilter().filter(s.toString());
+			}
+		});
+	}
+	
+	/*
+	 * Initializes the handler. The handler is used to receive messages from
+	 * the server and to update the UI accordingly.
+	 */
+	private void setupHandler() {
+		g.songUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from another phone that we have new
+				 * non-local music, we can update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					initializeSongList(); 
+				}
+				super.handleMessage(msg);
+			}
+		};		
+	}
+
 }
