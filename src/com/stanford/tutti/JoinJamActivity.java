@@ -75,7 +75,7 @@ public class JoinJamActivity extends Activity {
 				}
 				
 				// Load the music browser as a client phone
-				Intent intent = new Intent(JoinJamActivity.this, ViewArtistsActivity.class);
+				Intent intent = new Intent(JoinJamActivity.this, MusicBrowserActivity.class);
 				g.jam.setMaster(false); 
 				startActivity(intent);
 				finish();
