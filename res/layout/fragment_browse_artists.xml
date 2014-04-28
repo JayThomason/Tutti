@@ -2,15 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#fa6a6a" >
+    android:orientation="vertical" >
      
-    <TextView android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/artistTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Browse Artists"
-        android:textSize="20dp"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"
+        android:text="Artists"
+        android:textColor="#ffffff"
+        android:textSize="24sp" />
+    
+    <ListView
+        android:id="@+id/artistListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/allArtists"
+        android:background="#ff0927"
+        android:textColor="#ffffff" 
+        android:paddingBottom="25dp"
+    	android:clipToPadding="false"/>
+    
+     <EditText
+	    android:id="@+id/artist_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="#ffffff"
+	    android:inputType="textFilter" 
+	    android:hint="Search artists"
+	    android:textColor="#000000" />
      
  
 </RelativeLayout>

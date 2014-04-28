@@ -14,12 +14,12 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int index) {
  
         switch (index) {
-        case 0:
-            return new BrowseArtistsFragment();
-        case 1:
-            return new BrowseAlbumsFragment();
-        case 2:
-            return new BrowseSongsFragment();
+	        case 0:
+	            return new BrowseArtistsFragment();
+	        case 1:
+	            return new BrowseAlbumsFragment();
+	        case 2:
+	            return new BrowseSongsFragment();
         }
  
         return null;
