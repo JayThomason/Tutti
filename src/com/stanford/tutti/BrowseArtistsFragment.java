@@ -19,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class BrowseArtistsFragment extends Fragment {
 	
 	private Cursor cursor = null; 
+	private Globals g; 
 	private View rootView; 
 	
 	
@@ -28,15 +29,15 @@ public class BrowseArtistsFragment extends Fragment {
  
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
         
-        Globals g = (Globals) rootView.getContext().getApplicationContext(); 
+        g = (Globals) rootView.getContext().getApplicationContext(); 
          
-        initializeArtistList(g); 
+        initializeArtistList(); 
         
         return rootView;
     }
     
 
-	private void initializeArtistList(Globals g) {		
+	private void initializeArtistList() {		
 	    if (cursor != null) 
 	    	cursor.close(); 
 		cursor = g.db.getAllArtists(); 
@@ -70,7 +71,6 @@ public class BrowseArtistsFragment extends Fragment {
 
 	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {
-	        	Globals g = (Globals) rootView.getContext().getApplicationContext(); 
 	            return g.db.searchArtists(constraint);
 	        }
 	    });
