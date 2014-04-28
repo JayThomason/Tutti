@@ -22,12 +22,14 @@ public class BrowseAlbumsFragment extends Fragment {
 	private Cursor cursor = null; 
 	private Globals g; 
 	private View rootView; 
+	private ListView listView; 
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
         rootView = inflater.inflate(R.layout.fragment_browse_albums, container, false);
+        listView = (ListView) rootView.findViewById(R.id.albumListView); 
         
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
@@ -52,7 +54,6 @@ public class BrowseAlbumsFragment extends Fragment {
 	    
 	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    MusicBrowserAdapter adapter = new MusicBrowserAdapter(g, R.layout.list_layout, cursor, columns, to);
-		ListView listView = (ListView) rootView.findViewById(R.id.albumListView);
 	    listView.setAdapter(adapter);
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
@@ -66,8 +67,7 @@ public class BrowseAlbumsFragment extends Fragment {
 	        }
 
 	        public void afterTextChanged(Editable s) {
-	            ListView lv = (ListView) rootView.findViewById(R.id.albumListView);
-	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)lv.getAdapter();
+	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
 	            filterAdapter.getFilter().filter(s.toString());
 	        }
 	    });
@@ -87,7 +87,6 @@ public class BrowseAlbumsFragment extends Fragment {
 	 */
 	
 	private void setAlbumListItemClickListener() {
-		ListView listView = (ListView) rootView.findViewById(R.id.albumListView);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 

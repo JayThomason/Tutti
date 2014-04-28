@@ -2,15 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#fa6a6a" >
+    android:orientation="vertical" >
      
-    <TextView android:layout_width="fill_parent"
+    
+    <ListView
+        android:id="@+id/songListView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Browse Songs"
-        android:textSize="20dp"
-        android:layout_centerInParent="true"/>
+        android:layout_below="@+id/songTitle"
+        android:background="#ff0927"
+        android:textColor="#ffffff" 
+        android:paddingBottom="25dp"
+    	android:clipToPadding="false">
+
+    </ListView>
+    
+    <EditText
+	    android:id="@+id/song_search_box"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="#ffffff"
+	    android:inputType="textFilter" 
+	    android:hint="Search songs"
+	    android:textColor="#000000" />
      
  
 </RelativeLayout>

@@ -1,19 +1,136 @@
 package com.stanford.tutti; 
 
+import java.util.Set;
+
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
  
 public class BrowseSongsFragment extends Fragment {
  
+	private Cursor cursor = null; 
+	private Globals g; 
+	private View rootView; 
+	private ListView listView; 
+	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
-        View rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
-         
+        rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
+        listView = (ListView) rootView.findViewById(R.id.songListView); 
+        
+        g = (Globals) rootView.getContext().getApplicationContext(); 
+
+        initializeSongList(); 
+        
         return rootView;
     }
+    
+	private void initializeSongList() {
+		if (cursor != null) 
+			cursor.close(); 
+
+		if (g.currentAlbumView != "" && g.currentArtistView != "") {
+			cursor = g.db.getSongsByArtistAndAlbum(g.currentArtistView, g.currentAlbumView); 
+		} else if (g.currentAlbumView != "") {
+			cursor = g.db.getSongsByAlbum(g.currentAlbumView); 
+		} else if (g.currentArtistView != "") {
+			cursor = g.db.getSongsByArtist(g.currentArtistView); 
+		} else {
+			cursor = g.db.getAllSongs(); 
+		}
+
+		String[] columns = new String[] { "art", "title" };
+		int[] to = new int[] { R.id.browserArt, R.id.browserText };
+
+
+		//SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
+		MusicBrowserAdapter adapter = new MusicBrowserAdapter(g, R.layout.list_layout, cursor, columns, to); 
+		listView.setAdapter(adapter);
+		listView.setFastScrollEnabled(true);
+		listView.setTextFilterEnabled(true);
+
+		EditText etext = (EditText) rootView.findViewById(R.id.song_search_box);
+		etext.addTextChangedListener(new TextWatcher() {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			public void afterTextChanged(Editable s) {
+				SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
+				filterAdapter.getFilter().filter(s.toString());
+			}
+		});
+
+		adapter.setFilterQueryProvider(new FilterQueryProvider() {
+			public Cursor runQuery(CharSequence constraint) {
+				return g.db.searchSongs(constraint);
+			}
+		});
+
+		//setSongListItemClickListener();
+	}
+
+	
+	/*
+	 * Adds an onItemClickListener to the items in the listView that will
+	 * move to the ViewAlbumsActivity and filter on the selected artist. 
+	 */
+/*
+	private void setSongListItemClickListener() {
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, 
+					int position, long id) {
+				TextView textView = (TextView) view.findViewById(R.id.browserText); 
+				String title = textView.getText().toString();
+
+				// IN THE LONG TERM
+				// WE NEED TO BE USING GETSONGBYID
+				// OR GETSONGBY UNIQUE HASH
+				Song song = g.db.getSongByTitle(title); 
+
+				g.jam.addSong(song); 
+				Toast.makeText(getApplicationContext(),
+						song.getArtist()
+						+ " : " + song.getTitle()
+						+ " added to Jam", Toast.LENGTH_SHORT).show();                
+				if (g.jam.checkMaster()) {
+					if (g.jam.getCurrentSong() == null) {
+						g.jam.setCurrentSong(song);
+						g.jam.playCurrentSong();
+					}          
+				} 
+				if (!g.jam.checkMaster()) {
+					new PassMessageThread(g.jam.getMasterIpAddr(), port,
+							"/jam/add/", Integer.toString(song.hashCode())).start(); 
+				}
+				else {
+					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
+					Set<String> clientIpList = g.jam.getClientIpSet();
+					for (String clientIpAddr : clientIpList) {
+						new PassMessageThread(clientIpAddr, port,
+								"/jam/add/", Integer.toString(song.hashCode())).start();
+					}
+				}
+			}
+		});
+	}
+	*/
 }
