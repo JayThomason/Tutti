@@ -24,14 +24,15 @@ import android.preference.PreferenceManager;
  */
 public class Globals extends Application {
 	public Jam jam = new Jam(); 
-	
+		
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 
-	public Handler uiUpdateHandler; 
 	public Handler artistUpdateHandler; 
 	public Handler albumUpdateHandler; 
 	public Handler songUpdateHandler; 
 	public Handler jamUpdateHandler; 
+	
+	public Handler uiUpdateHandler; 
 	
 	DatabaseHandler db; 
 	

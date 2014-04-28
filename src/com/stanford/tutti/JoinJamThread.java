@@ -90,8 +90,8 @@ class JoinJamThread extends Thread {
 			String username = jsonLibrary.getString("username"); 
 			g.jam.setIPUsername(ipAddress, username); 
 			
-			loadMusicFromJSON(artists); 
-			loadJamFromJSON(jam); 
+			g.db.loadMusicFromJSON(artists, ipAddress); 
+			g.db.loadJamFromJSON(jam, ipAddress); 
 			
 			System.out.println(response.toString());
 			return true;
@@ -102,74 +102,5 @@ class JoinJamThread extends Thread {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	/*
-	 * Load new music into the database library by
-	 * parsing the JSON response from another phone. 
-	 * 
-	 */
-	public void loadMusicFromJSON(JSONArray artists) {    	
-		for (int i = 0; i < artists.length(); i++) {
-			try {
-				JSONObject jsonArtist = artists.getJSONObject(i); 
-				String artistName = (String)jsonArtist.get("name"); 
-				JSONArray albums = jsonArtist.getJSONArray("albums"); 
-				for (int j = 0; j < albums.length(); j++) {
-					JSONObject jsonAlbum = albums.getJSONObject(j); 
-					String albumTitle = (String)jsonAlbum.get("title");
-					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
-					for (int k = 0; k < songs.length(); k++) {
-						JSONObject jsonSong = songs.getJSONObject(k); 
-						String songTitle = (String)jsonSong.get("title"); 
-						String songPath = (String)jsonSong.get("path");
-						Song song = new Song(songTitle, songPath, false);
-						song.setArtist(artistName); 
-						song.setAlbum(albumTitle); 
-						song.setIpAddr(ipAddress);
-						
-						g.db.addSong(song); 
-						if (g.uiUpdateHandler != null) {
-							Message msg = g.uiUpdateHandler.obtainMessage();
-							msg.what = 0; // fix this later to be constant
-							g.uiUpdateHandler.sendMessage(msg);
-						}
-					}
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-		}
-	}
-	
-	/*
-	 * Load existing Jam state by parsing
-	 * the JSON response from another phone. 
-	 * 
-	 */
-	public void loadJamFromJSON(JSONObject jam) {    	
-		try {
-			g.jam.clearSongs(); 
-			JSONArray songs = jam.getJSONArray("songs");
-			int nowPlayingIndex = jam.getInt("current"); 
-			for (int i = 0; i < songs.length(); i++) {
-				JSONObject jsonSong = songs.getJSONObject(i); 
-				String songTitle = (String)jsonSong.get("title"); 
-				String songPath = (String)jsonSong.get("path");
-				Song song = new Song(songTitle, songPath, false);
-				song.setArtist((String)jsonSong.get("artist")); 
-				song.setAlbum((String)jsonSong.get("album")); 
-				song.setIpAddr(ipAddress);
-				
-				g.jam.addSong(song);
-				
-				if (i == nowPlayingIndex) {
-					g.jam.setCurrentSong(song);
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} 
 	}
 }

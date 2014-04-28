@@ -12,6 +12,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Message;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -48,9 +49,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     
     private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP};
 
- 
+    private Globals g; 
+    
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.g = (Globals) context.getApplicationContext(); 
     }
  
     // Create Tables
@@ -422,4 +425,76 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		return songArray; 
     }
+    
+	/*
+	 * Load new music into the database library by
+	 * parsing the JSON response from another phone. 
+	 * 
+	 */
+	public void loadMusicFromJSON(JSONArray artists, String ipAddress) {    	
+		for (int i = 0; i < artists.length(); i++) {
+			try {
+				JSONObject jsonArtist = artists.getJSONObject(i); 
+				String artistName = (String)jsonArtist.get("name"); 
+				JSONArray albums = jsonArtist.getJSONArray("albums"); 
+				for (int j = 0; j < albums.length(); j++) {
+					JSONObject jsonAlbum = albums.getJSONObject(j); 
+					String albumTitle = (String)jsonAlbum.get("title");
+					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
+					for (int k = 0; k < songs.length(); k++) {
+						JSONObject jsonSong = songs.getJSONObject(k); 
+						String songTitle = (String)jsonSong.get("title"); 
+						String songPath = (String)jsonSong.get("path");
+						Song song = new Song(songTitle, songPath, false);
+						song.setArtist(artistName); 
+						song.setAlbum(albumTitle); 
+						song.setIpAddr(ipAddress);
+						
+						addSong(song); 
+						
+						/*
+						if (g.uiUpdateHandler != null) {
+							Message msg = g.uiUpdateHandler.obtainMessage();
+							msg.what = 0; // fix this later to be constant
+							g.uiUpdateHandler.sendMessage(msg);
+						}
+						*/
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+	}
+	
+	/*
+	 * Load existing Jam state by parsing
+	 * the JSON response from another phone. 
+	 * 
+	 */
+	public void loadJamFromJSON(JSONObject jam, String ipAddress) {    	
+		try {
+			g.jam.clearSongs(); 
+			JSONArray songs = jam.getJSONArray("songs");
+			int nowPlayingIndex = jam.getInt("current"); 
+			for (int i = 0; i < songs.length(); i++) {
+				JSONObject jsonSong = songs.getJSONObject(i); 
+				String songTitle = (String)jsonSong.get("title"); 
+				String songPath = (String)jsonSong.get("path");
+				Song song = new Song(songTitle, songPath, false);
+				song.setArtist((String)jsonSong.get("artist")); 
+				song.setAlbum((String)jsonSong.get("album")); 
+				song.setIpAddr(ipAddress);
+				
+				g.jam.addSong(song);
+				
+				if (i == nowPlayingIndex) {
+					g.jam.setCurrentSong(song);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+	}
 }
