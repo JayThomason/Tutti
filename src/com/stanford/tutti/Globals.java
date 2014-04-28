@@ -31,6 +31,7 @@ public class Globals extends Application {
 	public Handler artistUpdateHandler; 
 	public Handler albumUpdateHandler; 
 	public Handler songUpdateHandler; 
+	public Handler jamUpdateHandler; 
 	
 	DatabaseHandler db; 
 	

@@ -3,6 +3,8 @@ package com.stanford.tutti;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,10 +38,12 @@ public class BrowseJamFragment extends Fragment {
          
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
+		listView = (ListView) rootView.findViewById(R.id.jamListView);
+		
         assignButtons();
 		configureButtons();
-		listView = (ListView) rootView.findViewById(R.id.jamListView);
 		initializeJamList();
+		setupHandler(); 
         
         return rootView;
     }
@@ -146,14 +150,13 @@ public class BrowseJamFragment extends Fragment {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(g, 
 				android.R.layout.simple_list_item_1, songStringList);
 		listView.setAdapter(adapter);
-		//setJamListItemClickListener();
+		setJamListItemClickListener();
 	}
 	
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * play the song which is clicked on.
 	 */
-	/*
 	private void setJamListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -161,10 +164,9 @@ public class BrowseJamFragment extends Fragment {
 					int position, long id) {
 				String item = ((TextView)view).getText().toString();
 				Toast.makeText(
-						getApplicationContext(),
+						g, 
 						"Now playing: " + item, Toast.LENGTH_SHORT)
 						.show();
-				Globals g = (Globals) getApplication();  
 				g.jam.setCurrentSongByIndex(position);
 				g.jam.playCurrentSong(); 
 				Song song = g.jam.getSongByIndex(position); 
@@ -176,5 +178,24 @@ public class BrowseJamFragment extends Fragment {
 			}
 		});
 	}
-	*/
+	
+	/*
+	 * Initializes the handler. The handler is used to receive messages from
+	 * the server and to update the UI accordingly.
+	 */
+	private void setupHandler() {
+		g.jamUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from another phone that we have new
+				 * non-local music, we can update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					initializeJamList(); 
+				}
+				super.handleMessage(msg);
+			}
+		};		
+	}
 }

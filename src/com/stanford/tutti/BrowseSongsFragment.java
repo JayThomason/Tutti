@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,7 +27,11 @@ public class BrowseSongsFragment extends Fragment {
 	private Cursor cursor = null; 
 	private Globals g; 
 	private View rootView; 
+	private ViewPager viewPager; 
 	private ListView listView; 
+	
+	private final int port = 1234;
+
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,6 +39,8 @@ public class BrowseSongsFragment extends Fragment {
  
         rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
         listView = (ListView) rootView.findViewById(R.id.songListView); 
+        
+        viewPager = (ViewPager) container.findViewById(R.id.pager);
         
         g = (Globals) rootView.getContext().getApplicationContext(); 
 
@@ -74,7 +81,7 @@ public class BrowseSongsFragment extends Fragment {
 			}
 		});
 
-		//setSongListItemClickListener();
+		setSongListItemClickListener();
 	}
 
 	
@@ -82,7 +89,6 @@ public class BrowseSongsFragment extends Fragment {
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * move to the ViewAlbumsActivity and filter on the selected artist. 
 	 */
-/*
 	private void setSongListItemClickListener() {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -97,7 +103,7 @@ public class BrowseSongsFragment extends Fragment {
 				Song song = g.db.getSongByTitle(title); 
 
 				g.jam.addSong(song); 
-				Toast.makeText(getApplicationContext(),
+				Toast.makeText(g,
 						song.getArtist()
 						+ " : " + song.getTitle()
 						+ " added to Jam", Toast.LENGTH_SHORT).show();                
@@ -119,10 +125,17 @@ public class BrowseSongsFragment extends Fragment {
 								"/jam/add/", Integer.toString(song.hashCode())).start();
 					}
 				}
+								
+				if (g.jamUpdateHandler != null) {
+					Message msg = g.jamUpdateHandler.obtainMessage();
+					msg.what = 0; // fix this later to be constant
+					g.jamUpdateHandler.sendMessage(msg);
+				}
+				
+		        viewPager.setCurrentItem(3);
 			}
 		});
 	}
-	*/
 	
 	private void initializeSearchBar() {
 		EditText etext = (EditText) rootView.findViewById(R.id.song_search_box);

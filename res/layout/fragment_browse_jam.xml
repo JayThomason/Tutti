@@ -10,7 +10,6 @@
         android:id="@+id/jamListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/player_footer"
         android:background="#ff0927"
         android:textColor="#ffffff" >
 
