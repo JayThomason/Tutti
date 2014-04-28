@@ -91,19 +91,21 @@ public class MusicLibraryLoaderThread extends Thread {
 	            song.setAlbum(albumTitle);
 	            song.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
 	            
-	            Cursor artCursor = activity.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
-	                    new String[] {MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_ART}, 
-	                    MediaStore.Audio.Albums.ALBUM + "=?", 
-	                    new String[] { albumTitle }, 
-	                    null);
-
-	            String artPath = ""; 
-	            if (artCursor.moveToFirst() && artCursor.getString(1) != null) {
-	            	artPath = artCursor.getString(1);
+	            if (albumTitle != "") {
+		            Cursor artCursor = activity.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
+		                    new String[] {MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_ART}, 
+		                    MediaStore.Audio.Albums.ALBUM + "=?", 
+		                    new String[] { albumTitle }, 
+		                    null);
+	
+		            String artPath = ""; 
+		            if (artCursor.moveToFirst() && artCursor.getString(1) != null) {
+		            	artPath = artCursor.getString(1);
+		            }
+		            
+		            song.setAlbumArt(artPath); 
+		            artCursor.close(); 
 	            }
-	            
-	            song.setAlbumArt(artPath); 
-	            artCursor.close(); 
 	            
 	            g.db.addSong(song); 
 	        }
