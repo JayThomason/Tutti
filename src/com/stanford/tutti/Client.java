@@ -31,5 +31,4 @@ public class Client {
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}
-	
 }
