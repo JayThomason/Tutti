@@ -2,6 +2,7 @@ package com.stanford.tutti;
 
 import java.util.Set;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -111,24 +112,18 @@ public class BrowseSongsFragment extends Fragment {
 				// IN THE LONG TERM
 				// WE NEED TO BE USING GETSONGBYID
 				// OR GETSONGBY UNIQUE HASH
-				Song song = g.db.getSongByTitle(title); 
-
-				g.jam.addSong(song); 
-				Toast.makeText(g,
-						song.getArtist()
-						+ " : " + song.getTitle()
-						+ " added to Jam", Toast.LENGTH_SHORT).show();                
+				final Song song = g.db.getSongByTitle(title); 
+               
 				if (g.jam.checkMaster()) {
+					g.jam.addSong(song); 
+					Toast.makeText(g,
+							song.getArtist()
+							+ " : " + song.getTitle()
+							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 					if (g.jam.getCurrentSong() == null) {
 						g.jam.setCurrentSong(song);
 						g.jam.playCurrentSong();
-					}          
-				} 
-				if (!g.jam.checkMaster()) {
-					new PassMessageThread(g.jam.getMasterIpAddr(), port,
-							"/jam/add/", Integer.toString(song.hashCode())).start(); 
-				}
-				else {
+					}
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
 					Set<Client> clientSet = g.jam.getClientSet();
 					for (Client client : clientSet) {
@@ -139,6 +134,23 @@ public class BrowseSongsFragment extends Fragment {
 							}
 						});
 					}
+				}
+				else {
+					// will want to refactor this to use the Client or a similar Master class
+					AsyncHttpClient asyncClient = new AsyncHttpClient();
+					String url = "http://" + g.jam.getMasterIpAddr() + ":" + port + "/jam/add/" + Integer.toString(song.hashCode()); 
+					asyncClient.get(url, new AsyncHttpResponseHandler() {
+						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+							System.out.println("request to add song to master returned: " + statusCode);
+
+							if (statusCode == 200) {
+								Toast.makeText(g,
+										song.getArtist()
+										+ " : " + song.getTitle()
+										+ " added to Jam", Toast.LENGTH_SHORT).show(); 
+							}
+						}
+					});
 				}
 
 				if (g.jamUpdateHandler != null) {
