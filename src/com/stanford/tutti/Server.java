@@ -134,13 +134,17 @@ public class Server extends NanoHTTPD {
     	System.out.println("SERVER RECEIVED UPDATE JAM REQUEST"); 
     	if (path.startsWith(JAM_ADD_SONG)) {
     		return jamAddSongResponse(path.substring(JAM_ADD_SONG.length())); 
-    	} else if (path.startsWith(JAM_SET_SONG)) {
+    	} 
+    	else if (path.startsWith(JAM_SET_SONG)) {
     		return jamSetSongResponse(path.substring(JAM_SET_SONG.length())); 
-    	} else if (path.startsWith(JAM_START)) {
+    	} 
+    	else if (path.startsWith(JAM_START)) {
     		return jamStartResponse(); 
-    	} else if (path.startsWith(JAM_PAUSE)) {
+    	} 
+    	else if (path.startsWith(JAM_PAUSE)) {
     		return jamPauseResponse(); 
-    	} else if (path.startsWith(JAM_RESTART)) {
+    	} 
+    	else if (path.startsWith(JAM_RESTART)) {
     		return jamRestartResponse(); 
     	}
         return badRequestResponse();
