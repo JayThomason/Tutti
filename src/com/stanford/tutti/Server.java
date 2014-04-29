@@ -23,6 +23,7 @@ public class Server extends NanoHTTPD {
 	//probably want to make this a better global later, maybe in @strings
 	/* These strings define the API endpoints for the tutti API. */
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
+	private static final String GET_JAM = "/getJam"; 
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
 	private static final String UPDATE_JAM = "/jam"; 
@@ -80,12 +81,17 @@ public class Server extends NanoHTTPD {
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
-    	}
+    	} 
+    	else if (uri.startsWith(GET_JAM)) {
+    		return getJamResponse(); 
+    	} 
     	else if (uri.startsWith(GET_SONG)) {
     		return getSong(uri.substring(GET_SONG.length()));  
-    	} else if (uri.startsWith(UPDATE_JAM)) {
+    	} 
+    	else if (uri.startsWith(UPDATE_JAM)) {
     		return updateJamResponse(uri.substring(UPDATE_JAM.length())); 
-    	} else {
+    	} 
+    	else {
     		return badRequestResponse();
     	}
     }
@@ -221,6 +227,18 @@ public class Server extends NanoHTTPD {
 		} 
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
+		Response response = new Response(Status.OK, "application/json", is);
+		return response;
+	}
+	
+	private Response getJamResponse() {
+		JSONObject jsonJam = new JSONObject(); 
+		try {
+			jsonJam.put("jam", g.jam.toJSON());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		ByteArrayInputStream is = new ByteArrayInputStream(jsonJam.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;
 	}
