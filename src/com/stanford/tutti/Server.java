@@ -81,13 +81,17 @@ public class Server extends NanoHTTPD {
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
-    	} else if (uri.startsWith(GET_JAM)) {
+    	} 
+    	else if (uri.startsWith(GET_JAM)) {
     		return getJamResponse(); 
-    	} else if (uri.startsWith(GET_SONG)) {
+    	} 
+    	else if (uri.startsWith(GET_SONG)) {
     		return getSong(uri.substring(GET_SONG.length()));  
-    	} else if (uri.startsWith(UPDATE_JAM)) {
+    	} 
+    	else if (uri.startsWith(UPDATE_JAM)) {
     		return updateJamResponse(uri.substring(UPDATE_JAM.length())); 
-    	} else {
+    	} 
+    	else {
     		return badRequestResponse();
     	}
     }

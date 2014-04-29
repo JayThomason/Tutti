@@ -460,7 +460,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/*
 	 * Load new music into the database library by
 	 * parsing the JSON response from another phone. 
-	 * 
 	 */
 	public void loadMusicFromJSON(JSONArray artists, String ipAddress) {    	
 		for (int i = 0; i < artists.length(); i++) {
