@@ -91,7 +91,7 @@ class JoinJamThread extends Thread {
 			g.jam.setIPUsername(ipAddress, username); 
 			
 			g.db.loadMusicFromJSON(artists, ipAddress); 
-			g.db.loadJamFromJSON(jam, ipAddress); 
+			g.jam.loadJamFromJSON(jam, ipAddress); 
 			
 			System.out.println(response.toString());
 			return true;

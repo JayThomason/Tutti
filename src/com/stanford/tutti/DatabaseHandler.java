@@ -498,34 +498,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			} 
 		}
 	}
-	
-	/*
-	 * Load existing Jam state by parsing
-	 * the JSON response from another phone. 
-	 * 
-	 */
-	public void loadJamFromJSON(JSONObject jam, String ipAddress) {    	
-		try {
-			g.jam.clearSongs(); 
-			JSONArray songs = jam.getJSONArray("songs");
-			int nowPlayingIndex = jam.getInt("current"); 
-			for (int i = 0; i < songs.length(); i++) {
-				JSONObject jsonSong = songs.getJSONObject(i); 
-				String songTitle = (String)jsonSong.get("title"); 
-				String songPath = (String)jsonSong.get("path");
-				Song song = new Song(songTitle, songPath, false);
-				song.setArtist((String)jsonSong.get("artist")); 
-				song.setAlbum((String)jsonSong.get("album")); 
-				song.setIpAddr(ipAddress);
-				
-				g.jam.addSong(song);
-				
-				if (i == nowPlayingIndex) {
-					g.jam.setCurrentSong(song);
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} 
-	}
 }
