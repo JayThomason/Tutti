@@ -20,7 +20,7 @@ public class MusicBrowserAdapter extends SimpleCursorAdapter {
     private String[] columns; 
     private final LayoutInflater inflater;
 
-    public MusicBrowserAdapter(Context context,int layout, Cursor c,String[] from,int[] to) {
+    public MusicBrowserAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
         this.layout=layout;
         this.mContext = context;
