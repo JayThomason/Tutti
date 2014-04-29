@@ -21,15 +21,6 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
-	/*
-	public void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-	    client.get(getAbsoluteUrl(url), params, responseHandler);
-	}
-
-	public void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-	    client.post(getAbsoluteUrl(url), params, responseHandler);
-	}
-*/
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}
