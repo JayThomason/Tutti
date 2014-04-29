@@ -130,7 +130,7 @@ public class BrowseSongsFragment extends Fragment {
 				}
 				else {
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
-					Set<Client> clientSet = g.jam.getClientIpSet();
+					Set<Client> clientSet = g.jam.getClientSet();
 					for (Client client : clientSet) {
 						client.requestAddSong(Integer.toString(song.hashCode()), new AsyncHttpResponseHandler() {
 							@Override

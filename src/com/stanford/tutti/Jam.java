@@ -48,7 +48,7 @@ public class Jam {
 		this.masterIpAddr = masterIpAddr;
 	}
 	
-	public HashSet<Client> getClientIpSet() {
+	public HashSet<Client> getClientSet() {
 		return clientSet; // careful - set is mutable
 	}
 	
