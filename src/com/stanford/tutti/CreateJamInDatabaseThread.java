@@ -9,6 +9,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 public class CreateJamInDatabaseThread extends Thread {
 	private String serverIpAddr;
@@ -31,9 +32,8 @@ public class CreateJamInDatabaseThread extends Thread {
 		HttpGet get = new HttpGet(uri.toString());
 		try {
 			System.out.println("Request to create jam on DB server.");
-			System.out.println(get.toString());
 			HttpResponse response = httpClient.execute(get);
-			System.out.println(response.toString());
+			System.out.println("response: " + EntityUtils.toString(response.getEntity()));
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -2,6 +2,8 @@ package com.stanford.tutti;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -12,18 +14,30 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class RequestLocalJamThread extends Thread {
 	private String serverHostname;
 	private final String path = "/discoverJams";
 	private Activity joinJamActivity;
-	
+	private HashMap<String, String> ipMap = new HashMap<String, String>();
+
 	public RequestLocalJamThread(String serverHostname, Activity joinJamActivity) {
 		this.serverHostname = serverHostname;
 		this.joinJamActivity = joinJamActivity;
+	}
+	
+	public String getIpForName(String name) {
+		return ipMap.get(name);
 	}
 	
 	public void run() {
@@ -36,15 +50,24 @@ public class RequestLocalJamThread extends Thread {
 			System.out.println("Server response: "+ response.getStatusLine().getStatusCode());
 			if (response.getStatusLine().getStatusCode() == 200) {
 				String jamListStr = EntityUtils.toString(response.getEntity());
+				if (jamListStr.length() <= 1)
+					return;
 				response.getEntity().consumeContent();
-				final String ipList[] = jamListStr.split("\n");
+				// each name/ip pair is delimited by a \n and the names/ips are divided by a space
+				final ArrayList<String> nameList = new ArrayList<String>();
+				String nameIpPairList[] = jamListStr.split("\n");
+				for (String str : nameIpPairList) {
+					String nameIpPair[] = str.split(" ");
+					nameList.add(nameIpPair[0]);
+					ipMap.put(nameIpPair[0],  nameIpPair[1]);
+				}
 				joinJamActivity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() { // update ui with jam list
 						ListView jamListView = (ListView) joinJamActivity.findViewById(R.id.jamListView);
 						ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
 								joinJamActivity, android.R.layout.simple_list_item_1,
-								ipList);
+								nameList);
 						jamListView.setAdapter(arrayAdapter);
 					}
 				});

@@ -25,6 +25,7 @@ public class JoinJamActivity extends Activity {
 	private Server server;
 	private Globals g;
 	private Handler h;
+	private RequestLocalJamThread requestLocalJamThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,8 @@ public class JoinJamActivity extends Activity {
 	
 	private void requestLocalJams() {
 		String serverHostname = getString(R.string.ec2_server);
-		(new RequestLocalJamThread(serverHostname, this)).start();
+		requestLocalJamThread = new RequestLocalJamThread(serverHostname, this);
+		requestLocalJamThread.start();
 	}
 	
 	private void configureJamListView() {
@@ -51,7 +53,8 @@ public class JoinJamActivity extends Activity {
 					long arg3) {
 				// TODO Auto-generated method stub
 			    server = new Server(PORT, g);
-			    String ip = ((TextView) arg1).getText().toString();
+			    String jamName = ((TextView) arg1).getText().toString();
+			    String ip = requestLocalJamThread.getIpForName(jamName);
 				Globals g = (Globals) getApplication();
 				if (g.jam.checkMaster()) {
 					g.jam.addNewClientIpAddr(ip);
