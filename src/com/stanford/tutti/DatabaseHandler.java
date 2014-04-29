@@ -483,10 +483,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						addSong(song); 
 						
 						/*
-						if (g.uiUpdateHandler != null) {
-							Message msg = g.uiUpdateHandler.obtainMessage();
+						if (g.artistUpdateHandler != null) {
+							Message msg = g.artistUpdateHandler.obtainMessage();
 							msg.what = 0; // fix this later to be constant
-							g.uiUpdateHandler.sendMessage(msg);
+							g.artistUpdateHandler.sendMessage(msg);
+						}
+						if (g.albumUpdateHandler != null) {
+							Message msg = g.albumUpdateHandler.obtainMessage();
+							msg.what = 0; // fix this later to be constant
+							g.albumUpdateHandler.sendMessage(msg);
+						}
+						if (g.songUpdateHandler != null) {
+							Message msg = g.songUpdateHandler.obtainMessage();
+							msg.what = 0; // fix this later to be constant
+							g.songUpdateHandler.sendMessage(msg);
 						}
 						*/
 					}

@@ -31,9 +31,7 @@ public class Globals extends Application {
 	public Handler albumUpdateHandler; 
 	public Handler songUpdateHandler; 
 	public Handler jamUpdateHandler; 
-	
-	public Handler uiUpdateHandler; 
-	
+		
 	DatabaseHandler db; 
 	
 	private static Context context; 
@@ -43,7 +41,6 @@ public class Globals extends Application {
 		super.onCreate();
 		Globals.context = getApplicationContext(); 
 		db = new DatabaseHandler(this);
-		uiUpdateHandler = new Handler(); 
 	}
 	
 	public static Context getAppContext() {
