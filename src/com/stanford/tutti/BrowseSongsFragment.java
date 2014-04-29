@@ -2,6 +2,10 @@ package com.stanford.tutti;
 
 import java.util.Set;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,36 +25,36 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
- 
+
 public class BrowseSongsFragment extends Fragment {
- 
+
 	private Cursor cursor = null; 
 	private Globals g; 
 	private View rootView; 
 	private ViewPager viewPager; 
 	private ListView listView; 
-	
+
 	private final int port = 1234;
 
-	
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
- 
-        rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
-        listView = (ListView) rootView.findViewById(R.id.songListView); 
-        
-        viewPager = (ViewPager) container.findViewById(R.id.pager);
-        
-        g = (Globals) rootView.getContext().getApplicationContext(); 
 
-        initializeSongList(); 
-        initializeSearchBar(); 
-        setupHandler(); 
-        
-        return rootView;
-    }
-    
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
+		listView = (ListView) rootView.findViewById(R.id.songListView); 
+
+		viewPager = (ViewPager) container.findViewById(R.id.pager);
+
+		g = (Globals) rootView.getContext().getApplicationContext(); 
+
+		initializeSongList(); 
+		initializeSearchBar(); 
+		setupHandler(); 
+
+		return rootView;
+	}
+
 	private void initializeSongList() {
 		if (cursor != null) 
 			cursor.close(); 
@@ -91,7 +95,7 @@ public class BrowseSongsFragment extends Fragment {
 		setSongListItemClickListener();
 	}
 
-	
+
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * move to the ViewAlbumsActivity and filter on the selected artist. 
@@ -126,24 +130,28 @@ public class BrowseSongsFragment extends Fragment {
 				}
 				else {
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
-					Set<String> clientIpList = g.jam.getClientIpSet();
-					for (String clientIpAddr : clientIpList) {
-						new PassMessageThread(clientIpAddr, port,
-								"/jam/add/", Integer.toString(song.hashCode())).start();
+					Set<Client> clientSet = g.jam.getClientIpSet();
+					for (Client client : clientSet) {
+						client.requestAddSong(Integer.toString(song.hashCode()), new AsyncHttpResponseHandler() {
+							@Override
+							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+								System.out.println("request to add song to client returned: " + statusCode);
+							}
+						});
 					}
 				}
-								
+
 				if (g.jamUpdateHandler != null) {
 					Message msg = g.jamUpdateHandler.obtainMessage();
 					msg.what = 0; // fix this later to be constant
 					g.jamUpdateHandler.sendMessage(msg);
 				}
-				
-		        viewPager.setCurrentItem(3);
+
+				viewPager.setCurrentItem(3);
 			}
 		});
 	}
-	
+
 	private void initializeSearchBar() {
 		EditText etext = (EditText) rootView.findViewById(R.id.song_search_box);
 		etext.addTextChangedListener(new TextWatcher() {
@@ -159,7 +167,7 @@ public class BrowseSongsFragment extends Fragment {
 			}
 		});
 	}
-	
+
 	/*
 	 * Initializes the handler. The handler is used to receive messages from
 	 * the server and to update the UI accordingly.
@@ -174,7 +182,7 @@ public class BrowseSongsFragment extends Fragment {
 				 */
 				if (msg.what == 0) {
 					initializeSongList(); 
-			        viewPager.setCurrentItem(2);
+					viewPager.setCurrentItem(2);
 				}
 				super.handleMessage(msg);
 			}

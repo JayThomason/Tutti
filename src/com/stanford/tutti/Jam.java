@@ -19,7 +19,7 @@ public class Jam {
 	private int currentSongIndex; 
 	private boolean master; 
 	public MediaPlayer mediaPlayer; 
-	private HashSet<String> clientIpList; 
+	private HashSet<Client> clientSet;
 	private HashMap<String, String> usernameMap; 
 	private String masterIpAddr;
 	
@@ -36,7 +36,7 @@ public class Jam {
             }
         });
 		master = false; 
-		clientIpList = new HashSet<String>();
+		clientSet = new HashSet<Client>();
 		usernameMap = new HashMap<String, String>(); 
 	}
 	
@@ -48,16 +48,12 @@ public class Jam {
 		this.masterIpAddr = masterIpAddr;
 	}
 	
-	public HashSet<String> getClientIpSet() {
-		return clientIpList; // careful - set is mutable
+	public HashSet<Client> getClientIpSet() {
+		return clientSet; // careful - set is mutable
 	}
 	
-	public void addNewClientIpAddr(String ip) {
-		clientIpList.add(ip);
-	}
-	
-	public void removeClientIpAddr(String ip) {
-		clientIpList.remove(ip);
+	public void addClient(Client client) {
+		clientSet.add(client);
 	}
 	
 	public boolean checkMaster() {

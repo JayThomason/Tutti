@@ -78,7 +78,7 @@ public class Server extends NanoHTTPD {
                           Map<String, String> files)  {
     	logRequest(uri, method, header, parameters, files);
     	if (uri.startsWith(JOIN_JAM)) {
-    		return joinJamResponse(header.get(HTTP_CLIENT_IP));
+    		return joinJamResponse(header.get(HTTP_CLIENT_IP), parameters.get("username"));
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
@@ -107,9 +107,13 @@ public class Server extends NanoHTTPD {
      * client thread to request the local music on the joining phone and
      * sync jam libraries.
      */
-    private Response joinJamResponse(String otherIpAddr) {
+    private Response joinJamResponse(String otherIpAddr, String username) {
+    	if (username == null) {
+    		return badRequestResponse();
+    	}
 		if (g.jam.checkMaster()) {
-			g.jam.addNewClientIpAddr(otherIpAddr);
+			Client client = new Client(g, username, otherIpAddr, 1234);
+			g.jam.addClient(client);
 		}
 		else {
 			System.out.println("Server: Attempt to join jam on client device -- error");

@@ -56,12 +56,7 @@ public class JoinJamActivity extends Activity {
 			    String jamName = ((TextView) arg1).getText().toString();
 			    String ip = requestLocalJamThread.getIpForName(jamName);
 				Globals g = (Globals) getApplication();
-				if (g.jam.checkMaster()) {
-					g.jam.addNewClientIpAddr(ip);
-				}
-				else {
-					g.jam.setMasterIp(ip);
-				}
+				g.jam.setMasterIp(ip);
 				Thread joinJamThread = new JoinJamThread(ip, false);
 				try {
 					server.start();

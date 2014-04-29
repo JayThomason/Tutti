@@ -3,6 +3,7 @@ package com.stanford.tutti;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 import java.util.Set;
 
 import org.apache.http.HttpResponse;
@@ -54,7 +55,9 @@ class JoinJamThread extends Thread {
 	 */
 	private boolean requestJoinJam(HttpClient httpClient) {
 		String path = "/joinJam";
-		String uri = "http://" + ipAddress + ":" + PORT + path;
+		String username = URLEncoder.encode(g.getUsername());
+		String query = "?username=";
+		String uri = "http://" + ipAddress + ":" + PORT + path + query + username;
 		HttpGet get = new HttpGet(uri.toString());
 		try {
 			HttpResponse response = httpClient.execute(get);
