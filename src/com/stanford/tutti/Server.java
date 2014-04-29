@@ -1,16 +1,26 @@
 package com.stanford.tutti;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Handler;
 import android.os.Message;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.stanford.tutti.NanoHTTPD.IHTTPSession;
+import com.stanford.tutti.NanoHTTPD.Response;
 import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 
@@ -28,6 +38,7 @@ public class Server extends NanoHTTPD {
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
 	private static final String UPDATE_JAM = "/jam"; 
+	private static final String UPDATE_LIBRARY = "/updateLibrary";
 	private static final String JAM_ADD_SONG = "/add"; 
 	private static final String JAM_SET_SONG = "/set"; 
 	private static final String JAM_START = "/start"; 
@@ -60,25 +71,41 @@ public class Server extends NanoHTTPD {
 	/*
 	 * Logs a request to the console. Prints the method, uri, and headers.
 	 */
-	private void logRequest(final String uri, final Method method, 
-                          Map<String, String> header,
-                          Map<String, String> parameters,
-                          Map<String, String> files) {
+	private void logRequest(IHTTPSession session) {
+		String uri = session.getUri();
+		Method method = session.getMethod();
+		Map<String, String> header = session.getHeaders();
+		Map<String, String> parameters = session.getParms();
 		System.out.println("SERVER: request received");
 		System.out.println("SERVER: " + method.toString() + " " + uri);
 		for (String str : header.keySet())
-			System.out.println("SERVER: " + str + " : " + header.get(str));
+			System.out.println("SERVER header: " + str + " : " + header.get(str));
+		for (String str : parameters.keySet())
+			System.out.println("SERVER parameter: " + str + " : " + header.get(str));
 		System.out.println("\n");
 	}
 	
     @Override
-    public Response serve(final String uri, final Method method, 
-                          Map<String, String> header,
-                          Map<String, String> parameters,
-                          Map<String, String> files)  {
-    	logRequest(uri, method, header, parameters, files);
+    public Response serve(IHTTPSession session) {
+    	logRequest(session);
+    	Method method = session.getMethod();
+    	if (Method.GET.equals(method)) {
+    		return getResponse(session);
+    	}
+    	else if (Method.POST.equals(method)) {
+    		return postResponse(session);
+    	}    	
+    	else {
+    		return badRequestResponse();
+    	}
+    }
+    
+    public Response getResponse(IHTTPSession session) {
+    	String uri = session.getUri();
+    	Map<String, String> headers = session.getHeaders();
+    	Map<String, String> parameters = session.getParms();
     	if (uri.startsWith(JOIN_JAM)) {
-    		return joinJamResponse(header.get(HTTP_CLIENT_IP), parameters.get("username"));
+    		return joinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username"));
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
@@ -92,6 +119,17 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(UPDATE_JAM)) {
     		return updateJamResponse(uri.substring(UPDATE_JAM.length())); 
     	} 
+    	else {
+    		return badRequestResponse();
+    	}
+    }
+    
+    public Response postResponse(IHTTPSession session) {
+    	String uri = session.getUri();
+    	Map<String, String> parameters = session.getParms();
+    	if (uri.startsWith(UPDATE_LIBRARY)) {
+    		return updateLibraryResponse(session);
+    	}
     	else {
     		return badRequestResponse();
     	}
@@ -153,6 +191,33 @@ public class Server extends NanoHTTPD {
     	}
         return badRequestResponse();
     }
+    
+    private Response updateLibraryResponse(IHTTPSession session) {
+    	Map<String, String> files = new HashMap<String, String>();
+    	String ipAddr = session.getHeaders().get(HTTP_CLIENT_IP);
+    	try {
+			session.parseBody(files);
+	      	Map<String, String> parms = session.getParms();
+	    	for (String str : parms.keySet()) {
+	    		if (str.contains("artists")) {
+	    			String jsonLibraryString = str;
+	    			JSONObject jsonLibrary = new JSONObject(jsonLibraryString);
+	    			JSONArray artists = jsonLibrary.getJSONArray("artists");
+
+	    			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+
+	    			String username = jsonLibrary.getString("username"); 
+	    			g.jam.setIPUsername(ipAddr, username); 
+
+	    			g.db.loadMusicFromJSON(artists, ipAddr);
+	    		}
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return badRequestResponse();
+		} 
+    	return new NanoHTTPD.Response("Updated Library");
+    }
 
     /*
      * Adds the requested song to the jam.
@@ -165,6 +230,16 @@ public class Server extends NanoHTTPD {
 		if (g.jam.getCurrentSong() == null && g.jam.checkMaster()) {
 			g.jam.setCurrentSong(song);
 			g.jam.playCurrentSong();
+		}
+		if (g.jam.checkMaster()) {
+			for (Client client : g.jam.getClientSet()) {
+				client.requestAddSong(keyPath.substring(1), new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						System.out.println("request to add song to client returned: " + statusCode);
+					}
+				});
+			}
 		}
 		return new NanoHTTPD.Response("Added song to jam");
 	}

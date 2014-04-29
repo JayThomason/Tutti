@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.Set;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -15,6 +16,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.os.Message;
 
@@ -46,7 +49,7 @@ class JoinJamThread extends Thread {
 				// send message to ask them to refresh library
 			}
 		}
-		*/
+		 */
 	}
 
 	/*
@@ -83,18 +86,31 @@ class JoinJamThread extends Thread {
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 			String serverArtistList = reader.readLine();
-			
+
 			JSONObject jsonLibrary = new JSONObject(serverArtistList);
 			JSONArray artists = jsonLibrary.getJSONArray("artists");
-			
+
 			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-			
+
 			String username = jsonLibrary.getString("username"); 
 			g.jam.setIPUsername(ipAddress, username); 
-			
+
 			g.db.loadMusicFromJSON(artists, ipAddress); 
-			g.jam.loadJamFromJSON(jam, ipAddress); 
-			
+			g.jam.loadJamFromJSON(jam, ipAddress);
+
+			if (g.jam.checkMaster()) {
+				for (Client client : g.jam.getClientSet()) {
+					if (!client.getIpAddress().equals(ipAddress)) {
+						client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
+							@Override
+							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+								System.out.println("request to update library returned: " + statusCode);
+							}
+						});
+					}
+				}
+			}
+
 			return true;
 		}
 		catch (IOException e) {
