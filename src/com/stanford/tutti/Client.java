@@ -1,3 +1,5 @@
+package com.stanford.tutti; 
+
 import com.loopj.android.http.*;
 
 public class Client {
