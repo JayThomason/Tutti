@@ -34,6 +34,8 @@ public class BrowseJamFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
+    	System.out.println("CREATING BROWSE JAM FRAGMENT"); 
+    	
         rootView = inflater.inflate(R.layout.fragment_browse_jam, container, false);
          
         g = (Globals) rootView.getContext().getApplicationContext(); 
@@ -43,7 +45,6 @@ public class BrowseJamFragment extends Fragment {
         assignButtons();
 		configureButtons();
 		initializeJamList();
-		setupHandler(); 
         
         return rootView;
     }
@@ -133,7 +134,7 @@ public class BrowseJamFragment extends Fragment {
 	/*
 	 * Initializes the listView with a list of the current songs in the jam.
 	 */
-	private void initializeJamList() {
+	public void initializeJamList() {
 		int jamSize = g.jam.getJamSize();
 		
 		// Eventually want to abstract this so the Jam is maintaining its own string list
@@ -177,25 +178,5 @@ public class BrowseJamFragment extends Fragment {
 				initializeJamList(); 
 			}
 		});
-	}
-	
-	/*
-	 * Initializes the handler. The handler is used to receive messages from
-	 * the server and to update the UI accordingly.
-	 */
-	private void setupHandler() {
-		g.jamUpdateHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				/*
-				 * When we get a message from another phone that we have new
-				 * non-local music, we can update the list-view for the library.
-				 */
-				if (msg.what == 0) {
-					initializeJamList(); 
-				}
-				super.handleMessage(msg);
-			}
-		};		
 	}
 }

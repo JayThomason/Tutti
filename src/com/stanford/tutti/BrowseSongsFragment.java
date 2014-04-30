@@ -42,6 +42,8 @@ public class BrowseSongsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+    	System.out.println("CREATING BROWSE SONG FRAGMENT"); 
+		
 		rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
 		listView = (ListView) rootView.findViewById(R.id.songListView); 
 
@@ -51,12 +53,11 @@ public class BrowseSongsFragment extends Fragment {
 
 		initializeSongList(); 
 		initializeSearchBar(); 
-		setupHandler(); 
 
 		return rootView;
 	}
 
-	private void initializeSongList() {
+	public void initializeSongList() {
 		if (cursor != null) 
 			cursor.close(); 
 
@@ -153,10 +154,10 @@ public class BrowseSongsFragment extends Fragment {
 					});
 				}
 
-				if (g.jamUpdateHandler != null) {
-					Message msg = g.jamUpdateHandler.obtainMessage();
-					msg.what = 0; // fix this later to be constant
-					g.jamUpdateHandler.sendMessage(msg);
+				if (g.uiUpdateHandler != null) {
+					Message msg = g.uiUpdateHandler.obtainMessage();
+					msg.what = 4; // fix this later to be constant
+					g.uiUpdateHandler.sendMessage(msg);
 				}
 
 				viewPager.setCurrentItem(3);
@@ -179,26 +180,4 @@ public class BrowseSongsFragment extends Fragment {
 			}
 		});
 	}
-
-	/*
-	 * Initializes the handler. The handler is used to receive messages from
-	 * the server and to update the UI accordingly.
-	 */
-	private void setupHandler() {
-		g.songUpdateHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				/*
-				 * When we get a message from another phone that we have new
-				 * non-local music, we can update the list-view for the library.
-				 */
-				if (msg.what == 0) {
-					initializeSongList(); 
-					viewPager.setCurrentItem(2);
-				}
-				super.handleMessage(msg);
-			}
-		};		
-	}
-
 }

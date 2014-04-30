@@ -34,6 +34,8 @@ public class BrowseAlbumsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	 
+    	System.out.println("CREATING BROWSE ALBUM FRAGMENT"); 
+    	
         rootView = inflater.inflate(R.layout.fragment_browse_albums, container, false);
         listView = (ListView) rootView.findViewById(R.id.albumListView); 
         
@@ -43,12 +45,11 @@ public class BrowseAlbumsFragment extends Fragment {
         
         initializeAlbumList(); 
         initializeSearchBar(); 
-        setupHandler();
         
         return rootView;
     }
     
-	private void initializeAlbumList() {		
+	public void initializeAlbumList() {		
 	    if (cursor != null) 
 	    	cursor.close(); 
 	    
@@ -93,11 +94,13 @@ public class BrowseAlbumsFragment extends Fragment {
 				
 				g.currentAlbumView = album; 
 				
-				if (g.songUpdateHandler != null) {
-					Message msg = g.songUpdateHandler.obtainMessage();
-					msg.what = 0; // fix this later to be constant
-					g.songUpdateHandler.sendMessage(msg);
-				}				
+				if (g.uiUpdateHandler != null) {
+					Message msg = g.uiUpdateHandler.obtainMessage();
+					msg.what = 3; // fix this later to be constant
+					g.uiUpdateHandler.sendMessage(msg);
+				}		
+				
+		        viewPager.setCurrentItem(2); 
 			}
 		});
 	}
@@ -116,27 +119,6 @@ public class BrowseAlbumsFragment extends Fragment {
 	            filterAdapter.getFilter().filter(s.toString());
 	        }
 	    });
-	}
-	
-	/*
-	 * Initializes the handler. The handler is used to receive messages from
-	 * the server and to update the UI accordingly.
-	 */
-	private void setupHandler() {
-		g.albumUpdateHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				/*
-				 * When we get a message from another phone that we have new
-				 * non-local music, we can update the list-view for the library.
-				 */
-				if (msg.what == 0) {
-					initializeAlbumList(); 
-			        viewPager.setCurrentItem(1);
-				}
-				super.handleMessage(msg);
-			}
-		};		
 	}
 	
 }

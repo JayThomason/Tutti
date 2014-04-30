@@ -32,6 +32,8 @@ public class BrowseArtistsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
+    	System.out.println("CREATING BROWSE ARTIST FRAGMENT"); 
+    	
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
         listView = (ListView) rootView.findViewById(R.id.artistListView);
         
@@ -41,13 +43,12 @@ public class BrowseArtistsFragment extends Fragment {
         
         initializeArtistList(); 
         initializeSearchBar(); 
-        setupHandler(); 
         
         return rootView;
     }
     
 
-	private void initializeArtistList() {		
+	public void initializeArtistList() {		
 	    if (cursor != null) 
 	    	cursor.close(); 
 		cursor = g.db.getAllArtists(); 
@@ -87,13 +88,13 @@ public class BrowseArtistsFragment extends Fragment {
 				g.currentArtistView = artist; 
 				g.currentAlbumView = ""; 
 				
-				if (g.albumUpdateHandler != null) {
-					Message msg = g.albumUpdateHandler.obtainMessage();
-					msg.what = 0; // fix this later to be constant
-					g.albumUpdateHandler.sendMessage(msg);
+				if (g.uiUpdateHandler != null) {
+					Message msg = g.uiUpdateHandler.obtainMessage();
+					msg.what = 2; // fix this later to be constant
+					g.uiUpdateHandler.sendMessage(msg);
 				}				
 				
-		        //viewPager.setCurrentItem(1);
+		        viewPager.setCurrentItem(1);
 			}
 		});
 	}
@@ -112,25 +113,5 @@ public class BrowseArtistsFragment extends Fragment {
 	            filterAdapter.getFilter().filter(s.toString());
 	        }
 	    });
-	}
-	
-	/*
-	 * Initializes the handler. The handler is used to receive messages from
-	 * the server and to update the UI accordingly.
-	 */
-	private void setupHandler() {
-		g.artistUpdateHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				/*
-				 * When we get a message from another phone that we have new
-				 * non-local music, we can update the list-view for the library.
-				 */
-				if (msg.what == 0) {
-					initializeArtistList(); 
-				}
-				super.handleMessage(msg);
-			}
-		};		
 	}
 }

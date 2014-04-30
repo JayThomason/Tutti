@@ -3,7 +3,7 @@ package com.stanford.tutti;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.ActionBar;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
@@ -36,6 +38,11 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
     // Tab titles
     private String[] tabs = { "Artists", "Albums", "Songs", "Jam" };
     
+    private BrowseArtistsFragment artistsFragment;
+    private BrowseAlbumsFragment albumsFragment; 
+    private BrowseSongsFragment songsFragment; 
+    private BrowseJamFragment jamFragment; 
+    
     private Globals g; 
  
     @Override
@@ -51,7 +58,7 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
         viewPager.setAdapter(mAdapter);
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
- 
+         
         // Adding Tabs
         for (String tab_name : tabs) {
             actionBar.addTab(actionBar.newTab().setText(tab_name)
@@ -59,8 +66,9 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
         }
         
     	g = (Globals) getApplicationContext(); 
+    	
         setupTabHighlightListener(); 
-
+        setupHandler(); 
     }
 
 	@Override
@@ -110,27 +118,14 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
     	 
     	    @Override
     	    public void onPageSelected(int position) {
+    	    	int signal = position + 1; 
+				if (g.uiUpdateHandler != null) {
+					Message msg = g.uiUpdateHandler.obtainMessage();
+					msg.what = signal; 
+					g.uiUpdateHandler.sendMessage(msg);
+				}
     	        // on changing the page
     	        // make respected tab selected
-    	    	if (position == 1) {
-    				if (g.albumUpdateHandler != null) {
-    					Message msg = g.albumUpdateHandler.obtainMessage();
-    					msg.what = 0; // fix this later to be constant
-    					g.albumUpdateHandler.sendMessage(msg);
-    				}
-    	    	} else if (position == 2) {
-    				if (g.songUpdateHandler != null) {
-    					Message msg = g.songUpdateHandler.obtainMessage();
-    					msg.what = 0; // fix this later to be constant
-    					g.songUpdateHandler.sendMessage(msg);
-    				}
-    	    	} else if (position == 3) {
-    				if (g.jamUpdateHandler != null) {
-    					Message msg = g.jamUpdateHandler.obtainMessage();
-    					msg.what = 0; // fix this later to be constant
-    					g.jamUpdateHandler.sendMessage(msg);
-    				}
-    	    	}
     	        actionBar.setSelectedNavigationItem(position);
     	    }
     	 
@@ -143,5 +138,88 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
     	    }
     	});
     	
+	}
+	
+	/*
+	 * Initializes the handler. The handler is used to receive messages from
+	 * the server and to update the UI accordingly.
+	 */
+	private void setupHandler() {
+		g.uiUpdateHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * When we get a message from another phone that we have new
+				 * non-local music, we can update the list-view for the library.
+				 */
+				if (msg.what == 0) {
+					int index = actionBar.getSelectedNavigationIndex(); 
+					System.out.println("SELECTED INDEX: " + index); 
+					if (index == 0) {
+						artistsFragment.initializeArtistList(); 
+					} else if (index == 1) {
+						albumsFragment.initializeAlbumList(); 
+					} else if (index == 2) {
+						songsFragment.initializeSongList(); 
+					} else if (index == 3) {
+						jamFragment.initializeJamList(); 
+					}
+				} else if (msg.what == 1) {
+					artistsFragment.initializeArtistList(); 
+				} else if (msg.what == 2) {
+					albumsFragment.initializeAlbumList(); 
+				} else if (msg.what == 3) {
+					songsFragment.initializeSongList(); 
+				} else if (msg.what == 4) {
+					jamFragment.initializeJamList(); 
+				}
+				super.handleMessage(msg);
+			}
+		};		
+	}
+	
+	public class TabsPagerAdapter extends FragmentPagerAdapter {
+		 
+	    public TabsPagerAdapter(FragmentManager fm) {
+	        super(fm);
+	    }
+	 
+	    @Override
+	    public Fragment getItem(int index) {
+	 
+	        switch (index) {
+		        case 0:
+		            return new BrowseArtistsFragment();
+		        case 1:
+		            return new BrowseAlbumsFragment();
+		        case 2:
+		            return new BrowseSongsFragment();
+		        case 3: 
+		        	return new BrowseJamFragment();
+	        }
+	 
+	        return null;
+	    }
+	 
+	    @Override
+	    public int getCount() {
+	        // get item count - equal to number of tabs
+	        return 4;
+	    }
+	    
+	    @Override
+	    public Object instantiateItem(ViewGroup container, int position) {
+	    	Object fragment = super.instantiateItem(container, position); 
+	    	if (fragment instanceof BrowseArtistsFragment) {
+    			artistsFragment = (BrowseArtistsFragment) fragment; 
+	    	} else if (fragment instanceof BrowseAlbumsFragment) {
+    			albumsFragment = (BrowseAlbumsFragment) fragment; 
+	    	} else if (fragment instanceof BrowseSongsFragment) {
+    			songsFragment = (BrowseSongsFragment) fragment; 
+	    	} else if (fragment instanceof BrowseJamFragment) {
+    			jamFragment = (BrowseJamFragment) fragment; 
+	    	}
+	    	return fragment; 
+	    }
 	}
 }
