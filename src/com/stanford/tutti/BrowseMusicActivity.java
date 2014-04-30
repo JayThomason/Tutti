@@ -79,6 +79,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 	
+	/*
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
@@ -88,6 +89,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
+	*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -128,16 +130,15 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	 
     	    @Override
     	    public void onPageSelected(int position) {
-    	        // on changing the page
-    	        // make respected tab selected
-    	    	if (position == 0) {
+				int index = actionBar.getSelectedNavigationIndex(); 
+    	    	if (position == 0 && position < index && !g.currentArtistView.equals("")) {
     	    		g.currentArtistView = ""; 
     				if (g.uiUpdateHandler != null) {
     					Message msg = g.uiUpdateHandler.obtainMessage();
     					msg.what = 5; 
     					g.uiUpdateHandler.sendMessage(msg);
     				}
-    	    	} else if (position == 1) {
+    	    	} else if (position == 1 && position < index && !g.currentAlbumView.equals("")) {
     	    		g.currentAlbumView = ""; 
     				if (g.uiUpdateHandler != null) {
     					Message msg = g.uiUpdateHandler.obtainMessage();
@@ -145,6 +146,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     					g.uiUpdateHandler.sendMessage(msg);
     				}
     	    	}
+    	        // on changing the page
+    	        // make respected tab selected
     	        actionBar.setSelectedNavigationItem(position);
     	    }
     	 
