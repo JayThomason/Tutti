@@ -19,6 +19,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     private Cursor cr;
     private String[] columns; 
     private final LayoutInflater inflater;
+    
+    private int noArtImgID;
 
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
@@ -27,6 +29,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         this.columns = from; 
         this.inflater=LayoutInflater.from(context);
         this.cr=c;
+        
+    	this.noArtImgID = context.getResources().getIdentifier("musicnote", "drawable", context.getPackageName());
     }
 
     @Override
@@ -47,7 +51,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         Globals g = (Globals) context.getApplicationContext(); 
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null || username == "") {
-        	username = "Self"; 
+        	username = "self"; 
         }
         ownerView.setText(username); 
         
@@ -55,7 +59,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         if (artPath != null && !artPath.equals("")) {
         	artView.setImageURI(Uri.parse(artPath)); 
         } else {
-        	int noArtImgID = context.getResources().getIdentifier("musicnote", "drawable", context.getPackageName());
             artView.setImageResource(noArtImgID);
         }
     }

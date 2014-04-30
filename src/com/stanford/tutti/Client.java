@@ -48,6 +48,10 @@ public class Client {
 		return ipAddress;
 	}
 	
+	public String getUsername() {
+		return username; 
+	}
+	
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}

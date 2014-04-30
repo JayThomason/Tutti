@@ -28,8 +28,6 @@ import android.widget.Toast;
  * playing, it begins playing from the master.
  */
 public class NewJamActivity extends Activity {
-	private ExpandableListAdapter listAdapter;
-	private ExpandableListView expListView;
 	private List<String> listDataHeader;
 	private HashMap<String, List<String>> listDataChild;
 	private final int PORT = 1234;

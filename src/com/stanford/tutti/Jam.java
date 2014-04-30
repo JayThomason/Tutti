@@ -54,6 +54,7 @@ public class Jam {
 	
 	public void addClient(Client client) {
 		clientSet.add(client);
+		usernameMap.put(client.getIpAddress(), client.getUsername()); 
 	}
 	
 	public boolean checkMaster() {
