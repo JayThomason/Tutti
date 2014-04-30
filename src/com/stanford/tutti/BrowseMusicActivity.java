@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.os.Build;
 
-public class MusicBrowserActivity extends FragmentActivity implements ActionBar.TabListener {
+public class BrowseMusicActivity extends FragmentActivity implements ActionBar.TabListener {
 
     public ViewPager viewPager;
     private TabsPagerAdapter mAdapter;

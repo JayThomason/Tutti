@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MusicBrowserAdapter extends SimpleCursorAdapter {
+public class BrowseMusicAdapter extends SimpleCursorAdapter {
 
     private Context mContext;
     private Context appContext;
@@ -20,7 +20,7 @@ public class MusicBrowserAdapter extends SimpleCursorAdapter {
     private String[] columns; 
     private final LayoutInflater inflater;
 
-    public MusicBrowserAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+    public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
         this.layout=layout;
         this.mContext = context;

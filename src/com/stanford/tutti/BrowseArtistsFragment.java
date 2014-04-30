@@ -58,7 +58,7 @@ public class BrowseArtistsFragment extends Fragment {
 
 	    
 	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-	    MusicBrowserAdapter adapter = new MusicBrowserAdapter(g, R.layout.list_layout, cursor, columns, to);
+	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to);
 	    listView.setAdapter(adapter);
 	    listView.setFastScrollEnabled(true);
 	    listView.setTextFilterEnabled(true);
