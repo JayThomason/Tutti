@@ -130,6 +130,21 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	    public void onPageSelected(int position) {
     	        // on changing the page
     	        // make respected tab selected
+    	    	if (position == 0) {
+    	    		g.currentArtistView = ""; 
+    				if (g.uiUpdateHandler != null) {
+    					Message msg = g.uiUpdateHandler.obtainMessage();
+    					msg.what = 5; 
+    					g.uiUpdateHandler.sendMessage(msg);
+    				}
+    	    	} else if (position == 1) {
+    	    		g.currentAlbumView = ""; 
+    				if (g.uiUpdateHandler != null) {
+    					Message msg = g.uiUpdateHandler.obtainMessage();
+    					msg.what = 6; 
+    					g.uiUpdateHandler.sendMessage(msg);
+    				}
+    	    	}
     	        actionBar.setSelectedNavigationItem(position);
     	    }
     	 
@@ -178,6 +193,10 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				} else if (msg.what == 4) {
 					jamFragment.initializeJamList(); 
 					viewPager.setCurrentItem(3); 
+				} else if (msg.what == 5) {
+					albumsFragment.initializeAlbumList(); 
+				} else if (msg.what == 6) {
+					songsFragment.initializeSongList(); 
 				}
 				super.handleMessage(msg);
 			}
