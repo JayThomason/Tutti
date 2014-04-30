@@ -59,6 +59,8 @@ public class BrowseSongsFragment extends Fragment {
 	}
 
 	public void initializeSongList() {
+		searchBar.setText("");
+		
 		if (cursor != null) 
 			cursor.close(); 
 
@@ -96,8 +98,6 @@ public class BrowseSongsFragment extends Fragment {
 		});
 
 		setSongListItemClickListener();
-		
-		searchBar.setText("");
 	}
 
 

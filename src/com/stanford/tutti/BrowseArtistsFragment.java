@@ -50,7 +50,9 @@ public class BrowseArtistsFragment extends Fragment {
     
 
 	public void initializeArtistList() {		
-	    if (cursor != null) 
+		searchBar.setText("");
+		
+		if (cursor != null) 
 	    	cursor.close(); 
 		cursor = g.db.getAllArtists(); 
 		
@@ -70,9 +72,7 @@ public class BrowseArtistsFragment extends Fragment {
 	        }
 	    });
 		
-		setArtistListItemClickListener();
-		
-		searchBar.setText("");
+		setArtistListItemClickListener();		
 	}
 	
 	/*

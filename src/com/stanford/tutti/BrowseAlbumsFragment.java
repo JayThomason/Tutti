@@ -49,13 +49,13 @@ public class BrowseAlbumsFragment extends Fragment {
         return rootView;
     }
     
-	public void initializeAlbumList() {		
+	public void initializeAlbumList() {	
+		searchBar.setText(""); 
+		
 	    if (cursor != null) 
 	    	cursor.close(); 
 	    
-	    System.out.println("INITIALIZING ALBUM LIST"); 
 		if (g.currentArtistView != "") {
-			System.out.println("SEARCHING BY ALBUM: " + g.currentArtistView); 
 			cursor = g.db.getAlbumsByArtist(g.currentArtistView); 
 		} else {
 			cursor = g.db.getAllAlbums(); 
@@ -78,7 +78,6 @@ public class BrowseAlbumsFragment extends Fragment {
 	    });
 		
 		setAlbumListItemClickListener();
-		searchBar.setText(""); 
 	}
 	
 	/*
