@@ -34,6 +34,7 @@ public class BrowseSongsFragment extends Fragment {
 	private View rootView; 
 	private ViewPager viewPager; 
 	private ListView listView; 
+	private EditText searchBar; 
 
 	private final int port = 1234;
 
@@ -41,8 +42,6 @@ public class BrowseSongsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-    	System.out.println("CREATING BROWSE SONG FRAGMENT"); 
 		
 		rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
 		listView = (ListView) rootView.findViewById(R.id.songListView); 
@@ -95,6 +94,8 @@ public class BrowseSongsFragment extends Fragment {
 		});
 
 		setSongListItemClickListener();
+		
+		searchBar.setText("");
 	}
 
 

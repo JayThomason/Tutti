@@ -28,14 +28,13 @@ public class BrowseAlbumsFragment extends Fragment {
 	private View rootView; 
 	private ListView listView;
 	private ViewPager viewPager; 
+	private EditText searchBar; 
 
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-    	 
-    	System.out.println("CREATING BROWSE ALBUM FRAGMENT"); 
-    	
+        	
         rootView = inflater.inflate(R.layout.fragment_browse_albums, container, false);
         listView = (ListView) rootView.findViewById(R.id.albumListView); 
         
@@ -76,6 +75,7 @@ public class BrowseAlbumsFragment extends Fragment {
 	    });
 		
 		setAlbumListItemClickListener();
+		searchBar.setText(""); 
 	}
 	
 	/*
@@ -104,8 +104,8 @@ public class BrowseAlbumsFragment extends Fragment {
 	}
 	
 	private void initializeSearchBar() {
-	    EditText etext = (EditText) rootView.findViewById(R.id.album_search_box);
-	    etext.addTextChangedListener(new TextWatcher() {
+	    searchBar = (EditText) rootView.findViewById(R.id.album_search_box);
+	    searchBar.addTextChangedListener(new TextWatcher() {
 	        public void onTextChanged(CharSequence s, int start, int before, int count) {
 	        }
 

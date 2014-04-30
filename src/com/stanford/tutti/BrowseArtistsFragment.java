@@ -26,14 +26,13 @@ public class BrowseArtistsFragment extends Fragment {
 	private View rootView; 
 	private ListView listView; 
 	private ViewPager viewPager; 
+	private EditText searchBar;
 	
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
- 
-    	System.out.println("CREATING BROWSE ARTIST FRAGMENT"); 
-    	
+     	
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
         listView = (ListView) rootView.findViewById(R.id.artistListView);
         
@@ -70,6 +69,8 @@ public class BrowseArtistsFragment extends Fragment {
 	    });
 		
 		setArtistListItemClickListener();
+		
+		searchBar.setText("");
 	}
 	
 	/*
@@ -98,8 +99,8 @@ public class BrowseArtistsFragment extends Fragment {
 	}
 	
 	private void initializeSearchBar() {
-	    EditText searchBox = (EditText) rootView.findViewById(R.id.artist_search_box);
-	    searchBox.addTextChangedListener(new TextWatcher() {
+	    searchBar = (EditText) rootView.findViewById(R.id.artist_search_box);
+	    searchBar.addTextChangedListener(new TextWatcher() {
 	        public void onTextChanged(CharSequence s, int start, int before, int count) {
 	        }
 

@@ -33,9 +33,7 @@ public class BrowseJamFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
- 
-    	System.out.println("CREATING BROWSE JAM FRAGMENT"); 
-    	
+     	
         rootView = inflater.inflate(R.layout.fragment_browse_jam, container, false);
          
         g = (Globals) rootView.getContext().getApplicationContext(); 
