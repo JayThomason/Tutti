@@ -168,10 +168,13 @@ public class MusicBrowserActivity extends FragmentActivity implements ActionBar.
 					artistsFragment.initializeArtistList(); 
 				} else if (msg.what == 2) {
 					albumsFragment.initializeAlbumList(); 
+					viewPager.setCurrentItem(1);
 				} else if (msg.what == 3) {
 					songsFragment.initializeSongList(); 
+			        viewPager.setCurrentItem(2); 
 				} else if (msg.what == 4) {
 					jamFragment.initializeJamList(); 
+					viewPager.setCurrentItem(3); 
 				}
 				super.handleMessage(msg);
 			}

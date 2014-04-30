@@ -96,11 +96,9 @@ public class BrowseAlbumsFragment extends Fragment {
 				
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 3; // fix this later to be constant
+					msg.what = 3; 
 					g.uiUpdateHandler.sendMessage(msg);
-				}		
-				
-		        viewPager.setCurrentItem(2); 
+				}						
 			}
 		});
 	}
