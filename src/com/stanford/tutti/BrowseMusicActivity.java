@@ -118,12 +118,14 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	 
     	    @Override
     	    public void onPageSelected(int position) {
+    	    	/*
     	    	int signal = position + 1; 
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
 					msg.what = signal; 
 					g.uiUpdateHandler.sendMessage(msg);
 				}
+				*/
     	        // on changing the page
     	        // make respected tab selected
     	        actionBar.setSelectedNavigationItem(position);
@@ -154,7 +156,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				 */
 				if (msg.what == 0) {
 					int index = actionBar.getSelectedNavigationIndex(); 
-					System.out.println("SELECTED INDEX: " + index); 
 					if (index == 0) {
 						artistsFragment.initializeArtistList(); 
 					} else if (index == 1) {
