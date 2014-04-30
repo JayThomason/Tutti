@@ -101,10 +101,17 @@ class JoinJamThread extends Thread {
 			if (g.jam.checkMaster()) {
 				for (Client client : g.jam.getClientSet()) {
 					if (!client.getIpAddress().equals(ipAddress)) {
+						System.out.println("SENDING UPDATE LIBRARY RESPONSE: " + client.getIpAddress()); 
 						client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 								System.out.println("request to update library returned: " + statusCode);
+							}
+							
+							@Override
+							public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+								System.out.println("request to update library FAILED");
+								
 							}
 						});
 					}

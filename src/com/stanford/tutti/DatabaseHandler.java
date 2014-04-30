@@ -17,7 +17,7 @@ import android.os.Message;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -50,6 +50,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP};
 
     private Globals g; 
+    
+    private SQLiteDatabase db; 
     
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -404,6 +406,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	        } while (artistCursor.moveToNext());
 	    }
 	    
+	    artistCursor.close(); 
+	    
 	    return artistArray; 
     }
     
@@ -429,6 +433,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     		} while (albumCursor.moveToNext()); 
     	}
     	
+    	albumCursor.close(); 
+    	
     	return albumArray; 
     }
     
@@ -453,6 +459,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				
 			} while (songCursor.moveToNext()); 
 		}
+		
+		songCursor.close(); 
 		
 		return songArray; 
     }
@@ -482,11 +490,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						
 						addSong(song); 
 						
-						if (g.uiUpdateHandler != null) {
-							Message msg = g.uiUpdateHandler.obtainMessage();
-							msg.what = 0; 
-							g.uiUpdateHandler.sendMessage(msg);
-						}
+					}
+					if (g.uiUpdateHandler != null) {
+						Message msg = g.uiUpdateHandler.obtainMessage();
+						msg.what = 0; 
+						g.uiUpdateHandler.sendMessage(msg);
 					}
 				}
 			} catch (JSONException e) {

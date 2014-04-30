@@ -198,10 +198,13 @@ public class Server extends NanoHTTPD {
     	try {
 			session.parseBody(files);
 	      	Map<String, String> parms = session.getParms();
+	      	int j = 0; 
 	    	for (String str : parms.keySet()) {
+	    		j++; 
+	    		System.out.println("RECEIVED PARAMETER #" + j + ": " + str); 
 	    		if (str.contains("artists")) {
-	    			String jsonLibraryString = str;
-	    			JSONObject jsonLibrary = new JSONObject(jsonLibraryString);
+	    			System.out.println("JSON LIBRARY STRING: " + str); 
+	    			JSONObject jsonLibrary = new JSONObject(str);
 	    			JSONArray artists = jsonLibrary.getJSONArray("artists");
 
 	    			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
