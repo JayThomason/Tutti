@@ -1,19 +1,6 @@
 package com.stanford.tutti;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.RandomAccessFile;
-import java.io.PushbackInputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -218,7 +205,9 @@ public abstract class NanoHTTPD {
         try {
             safeClose(myServerSocket);
             closeAllConnections();
-            myThread.join();
+            if (myThread != null) {
+                myThread.join();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,8 +216,7 @@ public abstract class NanoHTTPD {
     /**
      * Registers that a new connection has been set up.
      *
-     * @param socket
-     *            the {@link Socket} for the connection.
+     * @param socket the {@link Socket} for the connection.
      */
     public synchronized void registerConnection(Socket socket) {
         openConnections.add(socket);
@@ -549,7 +537,7 @@ public abstract class NanoHTTPD {
         /**
          * HTTP status code after processing, e.g. "200 OK", HTTP_OK
          */
-        private Status status;
+        private IStatus status;
         /**
          * MIME type of content, e.g. "text/html"
          */
@@ -581,7 +569,7 @@ public abstract class NanoHTTPD {
         /**
          * Basic constructor.
          */
-        public Response(Status status, String mimeType, InputStream data) {
+        public Response(IStatus status, String mimeType, InputStream data) {
             this.status = status;
             this.mimeType = mimeType;
             this.data = data;
@@ -590,7 +578,7 @@ public abstract class NanoHTTPD {
         /**
          * Convenience method that makes an InputStream out of given text.
          */
-        public Response(Status status, String mimeType, String txt) {
+        public Response(IStatus status, String mimeType, String txt) {
             this.status = status;
             this.mimeType = mimeType;
             try {
@@ -607,10 +595,14 @@ public abstract class NanoHTTPD {
             header.put(name, value);
         }
 
+        public String getHeader(String name) {
+            return header.get(name);
+        }
+
         /**
          * Sends given response to the socket.
          */
-        private void send(OutputStream outputStream) {
+        protected void send(OutputStream outputStream) {
             String mime = mimeType;
             SimpleDateFormat gmtFrmt = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
             gmtFrmt.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -637,18 +629,42 @@ public abstract class NanoHTTPD {
                     }
                 }
 
-                pw.print("Connection: keep-alive\r\n");
+                sendConnectionHeaderIfNotAlreadyPresent(pw, header);
 
                 if (requestMethod != Method.HEAD && chunkedTransfer) {
                     sendAsChunked(outputStream, pw);
                 } else {
-                    sendAsFixedLength(outputStream, pw);
+                    int pending = data != null ? data.available() : 0;
+                    sendContentLengthHeaderIfNotAlreadyPresent(pw, header, pending);
+                    pw.print("\r\n");
+                    pw.flush();
+                    sendAsFixedLength(outputStream, pending);
                 }
                 outputStream.flush();
                 safeClose(data);
             } catch (IOException ioe) {
                 // Couldn't write? No can do.
             }
+        }
+
+        protected void sendContentLengthHeaderIfNotAlreadyPresent(PrintWriter pw, Map<String, String> header, int size) {
+            if (!headerAlreadySent(header, "content-length")) {
+                pw.print("Content-Length: "+ size +"\r\n");
+            }
+        }
+
+        protected void sendConnectionHeaderIfNotAlreadyPresent(PrintWriter pw, Map<String, String> header) {
+            if (!headerAlreadySent(header, "connection")) {
+                pw.print("Connection: keep-alive\r\n");
+            }
+        }
+
+        private boolean headerAlreadySent(Map<String, String> header, String name) {
+            boolean alreadySent = false;
+            for (String headerName : header.keySet()) {
+                alreadySent |= headerName.equalsIgnoreCase(name);
+            }
+            return alreadySent;
         }
 
         private void sendAsChunked(OutputStream outputStream, PrintWriter pw) throws IOException {
@@ -667,13 +683,7 @@ public abstract class NanoHTTPD {
             outputStream.write(String.format("0\r\n\r\n").getBytes());
         }
 
-        private void sendAsFixedLength(OutputStream outputStream, PrintWriter pw) throws IOException {
-            int pending = data != null ? data.available() : 0; // This is to support partial sends, see serveFile()
-            pw.print("Content-Length: "+pending+"\r\n");
-
-            pw.print("\r\n");
-            pw.flush();
-
+        private void sendAsFixedLength(OutputStream outputStream, int pending) throws IOException {
             if (requestMethod != Method.HEAD && data != null) {
                 int BUFFER_SIZE = 16 * 1024;
                 byte[] buff = new byte[BUFFER_SIZE];
@@ -683,13 +693,12 @@ public abstract class NanoHTTPD {
                         break;
                     }
                     outputStream.write(buff, 0, read);
-
                     pending -= read;
                 }
             }
         }
 
-        public Status getStatus() {
+        public IStatus getStatus() {
             return status;
         }
 
@@ -725,11 +734,16 @@ public abstract class NanoHTTPD {
             this.chunkedTransfer = chunkedTransfer;
         }
 
+        public interface IStatus {
+            int getRequestStatus();
+            String getDescription();
+        }
+
         /**
          * Some HTTP response status codes
          */
-        public enum Status {
-            OK(200, "OK"), CREATED(201, "Created"), ACCEPTED(202, "Accepted"), NO_CONTENT(204, "No Content"), PARTIAL_CONTENT(206, "Partial Content"), REDIRECT(301,
+        public enum Status implements IStatus {
+            SWITCH_PROTOCOL(101, "Switching Protocols"), OK(200, "OK"), CREATED(201, "Created"), ACCEPTED(202, "Accepted"), NO_CONTENT(204, "No Content"), PARTIAL_CONTENT(206, "Partial Content"), REDIRECT(301,
                 "Moved Permanently"), NOT_MODIFIED(304, "Not Modified"), BAD_REQUEST(400, "Bad Request"), UNAUTHORIZED(401,
                 "Unauthorized"), FORBIDDEN(403, "Forbidden"), NOT_FOUND(404, "Not Found"), METHOD_NOT_ALLOWED(405, "Method Not Allowed"), RANGE_NOT_SATISFIABLE(416,
                 "Requested Range Not Satisfiable"), INTERNAL_ERROR(500, "Internal Server Error");
@@ -741,10 +755,12 @@ public abstract class NanoHTTPD {
                 this.description = description;
             }
 
+            @Override
             public int getRequestStatus() {
                 return this.requestStatus;
             }
 
+            @Override
             public String getDescription() {
                 return "" + this.requestStatus + " " + description;
             }
@@ -991,7 +1007,6 @@ public abstract class NanoHTTPD {
 
                         decodeMultipartData(boundary, fbuf, in, parms, files);
                     } else {
-                        // Handle application/x-www-form-urlencoded
                         String postLine = "";
                         StringBuilder postLineBuffer = new StringBuilder();
                         char pbuf[] = new char[512];
@@ -1002,7 +1017,13 @@ public abstract class NanoHTTPD {
                             read = in.read(pbuf);
                         }
                         postLine = postLineBuffer.toString().trim();
-                        decodeParms(postLine, parms);
+                        // Handle application/x-www-form-urlencoded
+                        if ("application/x-www-form-urlencoded".equalsIgnoreCase(contentType)) {
+                        	decodeParms(postLine, parms);
+                        } else if (postLine.length() != 0) {
+                        	// Special case for raw POST data => create a special files entry "postData" with raw content data
+                        	files.put("postData", postLine);
+                        }
                     }
                 } else if (Method.PUT.equals(method)) {
                     files.put("content", saveTmpFile(fbuf, 0, fbuf.limit()));
@@ -1095,10 +1116,10 @@ public abstract class NanoHTTPD {
                         if (contentDisposition == null) {
                             throw new ResponseException(Response.Status.BAD_REQUEST, "BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html");
                         }
-                        StringTokenizer st = new StringTokenizer(contentDisposition, "; ");
+                        StringTokenizer st = new StringTokenizer(contentDisposition, ";");
                         Map<String, String> disposition = new HashMap<String, String>();
                         while (st.hasMoreTokens()) {
-                            String token = st.nextToken();
+                            String token = st.nextToken().trim();
                             int p = token.indexOf('=');
                             if (p != -1) {
                                 disposition.put(token.substring(0, p).trim().toLowerCase(Locale.US), token.substring(p + 1).trim());
@@ -1201,7 +1222,7 @@ public abstract class NanoHTTPD {
                     dest.write(src.slice());
                     path = tempFile.getName();
                 } catch (Exception e) { // Catch exception if any
-                    System.err.println("Error: " + e.getMessage());
+                    throw new Error(e); // we won't recover, so throw an error
                 } finally {
                     safeClose(fileOutputStream);
                 }
@@ -1214,9 +1235,8 @@ public abstract class NanoHTTPD {
                 TempFile tempFile = tempFileManager.createTempFile();
                 return new RandomAccessFile(tempFile.getName(), "rw");
             } catch (Exception e) {
-                System.err.println("Error: " + e.getMessage());
+            	throw new Error(e); // we won't recover, so throw an error
             }
-            return null;
         }
 
         /**
@@ -1261,7 +1281,7 @@ public abstract class NanoHTTPD {
             return parms;
         }
 
-        public String getQueryParameterString() {
+		public String getQueryParameterString() {
             return queryParameterString;
         }
 
