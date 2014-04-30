@@ -35,6 +35,8 @@ public class BrowseArtistsFragment extends Fragment {
      	
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
         listView = (ListView) rootView.findViewById(R.id.artistListView);
+	    searchBar = (EditText) rootView.findViewById(R.id.artist_search_box);
+
         
         g = (Globals) rootView.getContext().getApplicationContext(); 
          
@@ -99,7 +101,6 @@ public class BrowseArtistsFragment extends Fragment {
 	}
 	
 	private void initializeSearchBar() {
-	    searchBar = (EditText) rootView.findViewById(R.id.artist_search_box);
 	    searchBar.addTextChangedListener(new TextWatcher() {
 	        public void onTextChanged(CharSequence s, int start, int before, int count) {
 	        }

@@ -484,7 +484,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						
 						if (g.uiUpdateHandler != null) {
 							Message msg = g.uiUpdateHandler.obtainMessage();
-							msg.what = 0; // fix this later to be constant
+							msg.what = 0; 
 							g.uiUpdateHandler.sendMessage(msg);
 						}
 					}

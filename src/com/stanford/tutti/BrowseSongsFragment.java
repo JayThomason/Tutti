@@ -45,6 +45,8 @@ public class BrowseSongsFragment extends Fragment {
 		
 		rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
 		listView = (ListView) rootView.findViewById(R.id.songListView); 
+		searchBar = (EditText) rootView.findViewById(R.id.song_search_box);
+
 
 		viewPager = (ViewPager) container.findViewById(R.id.pager);
 
@@ -165,8 +167,7 @@ public class BrowseSongsFragment extends Fragment {
 	}
 
 	private void initializeSearchBar() {
-		EditText etext = (EditText) rootView.findViewById(R.id.song_search_box);
-		etext.addTextChangedListener(new TextWatcher() {
+		searchBar.addTextChangedListener(new TextWatcher() {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 

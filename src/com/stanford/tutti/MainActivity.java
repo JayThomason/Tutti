@@ -5,14 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+                
         setContentView(R.layout.activity_main);
                 
         loadLocalMusic(); 
+        
+        setWelcomeText(); 
     }
     
     private void loadLocalMusic() {
@@ -20,6 +24,16 @@ public class MainActivity extends Activity {
         g.db.dropTable("songs"); 
 		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
 		loaderThread.run();	
+    }
+    
+    private void setWelcomeText() {
+        Globals g = (Globals) getApplicationContext(); 
+        TextView welcomeText = (TextView) findViewById(R.id.welcome_message); 
+    	if (g.getUsername().equals("anonymous")) {
+    		welcomeText.setText("Set your username in the Settings menu so your friends can see which music is yours!");
+    	} else {
+    		welcomeText.setText("Welcome back " + g.getUsername() + "!"); 
+    	}
     }
 
 

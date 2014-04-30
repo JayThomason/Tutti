@@ -9,11 +9,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >  
          
+    <TextView
+        android:id="@+id/welcome_message"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:layout_below="@+id/imageView1"
+        android:textColor="#ffffff"/>
+    
     <Button
         android:id="@+id/Button01"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/imageView1"
+        android:layout_below="@+id/welcome_message"
         android:layout_centerHorizontal="true"
         android:background="@drawable/custom_button"
         android:gravity="left|center_vertical"

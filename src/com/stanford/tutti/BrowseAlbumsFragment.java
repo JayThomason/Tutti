@@ -37,6 +37,7 @@ public class BrowseAlbumsFragment extends Fragment {
         	
         rootView = inflater.inflate(R.layout.fragment_browse_albums, container, false);
         listView = (ListView) rootView.findViewById(R.id.albumListView); 
+	    searchBar = (EditText) rootView.findViewById(R.id.album_search_box);
         
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
@@ -52,7 +53,9 @@ public class BrowseAlbumsFragment extends Fragment {
 	    if (cursor != null) 
 	    	cursor.close(); 
 	    
+	    System.out.println("INITIALIZING ALBUM LIST"); 
 		if (g.currentArtistView != "") {
+			System.out.println("SEARCHING BY ALBUM: " + g.currentArtistView); 
 			cursor = g.db.getAlbumsByArtist(g.currentArtistView); 
 		} else {
 			cursor = g.db.getAllAlbums(); 
@@ -104,7 +107,6 @@ public class BrowseAlbumsFragment extends Fragment {
 	}
 	
 	private void initializeSearchBar() {
-	    searchBar = (EditText) rootView.findViewById(R.id.album_search_box);
 	    searchBar.addTextChangedListener(new TextWatcher() {
 	        public void onTextChanged(CharSequence s, int start, int before, int count) {
 	        }
