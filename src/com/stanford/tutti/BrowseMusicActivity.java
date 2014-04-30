@@ -78,6 +78,16 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		getMenuInflater().inflate(R.menu.music_browser, menu);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed() {
+		int index = actionBar.getSelectedNavigationIndex(); 
+		int newIndex = index - 1; 
+		if (newIndex == -1) {
+			newIndex = 0; 
+		}
+	    viewPager.setCurrentItem(newIndex); 
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -118,14 +128,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	 
     	    @Override
     	    public void onPageSelected(int position) {
-    	    	/*
-    	    	int signal = position + 1; 
-				if (g.uiUpdateHandler != null) {
-					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = signal; 
-					g.uiUpdateHandler.sendMessage(msg);
-				}
-				*/
     	        // on changing the page
     	        // make respected tab selected
     	        actionBar.setSelectedNavigationItem(position);
