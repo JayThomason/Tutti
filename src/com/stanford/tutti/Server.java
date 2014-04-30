@@ -203,7 +203,6 @@ public class Server extends NanoHTTPD {
 	    		j++; 
 	    		System.out.println("RECEIVED PARAMETER #" + j + ": " + str); 
 	    		if (str.contains("artists")) {
-	    			System.out.println("JSON LIBRARY STRING: " + str); 
 	    			JSONObject jsonLibrary = new JSONObject(str);
 	    			JSONArray artists = jsonLibrary.getJSONArray("artists");
 
