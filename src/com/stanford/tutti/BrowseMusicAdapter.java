@@ -50,7 +50,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         
         Globals g = (Globals) context.getApplicationContext(); 
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
-        if (username != null || username == "") {
+        if (username == null || username == "") {
+        	ownerView.setText("anonymous");
+        } else {
             ownerView.setText(username); 
         }
         
