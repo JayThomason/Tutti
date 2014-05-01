@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
+import android.os.Message;
 
 public class Jam {
 	ArrayList<Song> songList;
@@ -248,6 +249,12 @@ public class Jam {
 				if (!usernameMap.containsKey((String)ipArray.get(i))) {
 					usernameMap.put((String)ipArray.get(i), (String)usernameArray.get(i)); 
 				}
+			}
+			
+			if (g.uiUpdateHandler != null) {
+				Message msg = g.uiUpdateHandler.obtainMessage();
+				msg.what = 7; 
+				g.uiUpdateHandler.sendMessage(msg);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

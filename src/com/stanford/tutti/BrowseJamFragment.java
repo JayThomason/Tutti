@@ -143,7 +143,7 @@ public class BrowseJamFragment extends Fragment {
 			cursor.close(); 
 
 		cursor = g.db.getSongsInJam(); 
-
+		
 		String[] columns = new String[] { "art", "title" };
 		int[] to = new int[] { R.id.browserArt, R.id.browserText };
 

@@ -206,7 +206,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 					if (songsFragment != null)
 						songsFragment.initializeSongList(); 
 				} else if (msg.what == 7) {
-					if (jamFragment != null)
+					if (jamFragment != null) 
 						jamFragment.initializeJamList(); 
 				}
 				super.handleMessage(msg);
