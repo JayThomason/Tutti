@@ -3,8 +3,10 @@ package com.stanford.tutti;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -85,7 +87,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 	
-	
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
@@ -95,7 +96,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -180,6 +180,36 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				 * When we get a message from another phone that we have new
 				 * non-local music, we can update the list-view for the library.
 				 */
+				String message = (String)msg.obj; 
+				System.out.println("RECEIVED STRING MESSAGE: " + message); 
+				if (message != null) {
+					// We've received a String message containing a username
+					// Need to display a "Join Jam?" alert dialog					
+					
+					final String ipAddr = message.split("//")[0]; 
+					final String username = message.split("//")[1]; 
+					
+					View currView = viewPager.getChildAt(actionBar.getSelectedNavigationIndex()); 
+					
+					new android.app.AlertDialog.Builder(currView.getContext())
+				    .setTitle("Join Jam Request Received")
+				    .setMessage("Accept Join Jam request from " + username + "?")
+				    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+				        public void onClick(DialogInterface dialog, int whichButton) {
+				        	/*
+				        	Client client = new Client(g, username, ipAddr, 1234);
+							g.jam.addClient(client);
+				        	Thread getLibraryThread = new JoinJamThread(ipAddr, true);
+				        	getLibraryThread.start();
+				        	*/
+				        }
+				    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				        public void onClick(DialogInterface dialog, int whichButton) {
+				            // Do nothing.
+				        }
+				    }).show();
+				}
+				
 				if (msg.what == 0) {
 					int index = actionBar.getSelectedNavigationIndex(); 
 					if (index == 0) {
@@ -214,7 +244,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				} else if (msg.what == 7) {
 					if (jamFragment != null) 
 						jamFragment.initializeJamList(); 
-				}
+				} 
 				super.handleMessage(msg);
 			}
 		};		

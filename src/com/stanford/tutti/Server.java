@@ -15,8 +15,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.app.AlertDialog.Builder; 
+import android.content.DialogInterface;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stanford.tutti.NanoHTTPD.IHTTPSession;
@@ -150,12 +154,20 @@ public class Server extends NanoHTTPD {
     		return badRequestResponse();
     	}
 		if (g.jam.checkMaster()) {
+			if (g.uiUpdateHandler != null) {
+				Message msg = g.uiUpdateHandler.obtainMessage();
+				msg.obj = otherIpAddr + "//" + username; 
+				g.uiUpdateHandler.sendMessage(msg);
+			}
+			
+			// Should move this and the JoinJamThread to happen in BrowseMusicActivity when request is accepted
 			Client client = new Client(g, username, otherIpAddr, 1234);
 			g.jam.addClient(client);
 		}
 		else {
 			System.out.println("Server: Attempt to join jam on client device -- error");
 		}
+		
     	Thread getLibraryThread = new JoinJamThread(otherIpAddr, true);
     	getLibraryThread.start();
 		return new NanoHTTPD.Response("OK to join");
