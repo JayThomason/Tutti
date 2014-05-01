@@ -11,8 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/songTitle"
-        android:background="#ff0927"
-        android:textColor="#ffffff" 
         android:paddingBottom="25dp"
     	android:clipToPadding="false">
 

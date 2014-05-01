@@ -10,9 +10,7 @@
         android:id="@+id/jamListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ff0927"
-        android:textColor="#000000"
-        android:paddingBottom="50dp" >
+        android:paddingBottom="60dp" >
 
     </ListView>
 
