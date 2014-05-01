@@ -113,6 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_ART, song.getAlbumArt());
     	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
     	values.put(KEY_IP, song.getIpAddr());
+    	values.put(KEY_JAM_INDEX, -1);
     	
     	int local = 0; 
     	if (song.isLocal()) {
