@@ -81,7 +81,7 @@ public class Server extends NanoHTTPD {
 		for (String str : header.keySet())
 			System.out.println("SERVER header: " + str + " : " + header.get(str));
 		for (String str : parameters.keySet())
-			System.out.println("SERVER parameter: " + str + " : " + header.get(str));
+			System.out.println("SERVER parameter: " + str + " : " + parameters.get(str));
 		System.out.println("\n");
 	}
 	
@@ -193,15 +193,26 @@ public class Server extends NanoHTTPD {
     }
     
     private Response updateLibraryResponse(IHTTPSession session) {
+    	System.out.println("UPDATING LIBRARY RESPONSE"); 
     	Map<String, String> files = new HashMap<String, String>();
     	String ipAddr = session.getHeaders().get(HTTP_CLIENT_IP);
     	try {
 			session.parseBody(files);
+	      	for (String str : files.keySet()) {
+	      		if (str.equals("postData")) {
+	      			JSONObject jsonLibrary = new JSONObject(files.get(str)); 
+	      			JSONArray artists = jsonLibrary.getJSONArray("artists"); 
+	      			// JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+	      			String username = jsonLibrary.getString("username"); 
+	      			g.jam.setIPUsername(ipAddr, username); 
+	      			g.db.loadMusicFromJSON(artists, ipAddr); 
+	      		}
+	      	}
+	      	
+	      	
+	      	/*
 	      	Map<String, String> parms = session.getParms();
-	      	int j = 0; 
 	    	for (String str : parms.keySet()) {
-	    		j++; 
-	    		System.out.println("RECEIVED PARAMETER #" + j + ": " + str); 
 	    		if (str.contains("artists")) {
 	    			JSONObject jsonLibrary = new JSONObject(str);
 	    			JSONArray artists = jsonLibrary.getJSONArray("artists");
@@ -214,6 +225,7 @@ public class Server extends NanoHTTPD {
 	    			g.db.loadMusicFromJSON(artists, ipAddr);
 	    		}
 	    	}
+	    	*/
 		} catch (Exception e) {
 			e.printStackTrace();
 			return badRequestResponse();

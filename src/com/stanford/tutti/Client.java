@@ -40,7 +40,8 @@ public class Client {
 			//RequestParams params = new RequestParams();
 			//params.put("library", jsonLibrary);
 			System.out.println("SENDING JSON LIBRARY: " + jsonLibrary.toString()); 
-			client.setMaxRetriesAndTimeout(3, 1000);
+			client.setMaxRetriesAndTimeout(3, 5000);
+			//client.post(g.getBaseContext(), url, params, responseHandler);
 			client.post(g.getBaseContext(), url, entity, "application/json", responseHandler);
 		}
 		catch (UnsupportedEncodingException e) {
