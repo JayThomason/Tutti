@@ -225,9 +225,9 @@ public class Server extends NanoHTTPD {
 		g.jam.addSong(song);
 		if (g.jam.getCurrentSong() == null) {
 			g.jam.setCurrentSong(song);
-		}
-		if (g.jam.checkMaster()) {
-			g.jam.playCurrentSong(); 
+			if (g.jam.checkMaster()) {
+				g.jam.playCurrentSong(); 
+			}
 		}
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
