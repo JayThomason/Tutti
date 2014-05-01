@@ -297,6 +297,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
+    public Cursor searchAlbumsByArtist(String artist, CharSequence constraint) {
+    	String escapedArtist = artist.replace("'", "''"); 
+    	String query; 
+    	if (constraint == null || constraint.length() == 0) {
+    		query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
+    	} else {
+        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
+    	}
+  
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+    	
+        return cursor; 
+    }
+    
     public Cursor searchSongs(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {

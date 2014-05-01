@@ -73,7 +73,11 @@ public class BrowseAlbumsFragment extends Fragment {
 	    
 	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {
-	            return g.db.searchAlbums(constraint);
+	    		if (!g.currentArtistView.equals("")) {
+	    			return g.db.searchAlbumsByArtist(g.currentArtistView, constraint); 
+	    		} else {
+	    			return g.db.searchAlbums(constraint); 
+	    		}
 	        }
 	    });
 		
