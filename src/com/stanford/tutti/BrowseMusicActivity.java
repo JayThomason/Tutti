@@ -59,14 +59,20 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
          
+        // MenuItem item = actionBar.findItem(R.id.action_settings);
+
+        
         // Adding Tabs
         for (String tab_name : tabs) {
             actionBar.addTab(actionBar.newTab().setText(tab_name)
                     .setTabListener(this));
         }
         
+        getActionBar().setDisplayShowHomeEnabled(false);              
+        getActionBar().setDisplayShowTitleEnabled(false);
+        
     	g = (Globals) getApplicationContext(); 
-    	
+    	    	
         setupTabHighlightListener(); 
         setupHandler(); 
     }
@@ -79,7 +85,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 	
-	/*
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
@@ -89,7 +94,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
-	*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

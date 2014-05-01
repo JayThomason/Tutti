@@ -32,7 +32,10 @@ public class JoinJamActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join_jam);
 		// Show the Up button in the action bar.
-		setupActionBar();
+		//setupActionBar();
+		
+        getActionBar().setDisplayShowHomeEnabled(false);              
+        getActionBar().setDisplayShowTitleEnabled(false);
 
 		g = (Globals) getApplication();
 		configureJamListView(); 

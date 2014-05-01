@@ -14,6 +14,9 @@ public class MainActivity extends Activity {
                 
         setContentView(R.layout.activity_main);
                 
+        getActionBar().setDisplayShowHomeEnabled(false);              
+        getActionBar().setDisplayShowTitleEnabled(false);
+        
         loadLocalMusic(); 
         
         setWelcomeText(); 
@@ -37,12 +40,14 @@ public class MainActivity extends Activity {
     }
 
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    */
     
     public void makeNewJam(View view) {
     	Bundle b = new Bundle();

@@ -18,7 +18,9 @@ public class HelpMenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help_menu);
 		// Show the Up button in the action bar.
-		setupActionBar();
+		//setupActionBar();
+        getActionBar().setDisplayShowHomeEnabled(false);              
+        getActionBar().setDisplayShowTitleEnabled(false);
 	}
 
 	/**

@@ -39,7 +39,10 @@ public class NewJamActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_jam);
-		setupActionBar();
+		//setupActionBar();
+		
+        getActionBar().setDisplayShowHomeEnabled(false);              
+        getActionBar().setDisplayShowTitleEnabled(false);
 		
 		getMasterBoolFromBundle();
 		g = (Globals) getApplicationContext(); 
@@ -47,14 +50,18 @@ public class NewJamActivity extends Activity {
 		
 		g.jam.setIPUsername(g.getIpAddr(), g.getUsername());
 
-		// Show the unique code (ip) for "join jam" requests
-		EditText editText = (EditText) this.findViewById(R.id.ip_address);
-		editText.setText("Your Jam ID is: " + g.getIpAddr());
-
 		if (master) {
 			setUpServer();
 			(new CreateJamInDatabaseThread(getString(R.string.ec2_server), g.getIpAddr())).start();
 		}
+		
+		
+		/* DEV CODE: */
+		/* AUTO-FORWARDS TO MUSIC BROWSER WITH IP-BASED NAME */
+		
+		// Show the unique code (ip) for "join jam" requests
+		EditText editText = (EditText) this.findViewById(R.id.ip_address);
+		editText.setText("Your Jam ID is: " + g.getIpAddr());
 
 		Intent intent = new Intent(this, BrowseMusicActivity.class);
 		startActivity(intent);
