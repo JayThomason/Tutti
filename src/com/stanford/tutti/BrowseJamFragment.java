@@ -6,6 +6,7 @@ import org.apache.http.Header;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +32,7 @@ public class BrowseJamFragment extends Fragment {
 	private ListView listView;
 	private final int port = 1234;
 	
+	private Cursor cursor; 
 	private View rootView; 
 	private Globals g; 
  
@@ -137,6 +139,7 @@ public class BrowseJamFragment extends Fragment {
 	 * Initializes the listView with a list of the current songs in the jam.
 	 */
 	public void initializeJamList() {
+		/*
 		int jamSize = g.jam.getJamSize();
 		
 		// Eventually want to abstract this so the Jam is maintaining its own string list
@@ -153,6 +156,20 @@ public class BrowseJamFragment extends Fragment {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(g, 
 				android.R.layout.simple_list_item_1, songStringList);
 		listView.setAdapter(adapter);
+		*/
+		
+		if (cursor != null) 
+			cursor.close(); 
+
+		cursor = g.db.getSongsInJam(); 
+
+		String[] columns = new String[] { "art", "title" };
+		int[] to = new int[] { R.id.browserArt, R.id.browserText };
+
+		BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to); 
+		listView.setAdapter(adapter);
+		listView.setFastScrollEnabled(true);
+		
 		setJamListItemClickListener();
 	}
 	

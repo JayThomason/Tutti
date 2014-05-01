@@ -264,6 +264,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
+    public void setSongIndexInJam(String hashCode, int index) {
+        ContentValues args = new ContentValues();
+        args.put(KEY_JAM_INDEX, index);
+        db.update(TABLE_NAME, args, KEY_HASH + " = '" + hashCode + "'", null);
+    }
+    
     public Cursor searchArtists(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
