@@ -257,7 +257,24 @@ public class Server extends NanoHTTPD {
 		if (song == null) 
 			return fileNotFoundResponse();
 		g.jam.setCurrentSong(song);
-		g.jam.playCurrentSong(); 
+		if (g.uiUpdateHandler != null) {
+			Message msg = g.uiUpdateHandler.obtainMessage();
+			msg.what = 7; 
+			g.uiUpdateHandler.sendMessage(msg);
+		}
+		if (g.jam.checkMaster()) {
+			g.jam.playCurrentSong(); 
+			for (Client client : g.jam.getClientSet()) {
+				if (client.getIpAddress().equals(g.getIpAddr())) 
+					continue; 
+				client.requestSetSong(keyPath.substring(1), new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						System.out.println("request to add song to client returned: " + statusCode);
+					}
+				});
+			}
+		}
 		return new NanoHTTPD.Response("Set new currently playing song");
 	}
 	

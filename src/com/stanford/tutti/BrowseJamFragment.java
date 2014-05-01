@@ -2,6 +2,10 @@ package com.stanford.tutti;
  
 import java.util.ArrayList;
 
+import org.apache.http.Header;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -170,6 +174,18 @@ public class BrowseJamFragment extends Fragment {
 				Song song = g.jam.getSongByIndex(position); 
 				if (g.jam.checkMaster()) {
 					g.jam.playCurrentSong(); 
+					// THIS IS DUPLICATE CODE FROM THE SERVER
+					// NEED BETTER ENCAPSULATION
+					for (Client client : g.jam.getClientSet()) {
+						if (client.getIpAddress().equals(g.getIpAddr())) 
+							continue; 
+						client.requestSetSong(Integer.toString(song.hashCode()), new AsyncHttpResponseHandler() {
+							@Override
+							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+								System.out.println("request to add song to client returned: " + statusCode);
+							}
+						});
+					}
 				} else {
 									new PassMessageThread(g.jam.getMasterIpAddr(), port,
 						"/jam/set/" + Integer.toString(song.hashCode()), "").start(); 
