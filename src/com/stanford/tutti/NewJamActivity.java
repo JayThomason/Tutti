@@ -44,6 +44,8 @@ public class NewJamActivity extends Activity {
 		getMasterBoolFromBundle();
 		g = (Globals) getApplicationContext(); 
 		g.jam.setMaster(master); 
+		
+		g.jam.setIPUsername(g.getIpAddr(), g.getUsername());
 
 		// Show the unique code (ip) for "join jam" requests
 		EditText editText = (EditText) this.findViewById(R.id.ip_address);

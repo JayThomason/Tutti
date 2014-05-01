@@ -95,13 +95,12 @@ class JoinJamThread extends Thread {
 			String username = jsonLibrary.getString("username"); 
 			g.jam.setIPUsername(ipAddress, username); 
 
-			g.db.loadMusicFromJSON(artists, ipAddress); 
-			g.jam.loadJamFromJSON(jam, ipAddress);
+			g.jam.loadJamFromJSON(jam);
+			g.db.loadMusicFromJSON(artists); 
 
 			if (g.jam.checkMaster()) {
 				for (Client client : g.jam.getClientSet()) {
 					if (!client.getIpAddress().equals(ipAddress)) {
-						System.out.println("SENDING UPDATE LIBRARY RESPONSE: " + client.getIpAddress()); 
 						client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

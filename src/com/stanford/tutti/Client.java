@@ -37,11 +37,8 @@ public class Client {
 		String url = getUrl("/updateLibrary", "");
 		try {
 			StringEntity entity = new StringEntity(jsonLibrary.toString());
-			//RequestParams params = new RequestParams();
-			//params.put("library", jsonLibrary);
 			System.out.println("SENDING JSON LIBRARY: " + jsonLibrary.toString()); 
 			client.setMaxRetriesAndTimeout(3, 5000);
-			//client.post(g.getBaseContext(), url, params, responseHandler);
 			client.post(g.getBaseContext(), url, entity, "application/json", responseHandler);
 		}
 		catch (UnsupportedEncodingException e) {

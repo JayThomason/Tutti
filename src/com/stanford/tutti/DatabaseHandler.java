@@ -448,10 +448,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	        	JSONObject song = new JSONObject(); 
 	        	String title = songCursor.getString(COL_TITLE);
 	        	String path = songCursor.getString(COL_PATH);
+	        	String ip = songCursor.getString(COL_IP); 
 	        	
 	    		try {
 	    			song.put("title", title);
-	    			song.put("path", path); 
+	    			song.put("path", path);
+	    			song.put("ip", ip); 
 	    			songArray.put(song); 
 	    		} catch (JSONException e) {
 	    			e.printStackTrace();
@@ -469,28 +471,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * Load new music into the database library by
 	 * parsing the JSON response from another phone. 
 	 */
-	public void loadMusicFromJSON(JSONArray artists, String ipAddress) {    	
+	public void loadMusicFromJSON(JSONArray artists) {    	
 		for (int i = 0; i < artists.length(); i++) {
 			try {
 				JSONObject jsonArtist = artists.getJSONObject(i); 
 				String artistName = (String)jsonArtist.get("name"); 
 				JSONArray albums = jsonArtist.getJSONArray("albums"); 
+				
 				for (int j = 0; j < albums.length(); j++) {
 					JSONObject jsonAlbum = albums.getJSONObject(j); 
 					String albumTitle = (String)jsonAlbum.get("title");
 					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
+					
 					for (int k = 0; k < songs.length(); k++) {
 						JSONObject jsonSong = songs.getJSONObject(k); 
 						String songTitle = (String)jsonSong.get("title"); 
 						String songPath = (String)jsonSong.get("path");
+						String songIp = (String)jsonSong.get("ip"); 
 						Song song = new Song(songTitle, songPath, false);
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
-						song.setIpAddr(ipAddress);
+						song.setIpAddr(songIp);
 						
 						addSong(song); 
-						
 					}
+					
 					if (g.uiUpdateHandler != null) {
 						Message msg = g.uiUpdateHandler.obtainMessage();
 						msg.what = 0; 

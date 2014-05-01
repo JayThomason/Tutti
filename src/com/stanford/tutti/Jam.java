@@ -196,9 +196,17 @@ public class Jam {
 			Song song = getSongByIndex(i); 
 			songArray.put(song.toJSON());
 		}
+		JSONArray ipArray = new JSONArray(); 
+		JSONArray usernameArray = new JSONArray(); 
+		for (Client client : clientSet) {
+			ipArray.put(client.getIpAddress()); 
+			usernameArray.put(client.getUsername()); 
+		}
 		try {
 			jam.put("songs", songArray);
 			jam.put("current", getCurrentSongIndex());
+			jam.put("ips", ipArray); 
+			jam.put("usernames", usernameArray); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
@@ -210,7 +218,7 @@ public class Jam {
 	 * the JSON response from another phone. 
 	 * 
 	 */
-	public void loadJamFromJSON(JSONObject jam, String ipAddress) {    	
+	public void loadJamFromJSON(JSONObject jam) {    	
 		try {
 			clearSongs(); 
 			JSONArray songs = jam.getJSONArray("songs");
@@ -222,12 +230,20 @@ public class Jam {
 				Song song = new Song(songTitle, songPath, false);
 				song.setArtist((String)jsonSong.get("artist")); 
 				song.setAlbum((String)jsonSong.get("album")); 
-				song.setIpAddr(ipAddress);
+				song.setIpAddr((String)jsonSong.get("ip"));
 				
 				addSong(song);
 				
 				if (i == nowPlayingIndex) {
 					setCurrentSong(song);
+				}
+			}
+			
+			JSONArray ipArray = jam.getJSONArray("ips"); 
+			JSONArray usernameArray = jam.getJSONArray("usernames"); 
+			for (int i = 0; i < ipArray.length(); i++) {
+				if (!usernameMap.containsKey((String)ipArray.get(i))) {
+					usernameMap.put((String)ipArray.get(i), (String)usernameArray.get(i)); 
 				}
 			}
 		} catch (JSONException e) {

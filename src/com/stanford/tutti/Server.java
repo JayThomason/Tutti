@@ -193,39 +193,21 @@ public class Server extends NanoHTTPD {
     }
     
     private Response updateLibraryResponse(IHTTPSession session) {
-    	System.out.println("UPDATING LIBRARY RESPONSE"); 
     	Map<String, String> files = new HashMap<String, String>();
     	String ipAddr = session.getHeaders().get(HTTP_CLIENT_IP);
     	try {
 			session.parseBody(files);
-	      	for (String str : files.keySet()) {
-	      		if (str.equals("postData")) {
-	      			JSONObject jsonLibrary = new JSONObject(files.get(str)); 
-	      			JSONArray artists = jsonLibrary.getJSONArray("artists"); 
-	      			// JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-	      			String username = jsonLibrary.getString("username"); 
-	      			g.jam.setIPUsername(ipAddr, username); 
-	      			g.db.loadMusicFromJSON(artists, ipAddr); 
-	      		}
-	      	}
-	      	
-	      	
-	      	/*
-	      	Map<String, String> parms = session.getParms();
-	    	for (String str : parms.keySet()) {
-	    		if (str.contains("artists")) {
-	    			JSONObject jsonLibrary = new JSONObject(str);
-	    			JSONArray artists = jsonLibrary.getJSONArray("artists");
-
-	    			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-
-	    			String username = jsonLibrary.getString("username"); 
-	    			g.jam.setIPUsername(ipAddr, username); 
-
-	    			g.db.loadMusicFromJSON(artists, ipAddr);
-	    		}
-	    	}
-	    	*/
+			
+  			JSONObject jsonLibrary = new JSONObject(files.get("postData")); 
+  			JSONArray artists = jsonLibrary.getJSONArray("artists"); 
+  			g.db.loadMusicFromJSON(artists); 
+  			
+  			String ip = jsonLibrary.getString("ip"); 
+  			String username = jsonLibrary.getString("username"); 
+  			g.jam.setIPUsername(ip, username); 
+  			
+  			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+  			g.jam.loadJamFromJSON(jam); 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return badRequestResponse();
@@ -319,6 +301,7 @@ public class Server extends NanoHTTPD {
 		
 		try {
 			jsonLibrary.put("username", g.getUsername()); 
+			jsonLibrary.put("ip", g.getIpAddr()); 
 			jsonLibrary.put("jam", g.jam.toJSON()); 
 		} catch (JSONException e) {
 			e.printStackTrace();

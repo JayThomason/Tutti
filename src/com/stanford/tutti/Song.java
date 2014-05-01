@@ -26,8 +26,9 @@ public class Song {
 	/* Path to the album art for the song, if any */
 	private String albumArt = ""; 
 	
-	/* IP address for the phone containing the song. Empty if local. */
+	/* IP address for the phone containing the song. */
 	private String ipAddr = "";
+	
 	
 	/*
 	 * Constructor
@@ -154,6 +155,7 @@ public class Song {
 			song.put("artist", artist);
 			song.put("album", album); 
 			song.put("path", path); 
+			song.put("ip", ipAddr); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 

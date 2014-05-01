@@ -107,6 +107,8 @@ public class MusicLibraryLoaderThread extends Thread {
 		            artCursor.close(); 
 	            }
 	            
+	            song.setIpAddr(g.getIpAddr());
+	            
 	            g.db.addSong(song); 
 	        }
 		}
