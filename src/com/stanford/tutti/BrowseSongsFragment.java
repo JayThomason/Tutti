@@ -112,7 +112,7 @@ public class BrowseSongsFragment extends Fragment {
 					int position, long id) {
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
 				String title = textView.getText().toString();
-
+				
 				// IN THE LONG TERM
 				// WE NEED TO BE USING GETSONGBYID
 				// OR GETSONGBY UNIQUE HASH

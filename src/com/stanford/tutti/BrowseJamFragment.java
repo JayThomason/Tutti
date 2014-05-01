@@ -139,25 +139,6 @@ public class BrowseJamFragment extends Fragment {
 	 * Initializes the listView with a list of the current songs in the jam.
 	 */
 	public void initializeJamList() {
-		/*
-		int jamSize = g.jam.getJamSize();
-		
-		// Eventually want to abstract this so the Jam is maintaining its own string list
-		ArrayList<String> songStringList = new ArrayList<String>(); 
-		for (int i = 0; i < jamSize; i++) {
-			String songText = "";  
-			if (i == g.jam.getCurrentSongIndex()) {
-				songText = "Now Playing: "; 
-			}
-			songText += g.jam.getSongByIndex(i).getArtist() + 
-						": " + g.jam.getSongByIndex(i).getTitle();
-			songStringList.add(songText); 
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(g, 
-				android.R.layout.simple_list_item_1, songStringList);
-		listView.setAdapter(adapter);
-		*/
-		
 		if (cursor != null) 
 			cursor.close(); 
 
@@ -182,10 +163,13 @@ public class BrowseJamFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
-				String item = ((TextView)view).getText().toString();
+				
+				TextView textView = (TextView) view.findViewById(R.id.browserText); 
+				String title = textView.getText().toString();
+								
 				Toast.makeText(
 						g, 
-						"Now playing: " + item, Toast.LENGTH_SHORT)
+						"Now playing: " + title, Toast.LENGTH_SHORT)
 						.show();
 				g.jam.setCurrentSongByIndex(position);
 				Song song = g.jam.getSongByIndex(position); 
