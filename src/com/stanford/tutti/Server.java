@@ -206,8 +206,8 @@ public class Server extends NanoHTTPD {
   			String username = jsonLibrary.getString("username"); 
   			g.jam.setIPUsername(ip, username); 
   			
-  			JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-  			g.jam.loadJamFromJSON(jam); 
+  			//JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+  			//g.jam.loadJamFromJSON(jam); 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return badRequestResponse();

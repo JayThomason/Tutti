@@ -95,7 +95,10 @@ class JoinJamThread extends Thread {
 			String username = jsonLibrary.getString("username"); 
 			g.jam.setIPUsername(ipAddress, username); 
 
-			g.jam.loadJamFromJSON(jam);
+			if (!g.jam.checkMaster()) {
+				g.jam.loadJamFromJSON(jam);
+			}
+			
 			g.db.loadMusicFromJSON(artists); 
 
 			if (g.jam.checkMaster()) {
