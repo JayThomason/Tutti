@@ -100,9 +100,6 @@ public class BrowseAlbumsFragment extends Fragment {
 				
 				g.currentAlbumView = album; 
 				
-				System.out.println("CURRENT ALBUM VIEW: " + g.currentAlbumView); 
-				System.out.println("CURRENT ARTIST VIEW: " + g.currentArtistView); 
-				
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
 					msg.what = 3; 
