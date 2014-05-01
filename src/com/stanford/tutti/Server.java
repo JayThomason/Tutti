@@ -223,9 +223,11 @@ public class Server extends NanoHTTPD {
 		if (song == null) 
 			return fileNotFoundResponse();
 		g.jam.addSong(song);
-		if (g.jam.getCurrentSong() == null && g.jam.checkMaster()) {
+		if (g.jam.getCurrentSong() == null) {
 			g.jam.setCurrentSong(song);
-			g.jam.playCurrentSong();
+		}
+		if (g.jam.checkMaster()) {
+			g.jam.playCurrentSong(); 
 		}
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
@@ -237,6 +239,13 @@ public class Server extends NanoHTTPD {
 				});
 			}
 		}
+		
+		if (g.uiUpdateHandler != null) {
+			Message msg = g.uiUpdateHandler.obtainMessage();
+			msg.what = 7; 
+			g.uiUpdateHandler.sendMessage(msg);
+		}
+		
 		return new NanoHTTPD.Response("Added song to jam");
 	}
 	

@@ -181,9 +181,11 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 					} else if (index == 1) {
 						albumsFragment.initializeAlbumList(); 
 					} else if (index == 2) {
-						songsFragment.initializeSongList(); 
+						if (songsFragment != null)
+							songsFragment.initializeSongList(); 
 					} else if (index == 3) {
-						jamFragment.initializeJamList(); 
+						if (jamFragment != null) 
+							jamFragment.initializeJamList(); 
 					}
 				} else if (msg.what == 1) {
 					artistsFragment.initializeArtistList(); 
@@ -191,15 +193,21 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 					albumsFragment.initializeAlbumList(); 
 					viewPager.setCurrentItem(1);
 				} else if (msg.what == 3) {
-					songsFragment.initializeSongList(); 
+					if (songsFragment != null)
+						songsFragment.initializeSongList(); 
 			        viewPager.setCurrentItem(2); 
 				} else if (msg.what == 4) {
-					jamFragment.initializeJamList(); 
+					if (jamFragment != null)
+						jamFragment.initializeJamList(); 
 					viewPager.setCurrentItem(3); 
 				} else if (msg.what == 5) {
 					albumsFragment.initializeAlbumList(); 
 				} else if (msg.what == 6) {
-					songsFragment.initializeSongList(); 
+					if (songsFragment != null)
+						songsFragment.initializeSongList(); 
+				} else if (msg.what == 7) {
+					if (jamFragment != null)
+						jamFragment.initializeJamList(); 
 				}
 				super.handleMessage(msg);
 			}

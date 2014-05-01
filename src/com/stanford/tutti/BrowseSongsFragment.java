@@ -148,10 +148,6 @@ public class BrowseSongsFragment extends Fragment {
 							System.out.println("request to add song to master returned: " + statusCode);
 
 							if (statusCode == 200) {
-								g.jam.addSong(song); 
-								if (g.jam.getCurrentSong() == null) {
-									g.jam.setCurrentSong(song); 
-								}
 								Toast.makeText(g,
 										song.getArtist()
 										+ " : " + song.getTitle()
