@@ -167,9 +167,10 @@ public class BrowseJamFragment extends Fragment {
 						"Now playing: " + item, Toast.LENGTH_SHORT)
 						.show();
 				g.jam.setCurrentSongByIndex(position);
-				g.jam.playCurrentSong(); 
 				Song song = g.jam.getSongByIndex(position); 
-				if (!g.jam.checkMaster()) {
+				if (g.jam.checkMaster()) {
+					g.jam.playCurrentSong(); 
+				} else {
 									new PassMessageThread(g.jam.getMasterIpAddr(), port,
 						"/jam/set/" + Integer.toString(song.hashCode()), "").start(); 
 				}
