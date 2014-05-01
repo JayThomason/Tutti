@@ -17,7 +17,7 @@ import android.os.Message;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -35,6 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ART = "art";
     private static final String KEY_HASH = "hash"; 
     private static final String KEY_IP = "_ip";
+    private static final String KEY_JAM_INDEX = "jamIndex"; 
     
     // Table Columns indices
     private static final int COL_ID = 0; 
@@ -46,8 +47,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int COL_ART = 6; 
     private static final int COL_HASH = 7; 
     private static final int COL_IP = 8;
+    private static final int COL_JAM_INDEX = 9; 
     
-    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP};
+    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX};
 
     private Globals g; 
     
@@ -71,6 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ART + " TEXT,"
         		+ KEY_HASH + " TEXT," 
         		+ KEY_IP + " TEXT,"
+        		+ KEY_JAM_INDEX + " INTEGER,"
                 + " UNIQUE (" 
         		+ KEY_TITLE + ", " 
                 + KEY_ARTIST + ", "
@@ -249,6 +252,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.moveToFirst(); 
         
     	return rowToSong(cursor);  
+    }
+    
+    public Cursor getSongsInJam() {
+    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_JAM_INDEX + " > -1 ORDER BY " + KEY_JAM_INDEX + " ASC";
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        
+        return cursor; 
     }
     
     public Cursor searchArtists(CharSequence constraint) {
