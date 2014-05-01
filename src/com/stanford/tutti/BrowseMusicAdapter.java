@@ -20,6 +20,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     private String[] columns; 
     private final LayoutInflater inflater;
     
+    private Globals g; 
     private int noArtImgID;
 
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
@@ -30,6 +31,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         this.inflater=LayoutInflater.from(context);
         this.cr=c;
         
+        this.g = (Globals) context.getApplicationContext(); 
     	this.noArtImgID = context.getResources().getIdentifier("musicnote", "drawable", context.getPackageName());
     }
 
@@ -45,8 +47,15 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
-        
-        titleView.setText(cursor.getString(cursor.getColumnIndex(columns[1]))); 
+
+        // SHOULD BE DOING THIS BY HASH CODE
+        String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 
+        String text = ""; 
+        if (g.jam != null && g.jam.getCurrentSong() != null && g.jam.getCurrentSong().getTitle().equals(songTitle)) {
+        	text += "Now playing: "; 
+        }
+        text += songTitle; 
+        titleView.setText(text); 
         
         Globals g = (Globals) context.getApplicationContext(); 
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
