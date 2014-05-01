@@ -9,8 +9,7 @@ public class SettingsMenuActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        getActionBar().setDisplayShowHomeEnabled(false);              
-        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().hide(); 
  
         addPreferencesFromResource(R.xml.settings);
  

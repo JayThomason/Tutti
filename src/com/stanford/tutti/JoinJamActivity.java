@@ -36,6 +36,7 @@ public class JoinJamActivity extends Activity {
 		
         getActionBar().setDisplayShowHomeEnabled(false);              
         getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().hide(); 
 
 		g = (Globals) getApplication();
 		configureJamListView(); 

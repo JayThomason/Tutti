@@ -41,8 +41,7 @@ public class NewJamActivity extends Activity {
 		setContentView(R.layout.activity_new_jam);
 		//setupActionBar();
 		
-        getActionBar().setDisplayShowHomeEnabled(false);              
-        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().hide(); 
 		
 		getMasterBoolFromBundle();
 		g = (Globals) getApplicationContext(); 

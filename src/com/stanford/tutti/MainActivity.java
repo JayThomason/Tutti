@@ -14,8 +14,7 @@ public class MainActivity extends Activity {
                 
         setContentView(R.layout.activity_main);
                 
-        getActionBar().setDisplayShowHomeEnabled(false);              
-        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().hide(); 
         
         loadLocalMusic(); 
         
