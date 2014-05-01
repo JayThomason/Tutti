@@ -438,7 +438,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	        	String albumTitle = albumCursor.getString(COL_ALBUM); 
 	        	JSONObject album = new JSONObject(); 
 	        	
-	        	JSONArray songArray = getSongsAsJSON(albumTitle); 
+	        	JSONArray songArray = getSongsAsJSON(artistName, albumTitle); 
     			
 	    		try {
 	    			album.put("title", albumTitle);
@@ -456,9 +456,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return albumArray; 
     }
     
-    private JSONArray getSongsAsJSON(String albumTitle) {
+    private JSONArray getSongsAsJSON(String artistName, String albumTitle) {
     	JSONArray songArray = new JSONArray(); 
-		Cursor songCursor = getSongsByAlbum(albumTitle); 
+		Cursor songCursor = getSongsByArtistAndAlbum(artistName, albumTitle); 
 		
 		if (songCursor.moveToFirst()) {
 			do {

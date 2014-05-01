@@ -64,11 +64,14 @@ public class BrowseSongsFragment extends Fragment {
 		if (cursor != null) 
 			cursor.close(); 
 
-		if (g.currentAlbumView != "" && g.currentArtistView != "") {
+		if (!g.currentAlbumView.equals("") && !g.currentAlbumView.equals("Music") && !g.currentArtistView.equals("")) {
+			System.out.println("INITIALIZING SONG LIST BY ARTIST: " + g.currentArtistView + " AND ALBUM: " + g.currentAlbumView); 
 			cursor = g.db.getSongsByArtistAndAlbum(g.currentArtistView, g.currentAlbumView); 
-		} else if (g.currentAlbumView != "") {
+		} else if (!g.currentAlbumView.equals("") && !g.currentAlbumView.equals("Music")) {
+			System.out.println("INITIALIZING SONG LIST BY ALBUM: " + g.currentAlbumView); 
 			cursor = g.db.getSongsByAlbum(g.currentAlbumView); 
-		} else if (g.currentArtistView != "") {
+		} else if (!g.currentArtistView.equals("")) {
+			System.out.println("INITIALIZING SONG LIST BY ARTIST: " + g.currentArtistView); 
 			cursor = g.db.getSongsByArtist(g.currentArtistView); 
 		} else {
 			cursor = g.db.getAllSongs(); 

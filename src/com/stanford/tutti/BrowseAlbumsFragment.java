@@ -55,7 +55,7 @@ public class BrowseAlbumsFragment extends Fragment {
 	    if (cursor != null) 
 	    	cursor.close(); 
 	    
-		if (g.currentArtistView != "") {
+		if (!g.currentArtistView.equals("")) {
 			cursor = g.db.getAlbumsByArtist(g.currentArtistView); 
 		} else {
 			cursor = g.db.getAllAlbums(); 
@@ -95,6 +95,9 @@ public class BrowseAlbumsFragment extends Fragment {
 				String album = textView.getText().toString();
 				
 				g.currentAlbumView = album; 
+				
+				System.out.println("CURRENT ALBUM VIEW: " + g.currentAlbumView); 
+				System.out.println("CURRENT ARTIST VIEW: " + g.currentArtistView); 
 				
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
