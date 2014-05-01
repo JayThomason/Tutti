@@ -52,9 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX};
 
     private Globals g; 
-    
-    private SQLiteDatabase db; 
-    
+        
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.g = (Globals) context.getApplicationContext(); 
@@ -267,6 +265,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void setSongIndexInJam(String hashCode, int index) {
         ContentValues args = new ContentValues();
         args.put(KEY_JAM_INDEX, index);
+        SQLiteDatabase db = this.getWritableDatabase();
         db.update(TABLE_NAME, args, KEY_HASH + " = '" + hashCode + "'", null);
     }
     

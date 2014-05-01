@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
  * checking and setting the current artist, album, and song.
  */
 public class Globals extends Application {
-	public Jam jam = new Jam(); 
+	public Jam jam = new Jam(this); 
 		
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 

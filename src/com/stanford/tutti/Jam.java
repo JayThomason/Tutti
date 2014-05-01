@@ -22,8 +22,10 @@ public class Jam {
 	private HashSet<Client> clientSet;
 	private HashMap<String, String> usernameMap; 
 	private String masterIpAddr;
+	private Globals g; 
 	
-	public Jam() {
+	public Jam(Globals g) {
+		this.g = g; 
 		songList = new ArrayList<Song>();
 		currentSong = null; 
 		currentSongIndex = -1; 
@@ -96,6 +98,7 @@ public class Jam {
 	
 	public void addSong(Song song) {
 		songList.add(song);
+		g.db.setSongIndexInJam(Integer.toString(song.hashCode()), getJamSize() - 1);
 	}
 	
 	public Song getCurrentSong() {
@@ -233,7 +236,7 @@ public class Jam {
 				song.setIpAddr((String)jsonSong.get("ip"));
 				
 				addSong(song);
-				
+								
 				if (i == nowPlayingIndex) {
 					setCurrentSong(song);
 				}
