@@ -3,6 +3,17 @@ package com.stanford.tutti;
 import java.io.IOException;
 import java.util.*;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -51,7 +62,7 @@ public class NewJamActivity extends Activity {
 
 		if (master) {
 			setUpServer();
-			(new CreateJamInDatabaseThread(getString(R.string.ec2_server), g.getIpAddr())).start();
+			createJamInDatabase();
 		}
 		
 		
@@ -64,6 +75,32 @@ public class NewJamActivity extends Activity {
 
 		Intent intent = new Intent(this, BrowseMusicActivity.class);
 		startActivity(intent);
+	}
+	
+	/*
+	 * Creates the jam in the database.
+	 */
+	private void createJamInDatabase() {
+		AsyncHttpClient client = new AsyncHttpClient();
+		String serverHostname = getString(R.string.ec2_server);
+		String localIpAddr = g.getIpAddr();
+		String url = "http://" + serverHostname + "/createJam?private=" + localIpAddr;
+		client.get(url, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+				if (statusCode == 200) {
+					System.out.println("Successfully created jam on server.");
+				}
+				else {
+					System.out.println("Failed to create jam on server.");
+				}
+			}
+			
+			@Override
+			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+				System.out.println("Failed to create jam on server.");
+			}
+		});
 	}
 
 	/*
@@ -125,4 +162,5 @@ public class NewJamActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 }
