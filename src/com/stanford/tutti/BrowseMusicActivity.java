@@ -1,5 +1,17 @@
 package com.stanford.tutti;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.ActionBar;
@@ -172,22 +184,17 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	
 	/*
 	 * Initializes the handler. The handler is used to receive messages from
-	 * the server and to update the UI accordingly.
+	 * the server and to update the UI accordingly (new songs, join jam requests, etc.)
 	 */
 	private void setupHandler() {
 		g.uiUpdateHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				/*
-				 * When we get a message from another phone that we have new
-				 * non-local music, we can update the list-view for the library.
-				 */
 				String message = (String)msg.obj; 
 				System.out.println("RECEIVED STRING MESSAGE: " + message); 
 				if (message != null) {
 					// We've received a String message containing a username
 					// Need to display a "Join Jam?" alert dialog					
-					
 					final String ipAddr = message.split("//")[0]; 
 					final String username = message.split("//")[1]; 
 					
@@ -198,12 +205,36 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				    .setMessage("Accept Join Jam request from " + username + "?")
 				    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int whichButton) {
-				        	/*
-				        	Client client = new Client(g, username, ipAddr, 1234);
-							g.jam.addClient(client);
-				        	Thread getLibraryThread = new JoinJamThread(ipAddr, true);
-				        	getLibraryThread.start();
-				        	*/
+				        	Client newClient = new Client(g, username, ipAddr, 1234);
+							g.jam.addClient(newClient);
+							newClient.requestRemoteLibrary(new AsyncHttpResponseHandler() {
+								@Override
+								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+									try {
+										Globals g = (Globals) getApplication(); 
+										
+										ByteArrayInputStream is = new ByteArrayInputStream(responseBody); 
+										BufferedReader reader = new BufferedReader(
+												new InputStreamReader(is));
+										
+										String remoteLibrary = reader.readLine();
+										JSONObject jsonLibrary;
+										jsonLibrary = new JSONObject(remoteLibrary);
+
+										String username = jsonLibrary.getString("username"); 
+										g.jam.setIPUsername(ipAddr, username); 
+		
+										JSONArray artists = jsonLibrary.getJSONArray("artists");
+										JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+										g.db.loadMusicFromJSON(artists); 
+										g.jam.loadJamFromJSON(jam); 
+									} catch (IOException e) {
+										e.printStackTrace();
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								}
+				        	}); 
 				        }
 				    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int whichButton) {
@@ -239,6 +270,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 						jamFragment.initializeJamList(); 
 					viewPager.setCurrentItem(3); 
 				} else if (msg.what == 5) {
+					if (albumsFragment != null) 
+						albumsFragment.initializeAlbumList();
 					albumsFragment.initializeAlbumList(); 
 				} else if (msg.what == 6) {
 					if (songsFragment != null)

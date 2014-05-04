@@ -161,15 +161,21 @@ public class Server extends NanoHTTPD {
 			}
 			
 			// Should move this and the JoinJamThread to happen in BrowseMusicActivity when request is accepted
-			Client client = new Client(g, username, otherIpAddr, 1234);
-			g.jam.addClient(client);
+			//Client client = new Client(g, username, otherIpAddr, 1234);
+			//g.jam.addClient(client);
 		}
 		else {
 			System.out.println("Server: Attempt to join jam on client device -- error");
 		}
 		
-    	Thread getLibraryThread = new JoinJamThread(otherIpAddr, true);
-    	getLibraryThread.start();
+    	//Thread getLibraryThread = new JoinJamThread(otherIpAddr, true);
+    	//getLibraryThread.start();
+		
+		//HOW AND WHEN TO RETURN THIS RESPONSE??  
+		//HOW AND WHEN TO RETURN THIS RESPONSE??  
+		//HOW AND WHEN TO RETURN THIS RESPONSE??  
+		//HOW AND WHEN TO RETURN THIS RESPONSE??  
+		//HOW AND WHEN TO RETURN THIS RESPONSE??  
 		return new NanoHTTPD.Response("OK to join");
 	/*
     	try {

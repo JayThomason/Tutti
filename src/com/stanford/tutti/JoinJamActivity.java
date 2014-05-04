@@ -65,7 +65,6 @@ public class JoinJamActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				// TODO: MAKE ASYNCHTTPREQUEST USING CLIENT HELPER
 				Globals g = (Globals) getApplication();
 			    String jamName = ((TextView) arg1).getText().toString();
 			    final String ip = requestLocalJamThread.getIpForName(jamName);
@@ -76,6 +75,11 @@ public class JoinJamActivity extends Activity {
 						Globals g = (Globals) getApplication(); 
 						g.jam.setMaster(false); 
 						g.jam.setMasterIp(ip);
+						// ADD
+						// CLIENT
+						// OBJECT
+						// FOR 
+						// MASTER??? 
 						server = new Server(PORT, g);
 						try {
 							server.start();
@@ -110,31 +114,7 @@ public class JoinJamActivity extends Activity {
 									// Load the music browser as a client phone
 									Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
 									startActivity(intent);
-									// finish();
-									
-									// MOVE THIS TO SERVER-SIDE OF MASTER
-									// OR WHEREVER ELSE YOU WANNA DO THE MASTER STUFF
-									// ACTIVITY ITSELF MAYBE?? 
-									/*
-									if (g.jam.checkMaster()) {
-										for (Client client : g.jam.getClientSet()) {
-											if (!client.getIpAddress().equals(ip)) {
-												client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
-													@Override
-													public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-														System.out.println("request to update library returned: " + statusCode);
-													}
-													
-													@Override
-													public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-														System.out.println("request to update library FAILED");
-														
-													}
-												});
-											}
-										}
-									}
-									*/
+									finish();
 								}
 								catch (IOException e) {
 									e.printStackTrace();

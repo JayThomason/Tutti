@@ -15,6 +15,8 @@ public class Client {
 	private String ipAddress; 
 	private int port; 
 	
+	public AsyncHttpResponseHandler loadRemoteLibraryResponse; 
+	
 	public Client(Globals g, String username, String ipAddress, int port) {
 		client = new AsyncHttpClient();
 		this.g = g; 
