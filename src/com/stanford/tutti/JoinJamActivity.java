@@ -82,9 +82,6 @@ public class JoinJamActivity extends Activity {
 			    final String ip = requestLocalJamThread.getIpForName(jamName);
 				final Client masterClient = new Client(g, "", ip, PORT); 
 				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-					}
 				});
 			}
 		});
@@ -95,59 +92,30 @@ public class JoinJamActivity extends Activity {
 		g.joinJamHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				System.out.println("RECEIVED STRING MESSAGE IN JOIN JAM ACTIVITY"); 
 				String message = (String)msg.obj; 
-				if (message != null) {
-					// We've received a String message containing a username
-					// Need to display a "Join Jam?" alert dialog					
+				if (message != null) {			
 					final String ipAddr = message.split("//")[0]; 
 					final String username = message.split("//")[1]; 
 					
 					g.jam.setMaster(false); 
 					g.jam.setMasterIp(ipAddr);
+					g.jam.setIPUsername(ipAddr, username);
+					
+					
 					// ADD
 					// CLIENT
 					// OBJECT
 					// FOR 
-					// MASTER??? 
-
+					// MASTER???
 					
 					Client masterClient = new Client(g, username, ipAddr, PORT);
-					masterClient.requestRemoteLibrary(new AsyncHttpResponseHandler() {
-						@Override
-						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							try {
-								
-								Globals g = (Globals) getApplication(); 
-								
-								ByteArrayInputStream is = new ByteArrayInputStream(responseBody); 
-								BufferedReader reader = new BufferedReader(
-										new InputStreamReader(is));
-								String remoteLibrary = reader.readLine();
-								
-								JSONObject jsonLibrary = new JSONObject(remoteLibrary);
-
-								String username = jsonLibrary.getString("username"); 
-								g.jam.setIPUsername(ipAddr, username); 
-
-								JSONArray artists = jsonLibrary.getJSONArray("artists");
-								JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-								g.db.loadMusicFromJSON(artists); 
-								g.jam.loadJamFromJSON(jam); 
-								
-								// Load the music browser as a client phone
-								Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
-								startActivity(intent);
-								finish();
-							}
-							catch (IOException e) {
-								e.printStackTrace();
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-							
-						}
-					});
+					g.jam.addClient(masterClient);
+			    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+			    	getLibraryThread.start();
+			    	
+					Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
+					startActivity(intent);
+					finish();
 				}
 			}
 		};

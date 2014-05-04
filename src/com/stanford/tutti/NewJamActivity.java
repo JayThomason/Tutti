@@ -52,16 +52,11 @@ public class NewJamActivity extends Activity {
 		
         getActionBar().hide(); 
 		
-		getMasterBoolFromBundle();
 		g = (Globals) getApplicationContext(); 
-		g.jam.setMaster(master); 
+		g.jam.setMaster(true); 
 		
-		g.jam.setIPUsername(g.getIpAddr(), g.getUsername());
-
-		if (master) {
-			setUpServer();
-			createJamInDatabase();
-		}
+		setUpServer();
+		createJamInDatabase();
 		
 		
 		/* DEV CODE: */

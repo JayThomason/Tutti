@@ -58,6 +58,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     private BrowseJamFragment jamFragment; 
     
     private Globals g; 
+    private int PORT = 1234; 
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,39 +208,10 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				        public void onClick(DialogInterface dialog, int whichButton) {
 				        	Client newClient = new Client(g, username, ipAddr, 1234);
 							g.jam.addClient(newClient);
-							newClient.acceptJoinJam(new AsyncHttpResponseHandler() {
-									@Override
-									public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-									}
-							}); 
-							newClient.requestRemoteLibrary(new AsyncHttpResponseHandler() {
-								@Override
-								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-									try {
-										Globals g = (Globals) getApplication(); 
-										
-										ByteArrayInputStream is = new ByteArrayInputStream(responseBody); 
-										BufferedReader reader = new BufferedReader(
-												new InputStreamReader(is));
-										
-										String remoteLibrary = reader.readLine();
-										JSONObject jsonLibrary;
-										jsonLibrary = new JSONObject(remoteLibrary);
-
-										String username = jsonLibrary.getString("username"); 
-										g.jam.setIPUsername(ipAddr, username); 
-		
-										JSONArray artists = jsonLibrary.getJSONArray("artists");
-										JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-										g.db.loadMusicFromJSON(artists); 
-										g.jam.loadJamFromJSON(jam); 
-									} catch (IOException e) {
-										e.printStackTrace();
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-								}
-				        	}); 
+							g.jam.setIPUsername(ipAddr, username);
+							newClient.acceptJoinJam(new AsyncHttpResponseHandler() { }); 
+					    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+					    	getLibraryThread.start();
 				        }
 				    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int whichButton) {

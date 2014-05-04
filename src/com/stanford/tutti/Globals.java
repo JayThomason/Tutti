@@ -39,6 +39,7 @@ public class Globals extends Application {
 		super.onCreate();
 		Globals.context = getApplicationContext(); 
 		db = new DatabaseHandler(this);
+		jam.setIPUsername(getIpAddr(), getUsername());
 	}
 	
 	public static Context getAppContext() {
