@@ -117,6 +117,14 @@ public class BrowseSongsFragment extends Fragment {
 				// WE NEED TO BE USING GETSONGBYID
 				// OR GETSONGBY UNIQUE HASH
 				final Song song = g.db.getSongByTitle(title); 
+				
+				if (g.jam.containsSong(song)) {
+					Toast.makeText(g,
+							song.getArtist()
+							+ " : " + song.getTitle()
+							+ " is already in the Jam!", Toast.LENGTH_SHORT).show(); 
+					return; 
+				}
                
 				if (g.jam.checkMaster()) {
 					g.jam.addSong(song); 
@@ -159,7 +167,7 @@ public class BrowseSongsFragment extends Fragment {
 
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 4; 
+					msg.what = 7; 
 					g.uiUpdateHandler.sendMessage(msg);
 				}
 			}

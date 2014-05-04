@@ -163,31 +163,11 @@ public class Server extends NanoHTTPD {
 				msg.obj = otherIpAddr + "//" + username; 
 				g.uiUpdateHandler.sendMessage(msg);
 			}
-			
-			// Should move this and the JoinJamThread to happen in BrowseMusicActivity when request is accepted
-			//Client client = new Client(g, username, otherIpAddr, 1234);
-			//g.jam.addClient(client);
 		}
 		else {
 			System.out.println("Server: Attempt to join jam on client device -- error");
 		}
-		
-    	//Thread getLibraryThread = new JoinJamThread(otherIpAddr, true);
-    	//getLibraryThread.start();
-		
-		//HOW AND WHEN TO RETURN THIS RESPONSE??  
-		//HOW AND WHEN TO RETURN THIS RESPONSE??  
-		//HOW AND WHEN TO RETURN THIS RESPONSE??  
-		//HOW AND WHEN TO RETURN THIS RESPONSE??  
-		//HOW AND WHEN TO RETURN THIS RESPONSE??  
 		return new NanoHTTPD.Response("Requesting master user permission to join");
-	/*
-    	try {
-			getLibraryThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	*/
 	}
     
     private Response acceptJoinJamResponse(String otherIpAddr, String username) {

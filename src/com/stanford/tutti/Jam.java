@@ -136,13 +136,23 @@ public class Jam {
 		return songList.get(index); 
 	}
 	
+	public boolean containsSong(Song song) {
+		for (Song jamSong : songList) {
+			if (jamSong.hashCode() == song.hashCode()) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	
 	public int getJamSize() {
 		return songList.size(); 
 	}
 	
 	
+	// THIS SHOULD CLEAR INDICES IN THE DB AS WELL
 	public void clearSongs() {
-		songList = new ArrayList(); 
+		songList = new ArrayList<Song>(); 
 		currentSong = null; 
 		currentSongIndex = -1; 
 	}

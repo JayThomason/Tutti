@@ -192,7 +192,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 			@Override
 			public void handleMessage(Message msg) {
 				String message = (String)msg.obj; 
-				System.out.println("RECEIVED STRING MESSAGE: " + message); 
 				if (message != null) {
 					// We've received a String message containing a username
 					// Need to display a "Join Jam?" alert dialog					

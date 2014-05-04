@@ -101,13 +101,6 @@ public class JoinJamActivity extends Activity {
 					g.jam.setMasterIp(ipAddr);
 					g.jam.setIPUsername(ipAddr, username);
 					
-					
-					// ADD
-					// CLIENT
-					// OBJECT
-					// FOR 
-					// MASTER???
-					
 					Client masterClient = new Client(g, username, ipAddr, PORT);
 					g.jam.addClient(masterClient);
 			    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);

@@ -53,8 +53,21 @@ class RequestLibraryThread extends Thread {
 
 					JSONArray artists = jsonLibrary.getJSONArray("artists");
 					JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-					g.db.loadMusicFromJSON(artists); 
-					g.jam.loadJamFromJSON(jam); 
+					g.db.loadMusicFromJSON(artists);
+					
+					if (!g.jam.checkMaster()) {
+						g.jam.loadJamFromJSON(jam); 
+					}
+					
+					if (g.jam.checkMaster()) {
+						for (Client client : g.jam.getClientSet()) {
+							if (client.getIpAddress() != ip) {
+								client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
+									
+								});
+							}
+						}
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (JSONException e) {
