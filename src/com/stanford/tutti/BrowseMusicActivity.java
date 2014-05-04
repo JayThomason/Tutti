@@ -207,6 +207,11 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				        public void onClick(DialogInterface dialog, int whichButton) {
 				        	Client newClient = new Client(g, username, ipAddr, 1234);
 							g.jam.addClient(newClient);
+							newClient.acceptJoinJam(new AsyncHttpResponseHandler() {
+									@Override
+									public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+									}
+							}); 
 							newClient.requestRemoteLibrary(new AsyncHttpResponseHandler() {
 								@Override
 								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

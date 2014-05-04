@@ -30,6 +30,11 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
+	public void acceptJoinJam(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/acceptJoinJam/", ""); 
+		client.get(url, null, responseHandler); 
+	}
+	
 	public void requestRemoteLibrary(AsyncHttpResponseHandler responseHandler) {
 		String url = getUrl("/getLocalLibrary/", ""); 
 		client.get(url, null, responseHandler); 

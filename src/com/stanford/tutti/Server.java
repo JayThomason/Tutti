@@ -41,6 +41,7 @@ public class Server extends NanoHTTPD {
 	private static final String GET_JAM = "/getJam"; 
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
+	private static final String ACCEPT_JOIN_JAM = "/acceptJoinJam"; 
 	private static final String UPDATE_JAM = "/jam"; 
 	private static final String UPDATE_LIBRARY = "/updateLibrary";
 	private static final String JAM_ADD_SONG = "/add"; 
@@ -111,6 +112,9 @@ public class Server extends NanoHTTPD {
     	if (uri.startsWith(JOIN_JAM)) {
     		return joinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username"));
     	}
+    	else if (uri.startsWith(ACCEPT_JOIN_JAM)) {
+    		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username")); 
+    	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
     	} 
@@ -176,7 +180,7 @@ public class Server extends NanoHTTPD {
 		//HOW AND WHEN TO RETURN THIS RESPONSE??  
 		//HOW AND WHEN TO RETURN THIS RESPONSE??  
 		//HOW AND WHEN TO RETURN THIS RESPONSE??  
-		return new NanoHTTPD.Response("OK to join");
+		return new NanoHTTPD.Response("Requesting master user permission to join");
 	/*
     	try {
 			getLibraryThread.join();
@@ -185,6 +189,16 @@ public class Server extends NanoHTTPD {
 		}
 	*/
 	}
+    
+    private Response acceptJoinJamResponse(String otherIpAddr, String username) {
+    	System.out.println("ACCEPT JOIN JAM RESPONSE!"); 
+		if (g.joinJamHandler != null) {
+			Message msg = g.joinJamHandler.obtainMessage();
+			msg.obj = otherIpAddr + "//" + username; 
+			g.joinJamHandler.sendMessage(msg);
+		}
+		return new NanoHTTPD.Response("Joining jam");
+    }
     
     /*
      * Responds to a request to update the jam. 
