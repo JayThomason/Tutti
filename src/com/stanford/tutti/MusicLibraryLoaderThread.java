@@ -111,7 +111,7 @@ public class MusicLibraryLoaderThread extends Thread {
 	            
 	            g.db.addSong(song); 
 	        }
-		}
-	
+	        cursor.close(); 
+		}	
 	}
 }

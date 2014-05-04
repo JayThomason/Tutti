@@ -22,6 +22,16 @@ public class Client {
 		this.ipAddress = ipAddress;
 		this.port = port; 
 	} 
+	
+	public void requestJoinJam(String username, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/joinJam/", "?username=" + username); 
+		client.get(url, null, responseHandler); 
+	}
+	
+	public void requestRemoteLibrary(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/getLocalLibrary/", ""); 
+		client.get(url, null, responseHandler); 
+	}
 
 	public void requestAddSong(String songHash, AsyncHttpResponseHandler responseHandler) {
 		String url = getUrl("/jam/add/", songHash); 

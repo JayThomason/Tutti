@@ -87,6 +87,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 	
+	/*
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
@@ -96,6 +97,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
+	*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -189,7 +191,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 					final String ipAddr = message.split("//")[0]; 
 					final String username = message.split("//")[1]; 
 					
-					View currView = viewPager.getChildAt(actionBar.getSelectedNavigationIndex()); 
+					View currView = viewPager.getFocusedChild(); 
 					
 					new android.app.AlertDialog.Builder(currView.getContext())
 				    .setTitle("Join Jam Request Received")

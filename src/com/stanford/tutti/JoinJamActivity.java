@@ -1,6 +1,18 @@
 package com.stanford.tutti;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -31,8 +43,6 @@ public class JoinJamActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join_jam);
-		// Show the Up button in the action bar.
-		//setupActionBar();
 		
         getActionBar().setDisplayShowHomeEnabled(false);              
         getActionBar().setDisplayShowTitleEnabled(false);
@@ -55,32 +65,87 @@ public class JoinJamActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				// TODO Auto-generated method stub
-			    server = new Server(PORT, g);
-			    String jamName = ((TextView) arg1).getText().toString();
-			    String ip = requestLocalJamThread.getIpForName(jamName);
+				// TODO: MAKE ASYNCHTTPREQUEST USING CLIENT HELPER
 				Globals g = (Globals) getApplication();
-				g.jam.setMasterIp(ip);
-				Thread joinJamThread = new JoinJamThread(ip, false);
-				try {
-					server.start();
-					joinJamThread.start();
-					/*joinJamThread.join();
-				} catch (InterruptedException e) {
-					// probably want to log some message to user: unable to join jam
-					e.printStackTrace();*/
-				} catch (IOException e) {
-					// unable to start server
-					// in either failure case we can't join the jam and thus we should display
-					// a message to the user and back out to the main menu or just stay here...
-					e.printStackTrace();
-				}
-				
-				// Load the music browser as a client phone
-				Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
-				g.jam.setMaster(false); 
-				startActivity(intent);
-				finish();
+			    String jamName = ((TextView) arg1).getText().toString();
+			    final String ip = requestLocalJamThread.getIpForName(jamName);
+				final Client masterClient = new Client(g, "", ip, PORT); 
+				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						Globals g = (Globals) getApplication(); 
+						g.jam.setMaster(false); 
+						g.jam.setMasterIp(ip);
+						server = new Server(PORT, g);
+						try {
+							server.start();
+						} catch (IOException e) {
+							// unable to start server
+							// should display a message to the user or back out to main menu
+							e.printStackTrace();
+						}
+						
+						masterClient.requestRemoteLibrary(new AsyncHttpResponseHandler() {
+							@Override
+							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+								try {
+									
+									Globals g = (Globals) getApplication(); 
+									
+									ByteArrayInputStream is = new ByteArrayInputStream(responseBody); 
+									BufferedReader reader = new BufferedReader(
+											new InputStreamReader(is));
+									String remoteLibrary = reader.readLine();
+									
+									JSONObject jsonLibrary = new JSONObject(remoteLibrary);
+
+									String username = jsonLibrary.getString("username"); 
+									g.jam.setIPUsername(ip, username); 
+
+									JSONArray artists = jsonLibrary.getJSONArray("artists");
+									JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+									g.db.loadMusicFromJSON(artists); 
+									g.jam.loadJamFromJSON(jam); 
+									
+									// Load the music browser as a client phone
+									Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
+									startActivity(intent);
+									// finish();
+									
+									// MOVE THIS TO SERVER-SIDE OF MASTER
+									// OR WHEREVER ELSE YOU WANNA DO THE MASTER STUFF
+									// ACTIVITY ITSELF MAYBE?? 
+									/*
+									if (g.jam.checkMaster()) {
+										for (Client client : g.jam.getClientSet()) {
+											if (!client.getIpAddress().equals(ip)) {
+												client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
+													@Override
+													public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+														System.out.println("request to update library returned: " + statusCode);
+													}
+													
+													@Override
+													public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+														System.out.println("request to update library FAILED");
+														
+													}
+												});
+											}
+										}
+									}
+									*/
+								}
+								catch (IOException e) {
+									e.printStackTrace();
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+								
+							}
+						});
+					}
+				});
 			}
 		});
 	
