@@ -39,6 +39,11 @@ public class Client {
 		String url = getUrl("/getLocalLibrary/", ""); 
 		client.get(url, null, responseHandler); 
 	}
+	
+	public void requestAlbumArt(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/getAlbumArt/", ""); 
+		client.get(url, null, responseHandler); 
+	}
 
 	public void requestAddSong(String songHash, String addedBy, AsyncHttpResponseHandler responseHandler) {
 		String url = getUrl("/jam/add/", "?songId=" + songHash + "&addedBy=" + addedBy); 
