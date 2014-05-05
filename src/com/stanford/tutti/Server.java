@@ -37,13 +37,14 @@ import com.stanford.tutti.NanoHTTPD.Response.Status;
 public class Server extends NanoHTTPD {
 	//probably want to make this a better global later, maybe in @strings
 	/* These strings define the API endpoints for the tutti API. */
-	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String GET_JAM = "/getJam"; 
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
 	private static final String ACCEPT_JOIN_JAM = "/acceptJoinJam"; 
 	private static final String UPDATE_JAM = "/jam"; 
+	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String UPDATE_LIBRARY = "/updateLibrary";
+	private static final String GET_ALBUM_ART = "/getAlbumArt"; 
 	private static final String JAM_ADD_SONG = "/add"; 
 	private static final String JAM_SET_SONG = "/set"; 
 	private static final String JAM_START = "/start"; 
@@ -118,6 +119,9 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
     	} 
+    	else if (uri.startsWith(GET_ALBUM_ART)) {
+    		return getAlbumArtResponse(); 
+    	}
     	else if (uri.startsWith(GET_JAM)) {
     		return getJamResponse(); 
     	} 
@@ -339,7 +343,6 @@ public class Server extends NanoHTTPD {
      * phone's library as JSON.
      */
 	private Response getLocalLibraryResponse() {
-		System.out.println("Returning Local Library as JSON");
 		JSONObject jsonLibrary = g.db.getLibraryAsJSON();
 		
 		try {
@@ -351,6 +354,18 @@ public class Server extends NanoHTTPD {
 		} 
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
+		Response response = new Response(Status.OK, "application/json", is);
+		return response;
+	}
+	
+    /*
+     * Returns an OK HTTP response with a JSON body containing the local
+     * phone's album art as JSON. 
+     */
+	private Response getAlbumArtResponse() {
+		JSONObject jsonAlbumArt = g.db.getAlbumArtAsJSON(); 
+		
+		ByteArrayInputStream is = new ByteArrayInputStream(jsonAlbumArt.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;
 	}
