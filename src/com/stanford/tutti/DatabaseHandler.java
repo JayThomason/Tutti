@@ -17,15 +17,16 @@ import android.os.Message;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
  
-    // Table name
-    private static final String TABLE_NAME = "songs";
+    // Table names
+    private static final String TABLE_SONGS = "songs";
+    private static final String TABLE_JAM = "jam"; 
  
-    // Table Columns names
+    // Song table columns names
     private static final String KEY_ID = "_id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_ARTIST = "artist";
@@ -33,11 +34,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_PATH = "path";
     private static final String KEY_LOCAL = "local";
     private static final String KEY_ART = "art";
-    private static final String KEY_HASH = "hash"; 
+    private static final String KEY_HASH = "hash";
     private static final String KEY_IP = "_ip";
-    private static final String KEY_JAM_INDEX = "jamIndex"; 
     
-    // Table Columns indices
+    // Jam table-exclusive column names
+    private static final String KEY_JAM_INDEX = "jamIndex"; 
+    private static final String KEY_ADDED_BY = "addedBy"; 
+    
+    // Song table columns indices
     private static final int COL_ID = 0; 
     private static final int COL_TITLE = 1; 
     private static final int COL_ARTIST = 2; 
@@ -47,9 +51,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int COL_ART = 6; 
     private static final int COL_HASH = 7; 
     private static final int COL_IP = 8;
-    private static final int COL_JAM_INDEX = 9; 
     
-    private static final String[] COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX};
+    // Jam table-exclusive column indices
+    private static final int COL_JAM_INDEX = 9; 
+    private static final int COL_ADDED_BY = 10; 
+
+    
+    private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP};
+    private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY};
 
     private Globals g; 
         
@@ -61,7 +70,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Create Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_SONGS_TABLE = "CREATE TABLE " + TABLE_NAME + "("
+        String CREATE_SONGS_TABLE = "CREATE TABLE " + TABLE_SONGS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," 
+        		+ KEY_TITLE + " TEXT,"
+        		+ KEY_ARTIST + " TEXT,"
+        		+ KEY_ALBUM + " TEXT,"
+        		+ KEY_PATH + " TEXT,"
+                + KEY_LOCAL + " INTEGER," 
+                + KEY_ART + " TEXT,"
+        		+ KEY_HASH + " TEXT," 
+        		+ KEY_IP + " TEXT,"
+                + " UNIQUE (" 
+        		+ KEY_TITLE + ", " 
+                + KEY_ARTIST + ", "
+                + KEY_ALBUM + ")"
+                + " ON CONFLICT IGNORE)";
+        db.execSQL(CREATE_SONGS_TABLE);
+        
+        String CREATE_JAM_TABLE = "CREATE TABLE " + TABLE_JAM + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," 
         		+ KEY_TITLE + " TEXT,"
         		+ KEY_ARTIST + " TEXT,"
@@ -72,34 +98,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		+ KEY_HASH + " TEXT," 
         		+ KEY_IP + " TEXT,"
         		+ KEY_JAM_INDEX + " INTEGER,"
-                + " UNIQUE (" 
-        		+ KEY_TITLE + ", " 
-                + KEY_ARTIST + ", "
-                + KEY_ALBUM + ")"
-                + " ON CONFLICT IGNORE)";
-        db.execSQL(CREATE_SONGS_TABLE);
+        		+ KEY_ADDED_BY + " TEXT" + ")";
+        db.execSQL(CREATE_JAM_TABLE); 
     }
  
     // Upgrade database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        // Drop older tables if existed
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SONGS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_JAM);
  
         // Create tables again
         onCreate(db);
     }
     
-    public void addSong(Song song){
+    public void addSongToLibrary(Song song){
     	// 1. get reference to writable DB
     	SQLiteDatabase db = this.getWritableDatabase();
-    	
-    	// Replaced by UNIQUE constraint on columns
-    	/*
-    	if (this.containsSong(song.hashCode())) {
-    		return; 
-    	}
-    	*/
 
     	// 2. create ContentValues to add key "column"/value
     	// key/value -> keys = column names/ values = column values
@@ -111,7 +127,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_ART, song.getAlbumArt());
     	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
     	values.put(KEY_IP, song.getIpAddr());
-    	values.put(KEY_JAM_INDEX, -1);
     	
     	int local = 0; 
     	if (song.isLocal()) {
@@ -120,7 +135,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_LOCAL, local);
 
     	// 3. insert
-    	db.insert(TABLE_NAME, null, values); 
+    	db.insert(TABLE_SONGS, null, values); 
+    }
+    
+    public void addSongToJam(Song song, int index) {
+    	// 1. get reference to writable DB
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	
+
+    	// 2. create ContentValues to add key "column"/value
+    	// key/value -> keys = column names/ values = column values
+    	ContentValues values = new ContentValues();
+    	values.put(KEY_TITLE, song.getTitle()); 
+    	values.put(KEY_ARTIST, song.getArtist());
+    	values.put(KEY_ALBUM, song.getAlbum());
+    	values.put(KEY_PATH, song.getPath());
+    	values.put(KEY_ART, song.getAlbumArt());
+    	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
+    	values.put(KEY_IP, song.getIpAddr());
+    	values.put(KEY_JAM_INDEX, index); 
+    	values.put(KEY_ADDED_BY, song.getAddedBy());
+    	
+    	int local = 0; 
+    	if (song.isLocal()) {
+    		local = 1; 
+    	}
+    	values.put(KEY_LOCAL, local);
+
+    	// 3. insert
+    	db.insert(TABLE_JAM, null, values); 
     }
     
     public Song getSongByID(int id){
@@ -130,8 +173,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      
         // 2. build query
         Cursor cursor = 
-                db.query(TABLE_NAME, // a. table
-                COLUMNS, // b. column names
+                db.query(TABLE_SONGS, // a. table
+                SONG_COLUMNS, // b. column names
                 " id = ?", // c. selections 
                 new String[] { String.valueOf(id) }, // d. selections args
                 null, // e. group by
@@ -154,7 +197,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Song getSongByHash(String hash) {
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_HASH + " = " + hash;
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = " + hash;
         
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -168,7 +211,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     
     public Cursor getSongsByArtist(String artist) {
     	String escapedArtist = artist.replace("'", "''");
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
         
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -180,7 +223,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Song> songs = new LinkedList<Song>();
   
         // 1. build the query
-        String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_SONGS;
   
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -190,8 +233,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAllArtists() {
-        //String query = "SELECT DISTINCT " + KEY_ARTIST + " FROM " + TABLE_NAME;
-        String query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ARTIST; 
+        //String query = "SELECT DISTINCT " + KEY_ARTIST + " FROM " + TABLE_SONGS;
+        String query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ARTIST; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -200,7 +243,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAllAlbums() {
-        String query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ALBUM; 
+        String query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ALBUM; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -210,7 +253,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     
     public Cursor getAlbumsByArtist(String artist) {
     	String escapedArtist = artist.replace("'",  "''");
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -220,7 +263,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     
     public Cursor getSongsByAlbum(String album) {
     	String escapedAlbum = album.replace("'", "''");
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -231,7 +274,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Cursor getSongsByArtistAndAlbum(String artist, String album) {
     	String escapedArtist = artist.replace("'", "''"); 
     	String escapedAlbum = album.replace("'", "''");
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -243,7 +286,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // WE NEED TO BE USING GET SONG BY ID
     public Song getSongByTitle(String title) {
     	String escapedTitle = title.replace("'",  "''");
-    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " = '" + escapedTitle + "'"; 
+    	String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " = '" + escapedTitle + "'"; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -254,7 +297,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getSongsInJam() {
-    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_JAM_INDEX + " > -1 ORDER BY " + KEY_JAM_INDEX + " ASC";
+    	String query = "SELECT * FROM " + TABLE_JAM + " ORDER BY " + KEY_JAM_INDEX + " ASC";
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -266,15 +309,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues args = new ContentValues();
         args.put(KEY_JAM_INDEX, index);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_NAME, args, KEY_HASH + " = '" + hashCode + "'", null);
+        db.update(TABLE_JAM, args, KEY_HASH + " = '" + hashCode + "'", null);
     }
     
     public Cursor searchArtists(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ARTIST; 
+    		query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ARTIST; 
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ARTIST; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ARTIST; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -286,9 +329,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Cursor searchAlbums(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_NAME + " GROUP BY " + KEY_ALBUM; 
+    		query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ALBUM; 
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -301,9 +344,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	String escapedArtist = artist.replace("'", "''"); 
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
+    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -315,9 +358,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Cursor searchSongs(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_NAME;  
+    		query = "SELECT * FROM " + TABLE_SONGS;  
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%'"; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%'"; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -330,9 +373,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	String escapedArtist = artist.replace("'", "''"); 
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
+    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "'"; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "'"; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -346,9 +389,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	String escapedAlbum = album.replace("'", "''");
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'";
+    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'";
     	} else {
-        	query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -358,7 +401,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public boolean containsSong(int hash) {
-    	String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_HASH + " = " + hash; 
+    	String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = " + hash; 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         
@@ -376,7 +419,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
  
         // 2. delete
-        db.delete(TABLE_NAME, //table name
+        db.delete(TABLE_SONGS, //table name
                 KEY_ID + " = ?",  // selections
                 new String[] { String.valueOf(song.getId()) }); //selections args
  
@@ -526,7 +569,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						song.setAlbum(albumTitle); 
 						song.setIpAddr(songIp);
 						
-						addSong(song); 
+						addSongToLibrary(song); 
 					}
 					
 					if (g.uiUpdateHandler != null) {
