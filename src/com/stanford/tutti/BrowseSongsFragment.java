@@ -134,7 +134,7 @@ public class BrowseSongsFragment extends Fragment {
 							+ " : " + song.getTitle()
 							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 					if (g.jam.getCurrentSong() == null) {
-						g.jam.setCurrentSong(song);
+						g.jam.setCurrentSong(song, g.jam.getJamSize() - 1);
 						g.jam.playCurrentSong();
 					}
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
