@@ -68,17 +68,29 @@ class RequestLibraryThread extends Thread {
 							BufferedReader reader = new BufferedReader(
 									new InputStreamReader(is));
 							
-							String remoteAlbumArt = reader.readLine();
-							JSONObject jsonAlbumArt = new JSONObject(remoteAlbumArt); 
+							String remoteAlbumArt;
+							JSONObject jsonAlbumArt = null; 
+							try {
+								remoteAlbumArt = reader.readLine();
+								jsonAlbumArt = new JSONObject(remoteAlbumArt);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} 
 							
-							g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
-							
-							if (g.jam.checkMaster()) {
-								for (Client client : g.jam.getClientSet()) {
-									if (client.getIpAddress() != ip) {
-										client.updateAlbumArt(jsonLibrary, new AsyncHttpResponseHandler() {
-											
-										});
+							if (jsonAlbumArt != null) {
+								g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
+								
+								if (g.jam.checkMaster()) {
+									for (Client client : g.jam.getClientSet()) {
+										if (client.getIpAddress() != ip) {
+											client.updateAlbumArt(jsonAlbumArt, new AsyncHttpResponseHandler() {
+												
+											});
+										}
 									}
 								}
 							}

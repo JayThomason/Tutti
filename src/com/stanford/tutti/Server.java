@@ -235,7 +235,6 @@ public class Server extends NanoHTTPD {
     
     private Response updateAlbumArtResponse(IHTTPSession session) {
     	Map<String, String> files = new HashMap<String, String>();
-    	String ipAddr = session.getHeaders().get(HTTP_CLIENT_IP);
     	try {
 			session.parseBody(files);
 			

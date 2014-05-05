@@ -649,6 +649,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						
 						String artString = (String)jsonSong.get("art");
 						
+						System.out.println("ADDING SONG"); 
 						addSongToLibrary(song); 
 					}
 					
@@ -701,19 +702,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						}
 					}
 					
+					System.out.println("SETTING ALBUM ART"); 
 					setAlbumArt(albumTitle, artPath); 
 					
-					
-					
-					if (g.uiUpdateHandler != null) {
-						Message msg = g.uiUpdateHandler.obtainMessage();
-						msg.what = 0; 
-						g.uiUpdateHandler.sendMessage(msg);
-					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
+			}
+			if (g.uiUpdateHandler != null) {
+				Message msg = g.uiUpdateHandler.obtainMessage();
+				msg.what = 0; 
+				g.uiUpdateHandler.sendMessage(msg);
 			}
 		}
 	}
