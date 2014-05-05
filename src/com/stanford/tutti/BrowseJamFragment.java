@@ -62,7 +62,12 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		mediaTimeCurrent = (TextView)rootView.findViewById(R.id.progress_time); 
 		mediaTimeEnd = (TextView)rootView.findViewById(R.id.progress_time_end); 
         seekBar = (SeekBar)rootView.findViewById(R.id.progress_bar);  
-        initializeSeekBar(); 
+        
+        if (g.jam.checkMaster()) {
+            initializeSeekBar(); 
+        } else {
+        	seekBar.setEnabled(false); 
+        }
         
         assignButtons();
 		configureButtons();
