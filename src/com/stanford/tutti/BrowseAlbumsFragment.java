@@ -29,6 +29,11 @@ public class BrowseAlbumsFragment extends Fragment {
 	private ListView listView;
 	private ViewPager viewPager; 
 	private EditText searchBar; 
+	
+	private String columns[]; 
+	private int views[]; 
+	
+	private FilterQueryProvider searchFilter; 
 
 	
     @Override
@@ -36,17 +41,37 @@ public class BrowseAlbumsFragment extends Fragment {
             Bundle savedInstanceState) {
         	
         rootView = inflater.inflate(R.layout.fragment_browse_albums, container, false);
+        
         listView = (ListView) rootView.findViewById(R.id.albumListView); 
+	    listView.setFastScrollEnabled(true);
+	    listView.setTextFilterEnabled(true);
+	    
 	    searchBar = (EditText) rootView.findViewById(R.id.album_search_box);
         
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
         viewPager = (ViewPager) container.findViewById(R.id.pager);
         
+		columns = new String[] { "art", "album" };
+	    views = new int[] { R.id.browserArt, R.id.browserText };
+        
+	    initializeQueryFilter(); 
         initializeAlbumList(); 
         initializeSearchBar(); 
         
         return rootView;
+    }
+    
+    public void initializeQueryFilter() {
+    	searchFilter = new FilterQueryProvider() {
+	        public Cursor runQuery(CharSequence constraint) {
+	    		if (!g.currentArtistView.equals("")) {
+	    			return g.db.searchAlbumsByArtist(g.currentArtistView, constraint); 
+	    		} else {
+	    			return g.db.searchAlbums(constraint); 
+	    		}
+	        }
+	    };
     }
     
 	public void initializeAlbumList() {	
@@ -60,26 +85,13 @@ public class BrowseAlbumsFragment extends Fragment {
 		} else {
 			cursor = g.db.getAllAlbums(); 
 		}
-				
-		String[] columns = new String[] { "art", "album" };
-	    int[] to = new int[] { R.id.browserArt, R.id.browserText };
 
 	    
 	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to);
+	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
 	    listView.setAdapter(adapter);
-	    listView.setFastScrollEnabled(true);
-	    listView.setTextFilterEnabled(true);
 	    
-	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
-	        public Cursor runQuery(CharSequence constraint) {
-	    		if (!g.currentArtistView.equals("")) {
-	    			return g.db.searchAlbumsByArtist(g.currentArtistView, constraint); 
-	    		} else {
-	    			return g.db.searchAlbums(constraint); 
-	    		}
-	        }
-	    });
+	    adapter.setFilterQueryProvider(searchFilter); 
 		
 		setAlbumListItemClickListener();
 	}

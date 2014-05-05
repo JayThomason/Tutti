@@ -78,11 +78,13 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         }
     }
     
+    
     private void bindLibraryView(TextView titleView, TextView ownerView, Cursor cursor, String username) {
         String title = cursor.getString(cursor.getColumnIndex(columns[1])); 
         titleView.setText(title); 
         ownerView.setText(username); 
     }
+    
     
     private void bindJamView(TextView titleView, TextView ownerView, Cursor cursor) {
         String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 

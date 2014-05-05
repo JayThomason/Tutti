@@ -34,7 +34,11 @@ public class BrowseArtistsFragment extends Fragment {
             Bundle savedInstanceState) {
      	
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
+        
         listView = (ListView) rootView.findViewById(R.id.artistListView);
+	    listView.setFastScrollEnabled(true);
+	    listView.setTextFilterEnabled(true);
+
 	    searchBar = (EditText) rootView.findViewById(R.id.artist_search_box);
 
         
@@ -63,9 +67,7 @@ public class BrowseArtistsFragment extends Fragment {
 	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to);
 	    listView.setAdapter(adapter);
-	    listView.setFastScrollEnabled(true);
-	    listView.setTextFilterEnabled(true);
-
+	    
 	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {
 	            return g.db.searchArtists(constraint);
