@@ -29,7 +29,9 @@ public class Globals extends Application {
 	public String currentAlbumView = ""; 
 	public Handler uiUpdateHandler; 
 	public Handler joinJamHandler; 
-		
+	
+	public int playerDuration = 0; 
+	
 	DatabaseHandler db; 
 	
 	private static Context context; 

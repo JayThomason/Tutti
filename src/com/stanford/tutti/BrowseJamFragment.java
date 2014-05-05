@@ -42,7 +42,6 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	
 	private int current = 0;  
 	private boolean running = true;  
-	private int duration = 0;  
 	private SeekBar seekBar;  
 	private TextView mediaTime;  
  
@@ -71,25 +70,27 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
     
 
     private void initializeSeekBar() {
+		seekBar.setMax(g.playerDuration);  
+		seekBar.postDelayed(onEverySecond, 1000);  
     	seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {  
             @Override  
-            public void onStopTrackingTouch(SeekBar seekBar) {}  
-            @Override  
-            public void onStartTrackingTouch(SeekBar seekBar) {}  
-            @Override  
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  
-                if(fromUser){  
-                	g.jam.mediaPlayer.seekTo(progress);
-                    updateTime();  
-                }  
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            	g.jam.mediaPlayer.seekTo(seekBar.getProgress());
+            	updateTime(); 
             }  
+            
+            @Override  
+            public void onStartTrackingTouch(SeekBar seekBar) { }  
+            
+            @Override  
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }  
         });  
     }
     
     private Runnable onEverySecond = new Runnable() {  
         @Override  
         public void run(){  
-         if(true == running){  
+         if(running == true){  
              if(seekBar != null) {  
               seekBar.setProgress(g.jam.mediaPlayer.getCurrentPosition());  
              }  
@@ -103,30 +104,22 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
     };  
     
     private void updateTime(){  
-        do {  
-        	current = g.jam.mediaPlayer.getCurrentPosition();  
+        current = g.jam.mediaPlayer.getCurrentPosition();  
 
-            int dSeconds = (int) (duration / 1000) % 60 ;  
-            int dMinutes = (int) ((duration / (1000*60)) % 60);  
-            int dHours   = (int) ((duration / (1000*60*60)) % 24);  
+        int dSeconds = (int) (g.playerDuration / 1000) % 60 ;  
+        int dMinutes = (int) ((g.playerDuration / (1000*60)) % 60);  
+        int dHours   = (int) ((g.playerDuration / (1000*60*60)) % 24);  
                 
-            int cSeconds = (int) (current / 1000) % 60 ;  
-            int cMinutes = (int) ((current / (1000*60)) % 60);  
-            int cHours   = (int) ((current / (1000*60*60)) % 24);  
+        int cSeconds = (int) (current / 1000) % 60 ;  
+        int cMinutes = (int) ((current / (1000*60)) % 60);  
+        int cHours   = (int) ((current / (1000*60*60)) % 24);  
                 
-            if(dHours == 0){  
-            	mediaTime.setText(String.format("%02d:%02d / %02d:%02d", cMinutes, cSeconds, dMinutes, dSeconds));  
-            }else{  
-            	mediaTime.setText(String.format("%02d:%02d:%02d / %02d:%02d:%02d", cHours, cMinutes, cSeconds, dHours, dMinutes, dSeconds));  
-            }  
-                
-            try{  
-                if(seekBar.getProgress() >= 100){  
-                	break;  
-                }  
-              } catch (Exception e) {}  
-          } while (seekBar.getProgress() <= 100);  
-      }  
+        if(dHours == 0){  
+            mediaTime.setText(String.format("%02d:%02d / %02d:%02d", cMinutes, cSeconds, dMinutes, dSeconds));  
+        }else{  
+            mediaTime.setText(String.format("%02d:%02d:%02d / %02d:%02d:%02d", cHours, cMinutes, cSeconds, dHours, dMinutes, dSeconds));  
+        }  
+    }  
     
     
 	/*
@@ -273,9 +266,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	
 	 @Override  
 	 public void onPrepared(MediaPlayer arg0) {  
-	  // TODO Auto-generated method stub  
-	  duration = g.jam.mediaPlayer.getDuration();  
-	  seekBar.setMax(duration);  
-	  seekBar.postDelayed(onEverySecond, 1000);  
+		 g.playerDuration = g.jam.mediaPlayer.getDuration();  
+		 seekBar.setMax(g.playerDuration);  
+		 seekBar.postDelayed(onEverySecond, 1000);  
 	 }  
 }
