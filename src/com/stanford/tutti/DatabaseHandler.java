@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -546,6 +547,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	JSONArray songArray = new JSONArray(); 
 		Cursor songCursor = getSongsByArtistAndAlbum(artistName, albumTitle); 
 		
+		HashMap<String, String> encodedArtMap = new HashMap<String, String>(); 
 		if (songCursor.moveToFirst()) {
 			do {
 				
@@ -563,11 +565,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	    	        String artPath = songCursor.getString(songCursor.getColumnIndex("art")); 
 	    	        String encodedImage = ""; 
 	    	        if (artPath != null & !artPath.equals("")) {
-						Bitmap bitmap = BitmapFactory.decodeFile(artPath); 
-			    	    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();  
-			    	    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
-			    	    byte[] byteArrayImage = byteStream.toByteArray(); 
-			    	    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);						 
+	    	        	if (encodedArtMap.containsKey(artPath)) {
+	    	        		encodedImage = encodedArtMap.get(artPath); 
+	    	        	} else {
+							Bitmap bitmap = BitmapFactory.decodeFile(artPath); 
+				    	    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();  
+				    	    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
+				    	    byte[] byteArrayImage = byteStream.toByteArray(); 
+				    	    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);	
+				    	    encodedArtMap.put(artPath, encodedImage); 
+	    	        	}
 	    	        }
 	    			song.put("art", encodedImage); 
 	    			
@@ -601,6 +608,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					String albumTitle = (String)jsonAlbum.get("title");
 					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
 					
+					HashMap<String, String> artMap = new HashMap<String, String>(); 
 					for (int k = 0; k < songs.length(); k++) {
 						JSONObject jsonSong = songs.getJSONObject(k); 
 						String songTitle = (String)jsonSong.get("title"); 
@@ -615,19 +623,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						String artString = (String)jsonSong.get("art"); 
 						String artPath = ""; 
 						if (artString != null && !artString.equals("")) {
-							byte[] artBytes = Base64.decode(artString, Base64.DEFAULT);
-							Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length); 
-							
-							String filename = albumTitle; 
-							FileOutputStream outputStream;
-							try {
-							  outputStream = g.openFileOutput(filename, Context.MODE_PRIVATE);
-							  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); 
-							  outputStream.close();
-							  artPath = g.getFileStreamPath(filename).getAbsolutePath(); 
-							  System.out.println("SAVED REMOTE ALBUM ART AT PATH: " + artPath); 
-							} catch (Exception e) {
-							  e.printStackTrace();
+							if (artMap.containsKey(artString)) {
+								artPath = artMap.get(artString); 
+							} else {
+								byte[] artBytes = Base64.decode(artString, Base64.DEFAULT);
+								Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length); 
+								
+								String filename = albumTitle; 
+								FileOutputStream outputStream;
+								try {
+								  outputStream = g.openFileOutput(filename, Context.MODE_PRIVATE);
+								  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); 
+								  outputStream.close();
+								  artPath = g.getFileStreamPath(filename).getAbsolutePath(); 
+								  artMap.put(artString, artPath); 
+								} catch (Exception e) {
+								  e.printStackTrace();
+								}
 							}
 						}
 
