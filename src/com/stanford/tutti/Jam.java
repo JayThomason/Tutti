@@ -186,14 +186,14 @@ public class Jam {
 				mediaPlayer.start();
 			}
 			else {
-				mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+				mediaPlayer.setOnPreparedListener(g.playerListener); 
+						/*new OnPreparedListener() {
 					@Override
 					public void onPrepared(MediaPlayer mp) {
 						g.playerDuration = mp.getDuration(); 
-						
 						mp.start();
 					}
-				});
+				});*/
 				mediaPlayer.prepareAsync();
 			}
 			System.out.println(myUri);

@@ -55,6 +55,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
         
 		listView = (ListView) rootView.findViewById(R.id.jamListView);
 		
+		g.playerListener = this; 
 		g.jam.mediaPlayer.setOnPreparedListener(this); 
 		
 		mediaTime = (TextView)rootView.findViewById(R.id.progress_time);  
@@ -265,7 +266,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 	
 	 @Override  
-	 public void onPrepared(MediaPlayer arg0) {  
+	 public void onPrepared(MediaPlayer mp) {  
+		 mp.start(); 
 		 g.playerDuration = g.jam.mediaPlayer.getDuration();  
 		 seekBar.setMax(g.playerDuration);  
 		 seekBar.postDelayed(onEverySecond, 1000);  

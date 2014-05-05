@@ -301,6 +301,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     			songsFragment = (BrowseSongsFragment) fragment; 
 	    	} else if (fragment instanceof BrowseJamFragment) {
     			jamFragment = (BrowseJamFragment) fragment; 
+    			g.playerListener = (BrowseJamFragment) fragment; 
 	    	}
 	    	return fragment; 
 	    }

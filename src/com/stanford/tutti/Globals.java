@@ -8,6 +8,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -31,6 +32,7 @@ public class Globals extends Application {
 	public Handler joinJamHandler; 
 	
 	public int playerDuration = 0; 
+	public OnPreparedListener playerListener; 
 	
 	DatabaseHandler db; 
 	
