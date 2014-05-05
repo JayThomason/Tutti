@@ -21,35 +21,44 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         style="@android:style/ButtonBar"
+        android:background="#ff0927"
         android:gravity="center" >
 
         <ImageButton
             android:id="@+id/song_media_player_back_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:contentDescription="@string/imgdesc"
-            android:background="@drawable/tutti_back_button" />
+            android:background="@drawable/icon_prev_button" />
 
         <ImageButton
             android:id="@+id/song_media_player_start_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:contentDescription="@string/imgdesc"
-            android:background="@drawable/tutti_play_button" />
+            android:background="@drawable/icon_play_button" />
 
         <ImageButton
             android:id="@+id/song_media_player_pause_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:contentDescription="@string/imgdesc"
-            android:background="@drawable/tutti_pause_button" />
+            android:background="@drawable/icon_pause_button" />
 
         <ImageButton
             android:id="@+id/song_media_player_next_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:contentDescription="@string/imgdesc"
-            android:background="@drawable/tutti_next_button" />
+            android:background="@drawable/icon_next_button" />
     </LinearLayout>
  
 </RelativeLayout>
