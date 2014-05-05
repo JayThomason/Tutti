@@ -442,6 +442,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         song.setArtist(cursor.getString(COL_ARTIST));
         song.setAlbum(cursor.getString(COL_ALBUM));
         song.setIpAddr(cursor.getString(COL_IP));
+        song.setAlbumArt(cursor.getString(COL_ART));
         return song; 
     }
     
