@@ -35,6 +35,11 @@ public class BrowseSongsFragment extends Fragment {
 	private ViewPager viewPager; 
 	private ListView listView; 
 	private EditText searchBar; 
+	
+	private String columns[]; 
+	private int views[]; 
+	
+	private FilterQueryProvider searchFilter;
 
 	private final int port = 1234;
 
@@ -55,11 +60,30 @@ public class BrowseSongsFragment extends Fragment {
 		viewPager = (ViewPager) container.findViewById(R.id.pager);
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
+		
+		columns = new String[] { "art", "title" };
+		views = new int[] { R.id.browserArt, R.id.browserText };
 
+		initializeQueryFilter(); 
 		initializeSongList(); 
 		initializeSearchBar(); 
 
 		return rootView;
+	}
+	
+	public void initializeQueryFilter() {
+		searchFilter = new FilterQueryProvider() {
+			public Cursor runQuery(CharSequence constraint) {
+				if (!g.currentAlbumView.equals("") && !g.currentArtistView.equals("")) {
+					cursor = g.db.searchSongsByArtistAndAlbum(constraint, g.currentArtistView, g.currentAlbumView); 
+				} else if (!g.currentArtistView.equals("")) {
+					cursor = g.db.searchSongsByArtist(constraint, g.currentArtistView); 
+				} else {
+					cursor = g.db.searchSongs(constraint); 
+				} 
+				return cursor; 
+			}
+		}; 
 	}
 
 	public void initializeSongList() {
@@ -78,26 +102,9 @@ public class BrowseSongsFragment extends Fragment {
 			cursor = g.db.getAllSongs(); 
 		}
 
-		String[] columns = new String[] { "art", "title" };
-		int[] to = new int[] { R.id.browserArt, R.id.browserText };
-
-
-		//SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-		BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to); 
+		BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views); 
+		adapter.setFilterQueryProvider(searchFilter);
 		listView.setAdapter(adapter);
-
-		adapter.setFilterQueryProvider(new FilterQueryProvider() {
-			public Cursor runQuery(CharSequence constraint) {
-				if (!g.currentAlbumView.equals("") && !g.currentArtistView.equals("")) {
-					cursor = g.db.searchSongsByArtistAndAlbum(constraint, g.currentArtistView, g.currentAlbumView); 
-				} else if (!g.currentArtistView.equals("")) {
-					cursor = g.db.searchSongsByArtist(constraint, g.currentArtistView); 
-				} else {
-					cursor = g.db.searchSongs(constraint); 
-				} 
-				return cursor; 
-			}
-		});
 
 		setSongListItemClickListener();
 	}

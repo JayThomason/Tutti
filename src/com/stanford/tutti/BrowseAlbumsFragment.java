@@ -85,14 +85,11 @@ public class BrowseAlbumsFragment extends Fragment {
 		} else {
 			cursor = g.db.getAllAlbums(); 
 		}
-
 	    
-	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
 	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
-	    listView.setAdapter(adapter);
-	    
 	    adapter.setFilterQueryProvider(searchFilter); 
-		
+	    listView.setAdapter(adapter);
+	    		
 		setAlbumListItemClickListener();
 	}
 	

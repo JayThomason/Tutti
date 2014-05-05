@@ -28,6 +28,11 @@ public class BrowseArtistsFragment extends Fragment {
 	private ViewPager viewPager; 
 	private EditText searchBar;
 	
+	private String columns[]; 
+	private int views[]; 
+	
+	private FilterQueryProvider searchFilter;
+	
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,10 +51,23 @@ public class BrowseArtistsFragment extends Fragment {
          
         viewPager = (ViewPager) container.findViewById(R.id.pager);
         
+		columns = new String[] { "art", "artist" };
+	    views = new int[] { R.id.browserArt, R.id.browserText };
+        
+	    initializeQueryFilter(); 
         initializeArtistList(); 
         initializeSearchBar(); 
         
         return rootView;
+    }
+    
+    
+    public void initializeQueryFilter() {
+    	searchFilter = new FilterQueryProvider() {
+	        public Cursor runQuery(CharSequence constraint) {
+	            return g.db.searchArtists(constraint);
+	        }
+	    }; 
     }
     
 
@@ -58,22 +76,13 @@ public class BrowseArtistsFragment extends Fragment {
 		
 		if (cursor != null) 
 	    	cursor.close(); 
+		
 		cursor = g.db.getAllArtists(); 
-		
-		String[] columns = new String[] { "art", "artist" };
-	    int[] to = new int[] { R.id.browserArt, R.id.browserText };
-
 	    
-	    //SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, columns, to, 0);
-	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to);
+	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
+	    adapter.setFilterQueryProvider(searchFilter);
 	    listView.setAdapter(adapter);
-	    
-	    adapter.setFilterQueryProvider(new FilterQueryProvider() {
-	        public Cursor runQuery(CharSequence constraint) {
-	            return g.db.searchArtists(constraint);
-	        }
-	    });
-		
+	    		
 		setArtistListItemClickListener();		
 	}
 	
