@@ -239,7 +239,7 @@ public class Server extends NanoHTTPD {
 		g.jam.addSong(song);
 		
 		if (g.jam.getCurrentSong() == null) {
-			g.jam.setCurrentSong(song);
+			g.jam.setCurrentSong(song, g.jam.getJamSize() - 1);
 			if (g.jam.checkMaster()) {
 				g.jam.playCurrentSong(); 
 			}
@@ -271,7 +271,15 @@ public class Server extends NanoHTTPD {
 		Song song = g.db.getSongByHash(keyPath.substring(1));
 		if (song == null) 
 			return fileNotFoundResponse();
-		g.jam.setCurrentSong(song);
+		
+		
+		
+		// NOOOO
+		g.jam.setCurrentSong(song, g.jam.getCurrentSongIndex());
+		
+		
+		
+		
 		if (g.uiUpdateHandler != null) {
 			Message msg = g.uiUpdateHandler.obtainMessage();
 			msg.what = 7; 
