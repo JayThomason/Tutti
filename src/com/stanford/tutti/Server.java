@@ -268,17 +268,11 @@ public class Server extends NanoHTTPD {
      * Sets the requested song to be the currently playing song. 
      */
 	private Response jamSetSongResponse(String keyPath) {
-		Song song = g.db.getSongByHash(keyPath.substring(1));
+		Song song = g.db.getSongInJamByIndex(keyPath.substring(1)); 
 		if (song == null) 
 			return fileNotFoundResponse();
 		
-		
-		
-		// NOOOO
-		g.jam.setCurrentSong(song, g.jam.getCurrentSongIndex());
-		
-		
-		
+		g.jam.setCurrentSong(song, Integer.parseInt(keyPath.substring(1)));
 		
 		if (g.uiUpdateHandler != null) {
 			Message msg = g.uiUpdateHandler.obtainMessage();

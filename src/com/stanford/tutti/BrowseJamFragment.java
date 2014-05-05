@@ -238,22 +238,23 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 					int position, long id) {
 				
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
-				String title = textView.getText().toString();
+				final String title = textView.getText().toString();
 								
-				Toast.makeText(
-						g, 
-						"Now playing: " + title, Toast.LENGTH_SHORT)
-						.show();
-				g.jam.setCurrentSongByIndex(position);
-				Song song = g.jam.getSongByIndex(position); 
+				final int index = position; 
+				
 				if (g.jam.checkMaster()) {
+					g.jam.setCurrentSongByIndex(index);
 					g.jam.playCurrentSong(); 
+					Toast.makeText(
+							g, 
+							"Now playing: " + title, Toast.LENGTH_SHORT)
+							.show();
 					// THIS IS DUPLICATE CODE FROM THE SERVER
 					// NEED BETTER ENCAPSULATION
 					for (Client client : g.jam.getClientSet()) {
 						if (client.getIpAddress().equals(g.getIpAddr())) 
 							continue; 
-						client.requestSetSong(Integer.toString(song.hashCode()), new AsyncHttpResponseHandler() {
+						client.requestSetSong(Integer.toString(index), new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 								System.out.println("request to add song to client returned: " + statusCode);
@@ -261,8 +262,17 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 						});
 					}
 				} else {
-									new PassMessageThread(g.jam.getMasterIpAddr(), port,
-						"/jam/set/" + Integer.toString(song.hashCode()), "").start(); 
+					Client masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port); 
+					masterClient.requestSetSong(Integer.toString(index), new AsyncHttpResponseHandler() {
+						@Override
+						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+							g.jam.setCurrentSongByIndex(index);
+							Toast.makeText(
+									g, 
+									"Now playing: " + title, Toast.LENGTH_SHORT)
+									.show();
+						}
+					}); 
 				}
 				initializeJamList(); 
 			}
@@ -271,7 +281,9 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	
 	 @Override  
 	 public void onPrepared(MediaPlayer mp) {  
-		 mp.start(); 
+		 if (g.jam.checkMaster()) {
+			 mp.start(); 
+		 }
 		 g.playerDuration = g.jam.mediaPlayer.getDuration();  
 		 seekBar.setMax(g.playerDuration);  
 		 seekBar.postDelayed(onEverySecond, 1000);  

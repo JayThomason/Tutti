@@ -293,7 +293,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     	
         cursor.moveToFirst(); 
         
-    	return rowToSong(cursor);  
+        Song song = rowToSong(cursor); 
+        
+        cursor.close();
+        
+    	return song; 
     }
     
     public Cursor getSongsInJam() {
@@ -303,6 +307,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         
         return cursor; 
+    }
+    
+    public Song getSongInJamByIndex(String index) {
+    	String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        
+        cursor.moveToFirst(); 
+        
+        Song song = rowToSong(cursor); 
+        cursor.close(); 
+        
+        return song; 
     }
     
     public void setSongIndexInJam(String hashCode, int index) {

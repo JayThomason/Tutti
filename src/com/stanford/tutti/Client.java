@@ -45,8 +45,8 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
-	public void requestSetSong(String songHash, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/jam/set/", songHash); 
+	public void requestSetSong(String index, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/set/", index); 
 		client.get(url, null, responseHandler); 
 	}
 	
