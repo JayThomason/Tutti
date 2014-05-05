@@ -7,6 +7,8 @@ import org.apache.http.Header;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,11 +21,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
  
-public class BrowseJamFragment extends Fragment {
+public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	
 	private ImageButton startButton;
 	private ImageButton pauseButton;
@@ -35,6 +39,12 @@ public class BrowseJamFragment extends Fragment {
 	private Cursor cursor; 
 	private View rootView; 
 	private Globals g; 
+	
+	private int current = 0;  
+	private boolean running = true;  
+	private int duration = 0;  
+	private SeekBar seekBar;  
+	private TextView mediaTime;  
  
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +56,12 @@ public class BrowseJamFragment extends Fragment {
         
 		listView = (ListView) rootView.findViewById(R.id.jamListView);
 		
+		g.jam.mediaPlayer.setOnPreparedListener(this); 
+		
+		mediaTime = (TextView)rootView.findViewById(R.id.progress_time);  
+        seekBar = (SeekBar)rootView.findViewById(R.id.progress_bar);  
+        initializeSeekBar(); 
+        
         assignButtons();
 		configureButtons();
 		initializeJamList();
@@ -54,6 +70,65 @@ public class BrowseJamFragment extends Fragment {
     }
     
 
+    private void initializeSeekBar() {
+    	seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {  
+            @Override  
+            public void onStopTrackingTouch(SeekBar seekBar) {}  
+            @Override  
+            public void onStartTrackingTouch(SeekBar seekBar) {}  
+            @Override  
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  
+                if(fromUser){  
+                	g.jam.mediaPlayer.seekTo(progress);
+                    updateTime();  
+                }  
+            }  
+        });  
+    }
+    
+    private Runnable onEverySecond = new Runnable() {  
+        @Override  
+        public void run(){  
+         if(true == running){  
+             if(seekBar != null) {  
+              seekBar.setProgress(g.jam.mediaPlayer.getCurrentPosition());  
+             }  
+               
+             if(g.jam.mediaPlayer.isPlaying()) {  
+              seekBar.postDelayed(onEverySecond, 1000);  
+              updateTime();  
+             }  
+         }  
+        }  
+    };  
+    
+    private void updateTime(){  
+        do {  
+        	current = g.jam.mediaPlayer.getCurrentPosition();  
+
+            int dSeconds = (int) (duration / 1000) % 60 ;  
+            int dMinutes = (int) ((duration / (1000*60)) % 60);  
+            int dHours   = (int) ((duration / (1000*60*60)) % 24);  
+                
+            int cSeconds = (int) (current / 1000) % 60 ;  
+            int cMinutes = (int) ((current / (1000*60)) % 60);  
+            int cHours   = (int) ((current / (1000*60*60)) % 24);  
+                
+            if(dHours == 0){  
+            	mediaTime.setText(String.format("%02d:%02d / %02d:%02d", cMinutes, cSeconds, dMinutes, dSeconds));  
+            }else{  
+            	mediaTime.setText(String.format("%02d:%02d:%02d / %02d:%02d:%02d", cHours, cMinutes, cSeconds, dHours, dMinutes, dSeconds));  
+            }  
+                
+            try{  
+                if(seekBar.getProgress() >= 100){  
+                	break;  
+                }  
+              } catch (Exception e) {}  
+          } while (seekBar.getProgress() <= 100);  
+      }  
+    
+    
 	/*
 	 * Initializes the play, pause, back, and next buttons on the page.
 	 */
@@ -195,4 +270,12 @@ public class BrowseJamFragment extends Fragment {
 			}
 		});
 	}
+	
+	 @Override  
+	 public void onPrepared(MediaPlayer arg0) {  
+	  // TODO Auto-generated method stub  
+	  duration = g.jam.mediaPlayer.getDuration();  
+	  seekBar.setMax(duration);  
+	  seekBar.postDelayed(onEverySecond, 1000);  
+	 }  
 }

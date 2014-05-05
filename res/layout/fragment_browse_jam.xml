@@ -15,7 +15,30 @@
     </ListView>
 
     <LinearLayout
-        android:id="@+id/player_footer"
+        android:id="@+id/player_progress"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@+id/player_buttons"
+        style="@android:style/ButtonBar"
+        android:background="#ff0927"
+        android:gravity="center" >
+        
+        <SeekBar 
+            android:id="@+id/progress_bar" 
+            android:layout_height="wrap_content" 
+            android:layout_width="230dp" 
+            android:paddingRight="25dp" /> 
+             
+    	<TextView
+    	    android:id="@+id/progress_time" 
+    	    android:layout_height="wrap_content" 
+    	    android:layout_width="wrap_content" />  
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/player_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -23,7 +46,7 @@
         style="@android:style/ButtonBar"
         android:background="#ff0927"
         android:gravity="center" >
-
+         
         <ImageButton
             android:id="@+id/song_media_player_back_btn"
             android:layout_width="40dp"
