@@ -253,7 +253,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 						client.requestSetSong(Integer.toString(index), new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-								System.out.println("request to add song to client returned: " + statusCode);
+								System.out.println("request to set song on client returned: " + statusCode);
 							}
 						});
 					}
@@ -276,7 +276,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 	
 	 @Override  
-	 public void onPrepared(MediaPlayer mp) {  
+	 public void onPrepared(MediaPlayer mp) { 
 		 if (g.jam.checkMaster()) {
 			 mp.start(); 
 		 }

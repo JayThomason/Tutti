@@ -186,14 +186,17 @@ public class Jam {
 				mediaPlayer.start();
 			}
 			else {
-				mediaPlayer.setOnPreparedListener(g.playerListener); 
-						/*new OnPreparedListener() {
-					@Override
-					public void onPrepared(MediaPlayer mp) {
-						g.playerDuration = mp.getDuration(); 
-						mp.start();
-					}
-				});*/
+				if (g.playerListener != null) {
+					mediaPlayer.setOnPreparedListener(g.playerListener); 
+				} else {
+					mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+						@Override
+						public void onPrepared(MediaPlayer mp) {
+							g.playerDuration = mp.getDuration(); 
+							mp.start();
+						}
+					});
+				}
 				mediaPlayer.prepareAsync();
 			}
 			System.out.println(myUri);
