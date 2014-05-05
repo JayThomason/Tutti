@@ -53,6 +53,7 @@ class RequestLibraryThread extends Thread {
 
 					JSONArray artists = jsonLibrary.getJSONArray("artists");
 					JSONObject jam = jsonLibrary.getJSONObject("jam"); 
+					
 					g.db.loadMusicFromJSON(artists);
 					
 					if (!g.jam.checkMaster()) {
@@ -82,6 +83,7 @@ class RequestLibraryThread extends Thread {
 							} 
 							
 							if (jsonAlbumArt != null) {
+								System.out.println("LOADING REMOTE ALBUM ART"); 
 								g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
 								
 								if (g.jam.checkMaster()) {

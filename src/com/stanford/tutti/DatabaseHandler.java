@@ -645,11 +645,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
 						song.setIpAddr(songIp);
-						
-						
-						String artString = (String)jsonSong.get("art");
-						
-						System.out.println("ADDING SONG"); 
+						song.setAlbumArt("");
+												
 						addSongToLibrary(song); 
 					}
 					
