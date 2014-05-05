@@ -44,10 +44,17 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         super.bindView(view, context, cursor);
                 
+        ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
+        String artPath = cursor.getString(cursor.getColumnIndex("art")); 
+        if (artPath != null && !artPath.equals("")) {
+        	artView.setImageURI(Uri.parse(artPath)); 
+        } else {
+            artView.setImageResource(noArtImgID);
+        }
+
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
-        ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
-
+        
         // SHOULD BE DOING THIS BY HASH CODE
         String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 
         String text = ""; 
@@ -58,24 +65,37 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         titleView.setText(text); 
         
         if (columns.length == 2) {
-	        Globals g = (Globals) context.getApplicationContext(); 
-	        String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
-	        if (username == null) {
-	        	username = ""; 
-	        } else {
-	            ownerView.setText(username); 
-	        }
+            Globals g = (Globals) context.getApplicationContext(); 
+            String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
+            if (username == null) 
+            	username = ""; 
+            
+        	bindLibraryView(titleView, ownerView, cursor, username); 
         } else {
+        	bindJamView(titleView, ownerView, cursor); 
         	String addedBy = cursor.getString(cursor.getColumnIndex(columns[2])); 
         	ownerView.setText("Added by: " + addedBy);
         }
-        
-        String artPath = cursor.getString(cursor.getColumnIndex("art")); 
-        if (artPath != null && !artPath.equals("")) {
-        	artView.setImageURI(Uri.parse(artPath)); 
-        } else {
-            artView.setImageResource(noArtImgID);
+    }
+    
+    private void bindLibraryView(TextView titleView, TextView ownerView, Cursor cursor, String username) {
+        String title = cursor.getString(cursor.getColumnIndex(columns[1])); 
+        titleView.setText(title); 
+        ownerView.setText(username); 
+    }
+    
+    private void bindJamView(TextView titleView, TextView ownerView, Cursor cursor) {
+        String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 
+        int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+        String text = ""; 
+        if (g.jam != null && g.jam.getCurrentSongIndex() == songIndex) {
+        	text += "Now playing: "; 
         }
+        text += songTitle; 
+        titleView.setText(text); 
+        
+    	String addedBy = cursor.getString(cursor.getColumnIndex(columns[2])); 
+    	ownerView.setText("Added by: " + addedBy);
     }
 	
 }
