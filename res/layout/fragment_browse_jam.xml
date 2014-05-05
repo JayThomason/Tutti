@@ -24,15 +24,22 @@
         android:background="#b2b2b2"
         android:gravity="center" >
         
+        <TextView
+    	    android:id="@+id/progress_time" 
+    	    android:layout_height="wrap_content" 
+    	    android:layout_width="wrap_content" />
+         
         <SeekBar 
             android:id="@+id/progress_bar" 
             android:layout_height="wrap_content" 
             android:layout_width="230dp" 
-            android:paddingRight="25dp"
-            android:progressDrawable="@drawable/custom_progress_bar" /> 
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:progressDrawable="@drawable/custom_progress_bar"
+            android:thumb="@drawable/custom_thumb" /> 
              
     	<TextView
-    	    android:id="@+id/progress_time" 
+    	    android:id="@+id/progress_time_end" 
     	    android:layout_height="wrap_content" 
     	    android:layout_width="wrap_content" />  
         
