@@ -222,9 +222,11 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				if (msg.what == 0) {
 					int index = actionBar.getSelectedNavigationIndex(); 
 					if (index == 0) {
-						artistsFragment.initializeArtistList(); 
+						if (artistsFragment != null) 
+							artistsFragment.initializeArtistList(); 
 					} else if (index == 1) {
-						albumsFragment.initializeAlbumList(); 
+						if (albumsFragment != null)
+							albumsFragment.initializeAlbumList(); 
 					} else if (index == 2) {
 						if (songsFragment != null)
 							songsFragment.initializeSongList(); 

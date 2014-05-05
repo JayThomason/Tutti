@@ -60,6 +60,16 @@ class RequestLibraryThread extends Thread {
 						g.jam.loadJamFromJSON(jam); 
 					}
 					
+					if (g.jam.checkMaster()) {
+						for (Client client : g.jam.getClientSet()) {
+							if (client.getIpAddress() != ip) {
+								client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
+									
+								});
+							}
+						}
+					}
+					
 					
 					client.requestAlbumArt(new AsyncHttpResponseHandler() {
 						@Override
@@ -83,7 +93,6 @@ class RequestLibraryThread extends Thread {
 							} 
 							
 							if (jsonAlbumArt != null) {
-								System.out.println("LOADING REMOTE ALBUM ART"); 
 								g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
 								
 								if (g.jam.checkMaster()) {
@@ -98,17 +107,6 @@ class RequestLibraryThread extends Thread {
 							}
 						}
 					}); 
-					
-					
-					if (g.jam.checkMaster()) {
-						for (Client client : g.jam.getClientSet()) {
-							if (client.getIpAddress() != ip) {
-								client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
-									
-								});
-							}
-						}
-					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (JSONException e) {

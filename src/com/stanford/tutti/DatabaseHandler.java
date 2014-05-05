@@ -346,6 +346,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues args = new ContentValues();
         args.put(KEY_ART, path);
         SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TABLE_SONGS, args, KEY_ALBUM + " = '" + escapedAlbumTitle + "'", null);
         db.update(TABLE_JAM, args, KEY_ALBUM + " = '" + escapedAlbumTitle + "'", null);
     }
     
@@ -699,7 +700,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						}
 					}
 					
-					System.out.println("SETTING ALBUM ART"); 
+					System.out.println("SETTING ALBUM ART: " + albumTitle + " = " + artPath); 
 					setAlbumArt(albumTitle, artPath); 
 					
 				} catch (JSONException e) {
