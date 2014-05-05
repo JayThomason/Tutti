@@ -43,7 +43,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private int current = 0;  
 	private boolean running = true;  
 	private SeekBar seekBar;  
-	private TextView mediaTime;  
+	private TextView mediaTimeCurrent;
+	private TextView mediaTimeEnd;
  
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +59,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		g.playerListener = this; 
 		g.jam.mediaPlayer.setOnPreparedListener(this); 
 		
-		mediaTime = (TextView)rootView.findViewById(R.id.progress_time);  
+		mediaTimeCurrent = (TextView)rootView.findViewById(R.id.progress_time); 
+		mediaTimeEnd = (TextView)rootView.findViewById(R.id.progress_time_end); 
         seekBar = (SeekBar)rootView.findViewById(R.id.progress_bar);  
         initializeSeekBar(); 
         
@@ -116,9 +118,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
         int cHours   = (int) ((current / (1000*60*60)) % 24);  
                 
         if(dHours == 0){  
-            mediaTime.setText(String.format("%02d:%02d / %02d:%02d", cMinutes, cSeconds, dMinutes, dSeconds));  
+            mediaTimeCurrent.setText(String.format("%02d:%02d", cMinutes, cSeconds));
+            mediaTimeEnd.setText(String.format("%02d:%02d", dMinutes, dSeconds));
         }else{  
-            mediaTime.setText(String.format("%02d:%02d:%02d / %02d:%02d:%02d", cHours, cMinutes, cSeconds, dHours, dMinutes, dSeconds));  
+            mediaTimeCurrent.setText(String.format("%02d:%02d:%02d", cHours, cMinutes, cSeconds));
+            mediaTimeEnd.setText(String.format("%02d:%02d:%02d", dHours, dMinutes, dSeconds));
         }  
     }  
     
