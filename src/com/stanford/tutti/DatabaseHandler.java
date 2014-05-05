@@ -341,6 +341,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(TABLE_JAM, args, KEY_HASH + " = '" + hashCode + "'", null);
     }
     
+    public void setAlbumArt(String albumTitle, String path) {
+    	String escapedAlbumTitle = albumTitle.replace("'",  "''");
+        ContentValues args = new ContentValues();
+        args.put(KEY_ART, path);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TABLE_JAM, args, KEY_ALBUM + " = '" + escapedAlbumTitle + "'", null);
+    }
+    
     public Cursor searchArtists(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
@@ -628,7 +636,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					String albumTitle = (String)jsonAlbum.get("title");
 					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
 					
-					HashMap<String, String> artMap = new HashMap<String, String>(); 
 					for (int k = 0; k < songs.length(); k++) {
 						JSONObject jsonSong = songs.getJSONObject(k); 
 						String songTitle = (String)jsonSong.get("title"); 
@@ -640,31 +647,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						song.setIpAddr(songIp);
 						
 						
-						String artString = (String)jsonSong.get("art"); 
-						String artPath = ""; 
-						if (artString != null && !artString.equals("")) {
-							if (artMap.containsKey(artString)) {
-								artPath = artMap.get(artString); 
-							} else {
-								byte[] artBytes = Base64.decode(artString, Base64.DEFAULT);
-								Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length); 
-								
-								String filename = albumTitle; 
-								FileOutputStream outputStream;
-								try {
-								  outputStream = g.openFileOutput(filename, Context.MODE_PRIVATE);
-								  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); 
-								  outputStream.close();
-								  artPath = g.getFileStreamPath(filename).getAbsolutePath(); 
-								  artMap.put(artString, artPath); 
-								} catch (Exception e) {
-								  e.printStackTrace();
-								}
-							}
-						}
-
-						song.setAlbumArt(artPath);
-						
+						String artString = (String)jsonSong.get("art");
 						
 						addSongToLibrary(song); 
 					}
@@ -687,24 +670,51 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * parsing the JSON response from another phone. 
 	 */
 	public void loadAlbumArtFromJSON(JSONObject albumArt) {
-		JSONArray albumArray = albumArt.getJSONArray("albums"); 
-		JSONArray artArray = albumArt.getJSONArray("art"); 
+		JSONArray albumArray = null; 
+		JSONArray artArray = null; 
+		try {
+			albumArray = albumArt.getJSONArray("albums");
+			artArray = albumArt.getJSONArray("art"); 
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		} 
 		
-		for (int i = 0; i < albumArt.length(); i++) {
-			try {
-				JSONObject jsonAlbumArt = albumArt.getJSONObject(i); 
-				
-				
-				
-				if (g.uiUpdateHandler != null) {
-					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 0; 
-					g.uiUpdateHandler.sendMessage(msg);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+		if (albumArray != null && artArray != null) {
+			for (int i = 0; i < albumArray.length(); i++) {
+				try {
+					String albumTitle = (String)albumArray.get(i); 
+					String artJSON = (String)artArray.get(i); 
+					
+					String artPath = ""; 
+					if (artJSON != null && !artJSON.equals("")) {
+						byte[] artBytes = Base64.decode(artJSON, Base64.DEFAULT);
+						Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length); 
+						String filename = albumTitle; 
+						FileOutputStream outputStream;
+						try {
+							outputStream = g.openFileOutput(filename, Context.MODE_PRIVATE);
+							bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); 
+							outputStream.close();
+							artPath = g.getFileStreamPath(filename).getAbsolutePath(); 
+						} catch (Exception e) {
+							  e.printStackTrace();
+						}
+					}
+					
+					setAlbumArt(albumTitle, artPath); 
+					
+					
+					
+					if (g.uiUpdateHandler != null) {
+						Message msg = g.uiUpdateHandler.obtainMessage();
+						msg.what = 0; 
+						g.uiUpdateHandler.sendMessage(msg);
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
 		}
 	}
 }
