@@ -253,7 +253,7 @@ public class Jam {
 				addSong(song);
 								
 				if (i == nowPlayingIndex) {
-					setCurrentSong(song, songList.size() - 1);
+					setCurrentSong(song, i);
 				}
 			}
 			
