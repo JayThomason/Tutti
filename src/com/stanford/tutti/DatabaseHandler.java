@@ -559,26 +559,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	    		try {
 	    			song.put("title", title);
 	    			song.put("path", path);
-	    			song.put("ip", ip); 
-	    			
-	    			
-	    	        String artPath = songCursor.getString(songCursor.getColumnIndex("art")); 
-	    	        String encodedImage = ""; 
-	    	        if (artPath != null & !artPath.equals("")) {
-	    	        	if (encodedArtMap.containsKey(artPath)) {
-	    	        		encodedImage = encodedArtMap.get(artPath); 
-	    	        	} else {
-							Bitmap bitmap = BitmapFactory.decodeFile(artPath); 
-				    	    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();  
-				    	    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
-				    	    byte[] byteArrayImage = byteStream.toByteArray(); 
-				    	    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);	
-				    	    encodedArtMap.put(artPath, encodedImage); 
-	    	        	}
-	    	        }
-	    			song.put("art", encodedImage); 
-	    			
-	    			
+	    			song.put("ip", ip); 	    			
 	    			songArray.put(song); 
 	    		} catch (JSONException e) {
 	    			e.printStackTrace();
@@ -591,6 +572,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		return songArray; 
     }
+    
+    public JSONArray getAlbumArtAsJSON() {
+    	JSONArray albumArtArray = new JSONArray(); 
+		Cursor artCursor = getAllAlbums(); 
+		
+		if (artCursor.moveToFirst()) {
+			do {
+				
+				JSONObject albumArt = new JSONObject(); 
+				
+				String albumName = artCursor.getString(COL_ALBUM); 
+				String artPath = artCursor.getString(COL_ART); 	        	
+    	        String encodedImage = ""; 
+    	        if (artPath != null & !artPath.equals("")) {
+					Bitmap bitmap = BitmapFactory.decodeFile(artPath); 
+			    	ByteArrayOutputStream byteStream = new ByteArrayOutputStream();  
+			    	bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
+			    	byte[] byteArrayImage = byteStream.toByteArray(); 
+			    	encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);	
+			    	try {
+						albumArt.put(albumName, encodedImage);
+						albumArtArray.put(albumArt); 
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} 
+    	        }
+			} while (artCursor.moveToNext()); 
+		}
+		
+		artCursor.close(); 
+		
+		return albumArtArray; 
+    }
+    
     
 	/*
 	 * Load new music into the database library by
