@@ -1,5 +1,9 @@
 package com.stanford.tutti;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +16,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.util.Base64;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -549,6 +558,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	    			song.put("title", title);
 	    			song.put("path", path);
 	    			song.put("ip", ip); 
+	    			
+	    			
+	    	        String artPath = songCursor.getString(songCursor.getColumnIndex("art")); 
+	    	        String encodedImage = ""; 
+	    	        if (artPath != null & !artPath.equals("")) {
+						Bitmap bitmap = BitmapFactory.decodeFile(artPath); 
+			    	    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();  
+			    	    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
+			    	    byte[] byteArrayImage = byteStream.toByteArray(); 
+			    	    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);						 
+	    	        }
+	    			song.put("art", encodedImage); 
+	    			
+	    			
 	    			songArray.put(song); 
 	    		} catch (JSONException e) {
 	    			e.printStackTrace();
@@ -587,6 +610,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
 						song.setIpAddr(songIp);
+						
+						
+						String artString = (String)jsonSong.get("art"); 
+						String artPath = ""; 
+						if (artString != null && !artString.equals("")) {
+							byte[] artBytes = Base64.decode(artString, Base64.DEFAULT);
+							Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length); 
+							
+							String filename = albumTitle; 
+							FileOutputStream outputStream;
+							try {
+							  outputStream = g.openFileOutput(filename, Context.MODE_PRIVATE);
+							  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); 
+							  outputStream.close();
+							  artPath = g.getFileStreamPath(filename).getAbsolutePath(); 
+							  System.out.println("SAVED REMOTE ALBUM ART AT PATH: " + artPath); 
+							} catch (Exception e) {
+							  e.printStackTrace();
+							}
+						}
+
+						song.setAlbumArt(artPath);
+						
 						
 						addSongToLibrary(song); 
 					}
