@@ -120,9 +120,9 @@ public class Jam {
     	return true;
 	}
 	
-	public void setCurrentSong(Song song) {
+	public void setCurrentSong(Song song, int index) {
 		currentSong = song; 
-		currentSongIndex = songList.indexOf(song); 
+		currentSongIndex = index; 
 	}
 	
 	public void setCurrentSongByIndex(int index) {
@@ -251,7 +251,7 @@ public class Jam {
 				addSong(song);
 								
 				if (i == nowPlayingIndex) {
-					setCurrentSong(song);
+					setCurrentSong(song, songList.size() - 1);
 				}
 			}
 			
