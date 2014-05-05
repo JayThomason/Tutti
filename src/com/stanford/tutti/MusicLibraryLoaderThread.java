@@ -109,7 +109,7 @@ public class MusicLibraryLoaderThread extends Thread {
 	            
 	            song.setIpAddr(g.getIpAddr());
 	            
-	            g.db.addSong(song); 
+	            g.db.addSongToLibrary(song); 
 	        }
 	        cursor.close(); 
 		}	

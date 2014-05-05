@@ -29,6 +29,9 @@ public class Song {
 	/* IP address for the phone containing the song. */
 	private String ipAddr = "";
 	
+	/* Username that added this song to the Jam */
+	private String addedBy = ""; 
+	
 	
 	/*
 	 * Constructor
@@ -120,6 +123,14 @@ public class Song {
 		return ipAddr;
 	}
 	
+	public String getAddedBy() {
+		return addedBy; 
+	}
+	
+	public void setAddedBy(String addedBy) {
+		this.addedBy = addedBy; 
+	}
+	
 	@Override
 	public int hashCode() {
 		StringBuilder keyBuilder = new StringBuilder("");
@@ -156,6 +167,7 @@ public class Song {
 			song.put("album", album); 
 			song.put("path", path); 
 			song.put("ip", ipAddr); 
+			song.put("addedBy", addedBy);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 

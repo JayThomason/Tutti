@@ -18,6 +18,8 @@ public class MainActivity extends Activity {
         
         loadLocalMusic(); 
         
+        initializeJam(); 
+        
         setWelcomeText(); 
     }
     
@@ -26,6 +28,11 @@ public class MainActivity extends Activity {
         g.db.dropTable("songs"); 
 		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
 		loaderThread.run();	
+    }
+    
+    private void initializeJam() {
+        Globals g = (Globals) getApplicationContext(); 
+    	g.db.dropTable("jam"); 
     }
     
     private void setWelcomeText() {

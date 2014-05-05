@@ -43,7 +43,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         super.bindView(view, context, cursor);
-        
+                
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
@@ -57,12 +57,17 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         text += songTitle; 
         titleView.setText(text); 
         
-        Globals g = (Globals) context.getApplicationContext(); 
-        String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
-        if (username == null) {
-        	username = ""; 
+        if (columns.length == 2) {
+	        Globals g = (Globals) context.getApplicationContext(); 
+	        String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
+	        if (username == null) {
+	        	username = ""; 
+	        } else {
+	            ownerView.setText(username); 
+	        }
         } else {
-            ownerView.setText(username); 
+        	String addedBy = cursor.getString(cursor.getColumnIndex(columns[2])); 
+        	ownerView.setText("Added by: " + addedBy);
         }
         
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 

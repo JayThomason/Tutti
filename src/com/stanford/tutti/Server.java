@@ -125,7 +125,7 @@ public class Server extends NanoHTTPD {
     		return getSong(uri.substring(GET_SONG.length()));  
     	} 
     	else if (uri.startsWith(UPDATE_JAM)) {
-    		return updateJamResponse(uri.substring(UPDATE_JAM.length())); 
+    		return updateJamResponse(uri.substring(UPDATE_JAM.length()), parameters); 
     	} 
     	else {
     		return badRequestResponse();
@@ -184,10 +184,10 @@ public class Server extends NanoHTTPD {
      * Responds to a request to update the jam. 
      * Pause, play, skip song, set song, etc. 
      */
-    private Response updateJamResponse(final String path) {
+    private Response updateJamResponse(final String path, Map<String, String> parameters) {
     	System.out.println("SERVER RECEIVED UPDATE JAM REQUEST"); 
     	if (path.startsWith(JAM_ADD_SONG)) {
-    		return jamAddSongResponse(path.substring(JAM_ADD_SONG.length())); 
+    		return jamAddSongResponse(parameters.get("songId"), parameters.get("addedBy")); 
     	} 
     	else if (path.startsWith(JAM_SET_SONG)) {
     		return jamSetSongResponse(path.substring(JAM_SET_SONG.length())); 
@@ -230,11 +230,14 @@ public class Server extends NanoHTTPD {
     /*
      * Adds the requested song to the jam.
      */
-	private Response jamAddSongResponse(String keyPath) {
-		Song song = g.db.getSongByHash(keyPath.substring(1));
+	private Response jamAddSongResponse(String songId, String addedBy) {
+		Song song = g.db.getSongByHash(songId);
 		if (song == null) 
 			return fileNotFoundResponse();
+		
+		song.setAddedBy(addedBy);
 		g.jam.addSong(song);
+		
 		if (g.jam.getCurrentSong() == null) {
 			g.jam.setCurrentSong(song);
 			if (g.jam.checkMaster()) {
@@ -243,7 +246,7 @@ public class Server extends NanoHTTPD {
 		}
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
-				client.requestAddSong(keyPath.substring(1), new AsyncHttpResponseHandler() {
+				client.requestAddSong(songId, addedBy, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to add song to client returned: " + statusCode);

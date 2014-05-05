@@ -144,8 +144,8 @@ public class BrowseJamFragment extends Fragment {
 
 		cursor = g.db.getSongsInJam(); 
 		
-		String[] columns = new String[] { "art", "title" };
-		int[] to = new int[] { R.id.browserArt, R.id.browserText };
+		String[] columns = new String[] { "art", "title", "addedBy" };
+		int[] to = new int[] { R.id.browserArt, R.id.browserText, R.id.ownerText };
 
 		BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to); 
 		listView.setAdapter(adapter);

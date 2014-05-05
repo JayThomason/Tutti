@@ -117,16 +117,9 @@ public class BrowseSongsFragment extends Fragment {
 				// WE NEED TO BE USING GETSONGBYID
 				// OR GETSONGBY UNIQUE HASH
 				final Song song = g.db.getSongByTitle(title); 
-				
-				if (g.jam.containsSong(song)) {
-					Toast.makeText(g,
-							song.getArtist()
-							+ " : " + song.getTitle()
-							+ " is already in the Jam!", Toast.LENGTH_SHORT).show(); 
-					return; 
-				}
                
 				if (g.jam.checkMaster()) {
+					song.setAddedBy(g.getUsername());
 					g.jam.addSong(song); 
 					Toast.makeText(g,
 							song.getArtist()
@@ -139,7 +132,7 @@ public class BrowseSongsFragment extends Fragment {
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
 					Set<Client> clientSet = g.jam.getClientSet();
 					for (Client client : clientSet) {
-						client.requestAddSong(Integer.toString(song.hashCode()), new AsyncHttpResponseHandler() {
+						client.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 								System.out.println("request to add song to client returned: " + statusCode);
@@ -149,9 +142,9 @@ public class BrowseSongsFragment extends Fragment {
 				}
 				else {
 					// will want to refactor this to use the Client or a similar Master class
-					AsyncHttpClient asyncClient = new AsyncHttpClient();
-					String url = "http://" + g.jam.getMasterIpAddr() + ":" + port + "/jam/add/" + Integer.toString(song.hashCode()); 
-					asyncClient.get(url, new AsyncHttpResponseHandler() {
+					Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
+					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
+						@Override
 						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 							System.out.println("request to add song to master returned: " + statusCode);
 

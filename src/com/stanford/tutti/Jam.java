@@ -99,7 +99,7 @@ public class Jam {
 	
 	public void addSong(Song song) {
 		songList.add(song);
-		g.db.setSongIndexInJam(Integer.toString(song.hashCode()), getJamSize() - 1);
+		g.db.addSongToJam(song, songList.size() - 1); 
 	}
 	
 	public Song getCurrentSong() {
@@ -245,6 +245,8 @@ public class Jam {
 				song.setArtist((String)jsonSong.get("artist")); 
 				song.setAlbum((String)jsonSong.get("album")); 
 				song.setIpAddr((String)jsonSong.get("ip"));
+				
+				song.setAddedBy((String)jsonSong.get("addedBy")); 
 				
 				addSong(song);
 								
