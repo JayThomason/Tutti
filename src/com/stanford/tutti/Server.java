@@ -45,6 +45,7 @@ public class Server extends NanoHTTPD {
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String UPDATE_LIBRARY = "/updateLibrary";
 	private static final String GET_ALBUM_ART = "/getAlbumArt"; 
+	private static final String UPDATE_ALBUM_ART = "/updateAlbumArt"; 
 	private static final String JAM_ADD_SONG = "/add"; 
 	private static final String JAM_SET_SONG = "/set"; 
 	private static final String JAM_START = "/start"; 
@@ -142,6 +143,9 @@ public class Server extends NanoHTTPD {
     	if (uri.startsWith(UPDATE_LIBRARY)) {
     		return updateLibraryResponse(session);
     	}
+    	else if (uri.startsWith(UPDATE_ALBUM_ART)) {
+    		return updateAlbumArtResponse(session); 
+    	}
     	else {
     		return badRequestResponse();
     	}
@@ -226,7 +230,22 @@ public class Server extends NanoHTTPD {
 			e.printStackTrace();
 			return badRequestResponse();
 		} 
-    	return new NanoHTTPD.Response("Updated Library");
+    	return new NanoHTTPD.Response("Updated library");
+    }
+    
+    private Response updateAlbumArtResponse(IHTTPSession session) {
+    	Map<String, String> files = new HashMap<String, String>();
+    	String ipAddr = session.getHeaders().get(HTTP_CLIENT_IP);
+    	try {
+			session.parseBody(files);
+			
+  			JSONObject jsonAlbumArt = new JSONObject(files.get("postData")); 
+  			g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return badRequestResponse();
+		} 
+    	return new NanoHTTPD.Response("Updated album art");
     }
 
     /*
