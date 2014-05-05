@@ -361,7 +361,7 @@ public class Server extends NanoHTTPD {
      * phone's album art as JSON. 
      */
 	private Response getAlbumArtResponse() {
-		JSONArray jsonAlbumArt = g.db.getAlbumArtAsJSON(); 
+		JSONObject jsonAlbumArt = g.db.getAlbumArtAsJSON(); 
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonAlbumArt.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);

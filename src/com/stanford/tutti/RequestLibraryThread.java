@@ -63,7 +63,15 @@ class RequestLibraryThread extends Thread {
 					client.requestAlbumArt(new AsyncHttpResponseHandler() {
 						@Override
 						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							g.db.loadAlbumArtFromJSON(); 
+							
+							ByteArrayInputStream is = new ByteArrayInputStream(responseBody); 
+							BufferedReader reader = new BufferedReader(
+									new InputStreamReader(is));
+							
+							String remoteAlbumArt = reader.readLine();
+							JSONObject jsonAlbumArt = new JSONObject(remoteAlbumArt); 
+							
+							g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
 							
 							if (g.jam.checkMaster()) {
 								for (Client client : g.jam.getClientSet()) {

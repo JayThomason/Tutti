@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -573,15 +574,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return songArray; 
     }
     
-    public JSONArray getAlbumArtAsJSON() {
-    	JSONArray albumArtArray = new JSONArray(); 
+    public JSONObject getAlbumArtAsJSON() {
+    	JSONObject albumArt = new JSONObject(); 
+    	JSONArray albumArray = new JSONArray(); 
+    	JSONArray artArray = new JSONArray(); 
+    	
 		Cursor artCursor = getAllAlbums(); 
 		
 		if (artCursor.moveToFirst()) {
 			do {
-				
-				JSONObject albumArt = new JSONObject(); 
-				
+								
 				String albumName = artCursor.getString(COL_ALBUM); 
 				String artPath = artCursor.getString(COL_ART); 	        	
     	        String encodedImage = ""; 
@@ -591,19 +593,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			    	bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
 			    	byte[] byteArrayImage = byteStream.toByteArray(); 
 			    	encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);	
-			    	try {
-						albumArt.put(albumName, encodedImage);
-						albumArtArray.put(albumArt); 
-					} catch (JSONException e) {
-						e.printStackTrace();
-					} 
+			    	albumArray.put(albumName); 
+					artArray.put(encodedImage); 
     	        }
 			} while (artCursor.moveToNext()); 
 		}
 		
+		try {
+			albumArt.put("albums", albumArray);
+			albumArt.put("art", artArray); 
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 		artCursor.close(); 
 		
-		return albumArtArray; 
+		return albumArt; 
     }
     
     
@@ -669,6 +674,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						msg.what = 0; 
 						g.uiUpdateHandler.sendMessage(msg);
 					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+	}
+	
+	/*
+	 * Load album art music into the database library by
+	 * parsing the JSON response from another phone. 
+	 */
+	public void loadAlbumArtFromJSON(JSONObject albumArt) {
+		JSONArray albumArray = albumArt.getJSONArray("albums"); 
+		JSONArray artArray = albumArt.getJSONArray("art"); 
+		
+		for (int i = 0; i < albumArt.length(); i++) {
+			try {
+				JSONObject jsonAlbumArt = albumArt.getJSONObject(i); 
+				
+				
+				
+				if (g.uiUpdateHandler != null) {
+					Message msg = g.uiUpdateHandler.obtainMessage();
+					msg.what = 0; 
+					g.uiUpdateHandler.sendMessage(msg);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
