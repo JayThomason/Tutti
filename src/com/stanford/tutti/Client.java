@@ -64,7 +64,18 @@ public class Client {
 		String url = getUrl("/updateLibrary", "");
 		try {
 			StringEntity entity = new StringEntity(jsonLibrary.toString());
-			System.out.println("SENDING JSON LIBRARY: " + jsonLibrary.toString()); 
+			client.setMaxRetriesAndTimeout(3, 5000);
+			client.post(g.getBaseContext(), url, entity, "application/json", responseHandler);
+		}
+		catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateAlbumArt(JSONObject jsonAlbumArt, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/updateAlbumArt", ""); 
+		try {
+			StringEntity entity = new StringEntity(jsonAlbumArt.toString());
 			client.setMaxRetriesAndTimeout(3, 5000);
 			client.post(g.getBaseContext(), url, entity, "application/json", responseHandler);
 		}
