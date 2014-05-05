@@ -103,6 +103,7 @@ public class JoinJamActivity extends Activity {
 					
 					Client masterClient = new Client(g, username, ipAddr, PORT);
 					g.jam.addClient(masterClient);
+					
 			    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
 			    	getLibraryThread.start();
 			    	

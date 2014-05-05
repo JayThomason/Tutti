@@ -35,7 +35,7 @@ class RequestLibraryThread extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
-		Client client = new Client(g, "", ip, port); 
+		final Client client = new Client(g, "", ip, port); 
 		client.requestRemoteLibrary(new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -58,6 +58,25 @@ class RequestLibraryThread extends Thread {
 					if (!g.jam.checkMaster()) {
 						g.jam.loadJamFromJSON(jam); 
 					}
+					
+					
+					client.requestAlbumArt(new AsyncHttpResponseHandler() {
+						@Override
+						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+							g.db.loadAlbumArtFromJSON(); 
+							
+							if (g.jam.checkMaster()) {
+								for (Client client : g.jam.getClientSet()) {
+									if (client.getIpAddress() != ip) {
+										client.updateAlbumArt(jsonLibrary, new AsyncHttpResponseHandler() {
+											
+										});
+									}
+								}
+							}
+						}
+					}); 
+					
 					
 					if (g.jam.checkMaster()) {
 						for (Client client : g.jam.getClientSet()) {

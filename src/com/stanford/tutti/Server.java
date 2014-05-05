@@ -175,7 +175,6 @@ public class Server extends NanoHTTPD {
 	}
     
     private Response acceptJoinJamResponse(String otherIpAddr, String username) {
-    	System.out.println("ACCEPT JOIN JAM RESPONSE!"); 
 		if (g.joinJamHandler != null) {
 			Message msg = g.joinJamHandler.obtainMessage();
 			msg.obj = otherIpAddr + "//" + username; 
@@ -189,7 +188,6 @@ public class Server extends NanoHTTPD {
      * Pause, play, skip song, set song, etc. 
      */
     private Response updateJamResponse(final String path, Map<String, String> parameters) {
-    	System.out.println("SERVER RECEIVED UPDATE JAM REQUEST"); 
     	if (path.startsWith(JAM_ADD_SONG)) {
     		return jamAddSongResponse(parameters.get("songId"), parameters.get("addedBy")); 
     	} 
