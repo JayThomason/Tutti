@@ -1,7 +1,13 @@
 package com.stanford.tutti;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.http.Header;
+
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.annotation.TargetApi;
@@ -17,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,19 +33,22 @@ public class JoinJamActivity extends Activity {
 	private Server server;
 	private Globals g;
 	private Handler h;
-	private RequestLocalJamThread requestLocalJamThread;
+	private final String path = "/discoverJams";
+	private Map<String, String> ipMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join_jam);
-		
-        getActionBar().setDisplayShowHomeEnabled(false);              
-        getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().hide(); 
+
+		getActionBar().setDisplayShowHomeEnabled(false);              
+		getActionBar().setDisplayShowTitleEnabled(false);
+		getActionBar().hide(); 
 
 		g = (Globals) getApplication();
-		
+
+		ipMap = new HashMap<String, String>();
+
 		server = new Server(PORT, g);
 		try {
 			server.start();
@@ -47,18 +57,40 @@ public class JoinJamActivity extends Activity {
 			// should display a message to the user or back out to main menu
 			e.printStackTrace();
 		}
-		
+
 		setupHandler(); 
 		configureJamListView(); 
 		requestLocalJams();
 	}
-	
+
 	private void requestLocalJams() {
 		String serverHostname = getString(R.string.ec2_server);
-		requestLocalJamThread = new RequestLocalJamThread(serverHostname, this);
-		requestLocalJamThread.start();
+		AsyncHttpClient httpClient = new AsyncHttpClient();
+		httpClient.get("http://" + serverHostname + path, new AsyncHttpResponseHandler() {
+			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+				System.out.println("Server response: " + statusCode);
+				if (statusCode == 200) {
+					String jamListStr = new String(responseBody);
+					if (jamListStr.length() <= 1)
+						return;
+					// each name/ip pair is delimited by a \n and the names/ips are divided by a space
+					final ArrayList<String> nameList = new ArrayList<String>();
+					String nameIpPairList[] = jamListStr.split("\n");
+					for (String str : nameIpPairList) {
+						String nameIpPair[] = str.split(" ");
+						nameList.add(nameIpPair[0]);
+						ipMap.put(nameIpPair[0],  nameIpPair[1]);
+					}
+					ListView jamListView = (ListView) findViewById(R.id.jamListView);
+					ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+							JoinJamActivity.this, android.R.layout.simple_list_item_1,
+							nameList);
+					jamListView.setAdapter(arrayAdapter);
+				}
+			}
+		});
 	}
-	
+
 	private void configureJamListView() {
 		jamListView = (ListView) this.findViewById(R.id.jamListView);
 		jamListView.setOnItemClickListener(new OnItemClickListener() {
@@ -66,16 +98,16 @@ public class JoinJamActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				Globals g = (Globals) getApplication();
-			    String jamName = ((TextView) arg1).getText().toString();
-			    final String ip = requestLocalJamThread.getIpForName(jamName);
+				String jamName = ((TextView) arg1).getText().toString();
+				final String ip = ipMap.get(jamName);
 				final Client masterClient = new Client(g, "", ip, PORT); 
 				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
 				});
 			}
 		});
-	
+
 	}
-	
+
 	private void setupHandler() {
 		g.joinJamHandler = new Handler() {
 			@Override
@@ -84,17 +116,17 @@ public class JoinJamActivity extends Activity {
 				if (message != null) {			
 					final String ipAddr = message.split("//")[0]; 
 					final String username = message.split("//")[1]; 
-					
+
 					g.jam.setMaster(false); 
 					g.jam.setMasterIp(ipAddr);
 					g.jam.setIPUsername(ipAddr, username);
-					
+
 					Client masterClient = new Client(g, username, ipAddr, PORT);
 					g.jam.addClient(masterClient);
-					
-			    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
-			    	getLibraryThread.start();
-			    	
+
+					Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+					getLibraryThread.start();
+
 					Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
 					startActivity(intent);
 					finish();
@@ -103,7 +135,7 @@ public class JoinJamActivity extends Activity {
 		};
 	}
 
-	
+
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
