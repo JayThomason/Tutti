@@ -26,6 +26,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.net.Uri;
+import android.net.Uri.Builder;
 
 public class JoinJamActivity extends Activity {
 	private ListView jamListView;
@@ -65,8 +67,14 @@ public class JoinJamActivity extends Activity {
 
 	private void requestLocalJams() {
 		String serverHostname = getString(R.string.ec2_server);
+		Builder builder = Uri.parse("http://" + serverHostname).buildUpon();
+		builder.path(path);
+		builder.appendQueryParameter("ssid", g.getWifiSSID());
+		builder.appendQueryParameter("gateway", g.getGatewayIpAddr());
+		
 		AsyncHttpClient httpClient = new AsyncHttpClient();
-		httpClient.get("http://" + serverHostname + path, new AsyncHttpResponseHandler() {
+
+		httpClient.get(builder.build().toString(), new AsyncHttpResponseHandler() {
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 				System.out.println("Server response: " + statusCode);
 				if (statusCode == 200) {

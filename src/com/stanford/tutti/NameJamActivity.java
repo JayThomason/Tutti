@@ -9,6 +9,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -61,14 +62,19 @@ public class NameJamActivity extends Activity {
 	}
 
 	private void createJamInDatabase(String name) {
-		AsyncHttpClient client = new AsyncHttpClient();
 		String serverHostname = getString(R.string.ec2_server);
-		String localIpAddr = g.getIpAddr();
-		String url = "http://" + serverHostname + "/createJam?private=" + localIpAddr;
+		Uri.Builder builder = Uri.parse("http://" + serverHostname).buildUpon();
+		builder.path("/createJam");
+		builder.appendQueryParameter("private",  g.getIpAddr());
+		builder.appendQueryParameter("ssid",  g.getWifiSSID());
+		builder.appendQueryParameter("gateway", g.getGatewayIpAddr());
+				
 		if (name != null) {
-			url += ("&name=" + name);
+			builder.appendQueryParameter("name", name);
 		}
-		client.get(url, new AsyncHttpResponseHandler() {
+		
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(builder.build().toString(), new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 				if (statusCode == 200) {
@@ -76,6 +82,7 @@ public class NameJamActivity extends Activity {
 				}
 				else {
 					System.out.println("Failed to create jam on server.");
+					System.out.println("Response body: " + new String(responseBody));
 				}
 			}
 
