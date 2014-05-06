@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
+
+    <Button
+        android:id="@+id/Button01"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/custom_button"
+        android:gravity="left|center_vertical"
+        android:onClick="createQuickJam"
+        android:paddingLeft="15dip"
+        android:text="@string/quick_jam"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/Button02"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Button01"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/custom_button"
+        android:gravity="left|center_vertical"
+        android:onClick="createNamedJam"
+        android:paddingLeft="15dip"
+        android:text="@string/named_jam"
+        android:textColor="#ffffff" />
+
+    <EditText
+        android:id="@+id/jam_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/Button02"
+        android:layout_below="@+id/Button02"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Choose a name"
+        android:inputType="textFilter"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

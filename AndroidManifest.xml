@@ -28,14 +28,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.stanford.tutti.NewJamActivity"
-            android:label="@string/title_activity_new_jam"
-            android:parentActivityName="com.stanford.tutti.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.stanford.tutti.MainActivity" />
-        </activity>
-        <activity
             android:name="com.stanford.tutti.JoinJamActivity"
             android:label="@string/title_activity_join_jam"
             android:parentActivityName="com.stanford.tutti.MainActivity" >
@@ -78,6 +70,13 @@
         <activity
             android:name="com.stanford.tutti.HelpMenuActivity"
             android:label="@string/title_activity_help_menu"
+            android:parentActivityName="com.stanford.tutti.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.stanford.tutti.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.stanford.tutti.NameJamActivity"
             android:parentActivityName="com.stanford.tutti.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

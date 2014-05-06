@@ -61,15 +61,9 @@ public class MainActivity extends Activity {
 	 */
 
 	public void makeNewJam(View view) {
-		g.jam.setMaster(true); 
-		try {
-			(new Server(port, g)).start();
-			createJamInDatabase();
-			Intent intent = new Intent(this, BrowseMusicActivity.class);
-			startActivity(intent);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		Intent intent = new Intent(this, NameJamActivity.class);
+		startActivity(intent);
 	}
 
 	public void joinJam(View view) {
@@ -87,26 +81,4 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 
-	private void createJamInDatabase() {
-		AsyncHttpClient client = new AsyncHttpClient();
-		String serverHostname = getString(R.string.ec2_server);
-		String localIpAddr = g.getIpAddr();
-		String url = "http://" + serverHostname + "/createJam?private=" + localIpAddr;
-		client.get(url, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-				if (statusCode == 200) {
-					System.out.println("Successfully created jam on server.");
-				}
-				else {
-					System.out.println("Failed to create jam on server.");
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-				System.out.println("Failed to create jam on server.");
-			}
-		});
-	}
 }

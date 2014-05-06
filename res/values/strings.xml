@@ -44,5 +44,7 @@
     <string name="title_activity_music_browser">MusicBrowserActivity</string>
     <string name="title_activity_browse_artists">BrowseArtistsActivity</string>
     <string name="title_activity_browse_music">BrowseMusicActivity</string>
+    <string name="quick_jam">Quick Jam</string>
+    <string name="named_jam">Name Your Jam</string>
 
 </resources>
