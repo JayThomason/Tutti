@@ -2,8 +2,6 @@ package com.stanford.tutti;
 
 import java.util.ArrayList;
 
-import org.json.*; 
-
 public class Artist {
 	private String name;
 	private ArrayList<Album> albumList = new ArrayList<Album>();

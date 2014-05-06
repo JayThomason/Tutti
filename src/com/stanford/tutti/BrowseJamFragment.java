@@ -1,7 +1,5 @@
 package com.stanford.tutti; 
  
-import java.util.ArrayList;
-
 import org.apache.http.Header;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -10,15 +8,12 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;

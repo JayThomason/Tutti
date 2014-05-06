@@ -2,8 +2,6 @@ package com.stanford.tutti;
 
 import java.util.ArrayList;
 
-import org.json.*; 
-
 public class Album {
 	private String title;
 	private String artist;

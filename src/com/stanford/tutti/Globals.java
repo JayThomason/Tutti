@@ -1,18 +1,12 @@
 package com.stanford.tutti;
 
-import java.util.*; 
-
-import org.json.*; 
-
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 
 /* 

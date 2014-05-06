@@ -2,14 +2,9 @@ package com.stanford.tutti;
 
 import java.util.ArrayList;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Activity;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 
 /**
  * LoadMusicLibraryActivity

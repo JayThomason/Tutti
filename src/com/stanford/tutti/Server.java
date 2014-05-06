@@ -1,12 +1,9 @@
 package com.stanford.tutti;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,16 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.app.AlertDialog.Builder; 
-import android.content.DialogInterface;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.stanford.tutti.NanoHTTPD.IHTTPSession;
-import com.stanford.tutti.NanoHTTPD.Response;
 import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 
