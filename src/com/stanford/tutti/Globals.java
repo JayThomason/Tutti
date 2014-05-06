@@ -4,10 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 /* 
  * Stores any state which must be globally accessible, eg. variables which cannot
@@ -19,19 +23,19 @@ import android.preference.PreferenceManager;
  */
 public class Globals extends Application {
 	public Jam jam = new Jam(this); 
-		
+
 	public String currentArtistView = ""; 
 	public String currentAlbumView = ""; 
 	public Handler uiUpdateHandler; 
 	public Handler joinJamHandler; 
-	
+
 	public int playerDuration = 0; 
 	public OnPreparedListener playerListener; 
-	
+
 	DatabaseHandler db; 
-	
+
 	private static Context context; 
-		
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -39,10 +43,10 @@ public class Globals extends Application {
 		db = new DatabaseHandler(this);
 		jam.setIPUsername(getIpAddr(), getUsername());
 	}
-	
+
 	public static Context getAppContext() {
-        return Globals.context;
-    }
+		return Globals.context;
+	}
 
 	/*
 	 * Return a string representation of the current device's IP address. 
@@ -62,7 +66,39 @@ public class Globals extends Application {
 
 		return ipString;
 	}
-	
+
+	public String getGatewayIpAddr() {
+		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		DhcpInfo info = wifiManager.getDhcpInfo();
+		int gateway_ip = info.gateway;
+		
+		String ipString = String.format(
+				"%d.%d.%d.%d",
+				(gateway_ip & 0xff),
+				(gateway_ip >> 8 & 0xff),
+				(gateway_ip >> 16 & 0xff),
+				(gateway_ip >> 24 & 0xff));
+		
+		return ipString;
+	}
+
+	/*
+	 * Returns the SSID of the wifi network.
+	 */
+	public String getWifiSSID() {
+		String ssid = null;
+		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if (networkInfo.isConnected()) {
+			final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+			final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+			if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
+				ssid = connectionInfo.getSSID();
+			}
+		}
+		return ssid;
+	}
+
 	/*
 	 * Return the username from the user preferences. 
 	 */
