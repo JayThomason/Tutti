@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 public class NameJamActivity extends Activity {
 	private Globals g;
-	private final int port = 1234;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
