@@ -89,6 +89,11 @@ public class Client {
 		client.get(url, responseHandler);
 	}
 	
+	public void pauseSong(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/pause", "");
+		client.get(url, responseHandler);
+	}
+	
 	public String getIpAddress() {
 		return ipAddress;
 	}
