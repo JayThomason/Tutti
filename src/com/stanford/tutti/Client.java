@@ -84,6 +84,11 @@ public class Client {
 		}
 	}
 	
+	public void startPlaying(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/start", "");
+		client.get(url, responseHandler);
+	}
+	
 	public String getIpAddress() {
 		return ipAddress;
 	}
