@@ -94,6 +94,11 @@ public class Client {
 		client.get(url, responseHandler);
 	}
 	
+	public void restartSong(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/restart", "");
+		client.get(url,  responseHandler);
+	}
+	
 	public String getIpAddress() {
 		return ipAddress;
 	}
@@ -105,4 +110,5 @@ public class Client {
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}
+
 }

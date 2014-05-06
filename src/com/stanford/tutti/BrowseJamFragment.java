@@ -197,8 +197,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			public void onClick(View arg0) {
 				g.jam.seekTo(0);
 				if (!g.jam.checkMaster()) {
-					(new PassMessageThread(g.jam.getMasterIpAddr(), 
-							port, "/jam/restart", "")).start();
+					masterClient.restartSong(new AsyncHttpResponseHandler() {
+						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+							System.out.println("Requested previous song on master, returned code: " + statusCode);
+						}
+					});
 				}
 			}
 		});
