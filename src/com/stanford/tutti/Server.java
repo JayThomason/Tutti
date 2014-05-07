@@ -47,6 +47,7 @@ public class Server extends NanoHTTPD {
 	public Server(int port, Globals g) {
 		super(port);
 		this.g = g;
+		System.out.println("Server booting...");
 	}
 	
 	/*

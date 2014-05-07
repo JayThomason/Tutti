@@ -28,7 +28,6 @@ public class NameJamActivity extends Activity {
 		getActionBar().hide(); 
 
 		g = (Globals) getApplication();
-
 		g.jam.setMaster(true);
 		try {
 			(new Server(1234, g)).start();

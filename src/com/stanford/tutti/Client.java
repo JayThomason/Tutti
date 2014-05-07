@@ -26,7 +26,8 @@ public class Client {
 	} 
 	
 	public void requestJoinJam(String username, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/joinJam/", "?username=" + username); 
+		String url = getUrl("/joinJam/", "?username=" + username);
+		System.out.println("url: " + url);
 		client.get(url, null, responseHandler); 
 	}
 	

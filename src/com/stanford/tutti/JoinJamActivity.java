@@ -110,6 +110,10 @@ public class JoinJamActivity extends Activity {
 				final String ip = ipMap.get(jamName);
 				final Client masterClient = new Client(g, "", ip, PORT); 
 				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						System.out.println("response for join jam: " + statusCode);
+					}
 				});
 			}
 		});
