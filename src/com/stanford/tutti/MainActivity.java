@@ -36,6 +36,34 @@ public class MainActivity extends Activity {
 		setWelcomeText(); 
 	}
 
+	/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+	 */
+
+	public void makeNewJam(View view) {
+		showNameJamDialog();
+	}
+
+	public void joinJam(View view) {
+		Intent intent = new Intent(this, JoinJamActivity.class);
+		startActivity(intent);
+	}
+
+	public void settingsMenu(View view) {
+		Intent intent = new Intent(this, SettingsMenuActivity.class);
+		startActivity(intent);
+	}
+
+	public void helpMenu(View view) {
+		Intent intent = new Intent(this, HelpMenuActivity.class);
+		startActivity(intent);
+	}
+	
 	private void loadLocalMusic() {
 		g.db.dropTable("songs"); 
 		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
@@ -56,18 +84,8 @@ public class MainActivity extends Activity {
 			welcomeText.setText("Welcome back " + g.getUsername() + "!"); 
 		}
 	}
-
-
-	/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-	 */
-
-	public void makeNewJam(View view) {
+	
+	private void showNameJamDialog() {
 		final EditText input = new EditText(MainActivity.this);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -84,21 +102,6 @@ public class MainActivity extends Activity {
 		setNameDialogShowListener(nameDialog, input);
 		nameDialog.show();
 	}
-
-	public void joinJam(View view) {
-		Intent intent = new Intent(this, JoinJamActivity.class);
-		startActivity(intent);
-	}
-
-	public void settingsMenu(View view) {
-		Intent intent = new Intent(this, SettingsMenuActivity.class);
-		startActivity(intent);
-	}
-
-	public void helpMenu(View view) {
-		Intent intent = new Intent(this, HelpMenuActivity.class);
-		startActivity(intent);
-	}
 	
 	private void setNameDialogShowListener(final AlertDialog nameDialog, final EditText input) {
 		nameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -114,22 +117,26 @@ public class MainActivity extends Activity {
 									"The jam name may not contain spaces.", Toast.LENGTH_LONG).show();
 						}
 						else {
-					        try {
-					    		(new Server(1234, g)).start();
-								createJamInDatabase(jamName.isEmpty() ? null : jamName);
-								g.jam.setMaster(true);
-								nameDialog.dismiss();
-								Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
-								startActivity(intent);
-					        }
-					        catch (IOException e) {
-					        	e.printStackTrace();
-					        }
+							startJam(jamName, nameDialog);
 						}
 					}
 				});
 			}
 		});
+	}
+	
+	private void startJam(String jamName, final AlertDialog nameDialog) {
+        try {
+    		(new Server(1234, g)).start();
+			createJamInDatabase(jamName.isEmpty() ? null : jamName);
+			g.jam.setMaster(true);
+			nameDialog.dismiss();
+			Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
+			startActivity(intent);
+        }
+        catch (IOException e) {
+        	e.printStackTrace();
+        }
 	}
 
 	private void createJamInDatabase(String name) {
