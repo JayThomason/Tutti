@@ -77,13 +77,6 @@
                 android:value="com.stanford.tutti.MainActivity" />
         </activity>
         <activity
-            android:name="com.stanford.tutti.NameJamActivity"
-            android:parentActivityName="com.stanford.tutti.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.stanford.tutti.MainActivity" />
-        </activity>
-        <activity
             android:name="com.stanford.tutti.BrowseMusicActivity"
             android:label="@string/title_activity_music_browser" >
         </activity>
