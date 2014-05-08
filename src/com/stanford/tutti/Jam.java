@@ -290,7 +290,7 @@ public class Jam {
 	 * Starts the keepAliveThread that sends keep alive requests to the server to ensure
 	 * that the jam is not deleted. One request is sent every minute.
 	 */
-	public void startKeepAlive(String serverHostname) {
+	public void startServerKeepAlive(String serverHostname) {
 		keepAlive = new AtomicBoolean(true);
 		final String url = "http://" + serverHostname + "/keepAlive?private=" + g.getIpAddr();
 		keepAliveThread = new Thread() {
@@ -317,7 +317,7 @@ public class Jam {
 	/*
 	 * Stops the jam from sending keep alive messages to the server.
 	 */
-	public void endKeepAlive() {
+	public void endServerKeepAlive() {
 		if (keepAliveThread != null && keepAlive != null) {
 			keepAlive.set(false);
 		}
@@ -329,7 +329,7 @@ public class Jam {
 	 * Returns true if the value is updated and false if the ip address does
 	 * not already map to a client.
 	 */
-	public boolean setKeepAliveTimestamp(String ipAddr) {
+	public boolean setClientKeepAliveTimestamp(String ipAddr) {
 		if (!keepAliveTimestampMap.containsKey(ipAddr)) {
 			return false;
 		}
@@ -337,5 +337,13 @@ public class Jam {
 			keepAliveTimestampMap.put(ipAddr, System.currentTimeMillis() / 1000L);
 			return true;
 		}
+	}
+	
+	public void startClientKeepAliveThread() {
+		
+	}
+	
+	public void endClientKeepAlive() {
+		
 	}
 }

@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		g.jam.endKeepAlive();
+		g.jam.endServerKeepAlive();
 	}
 
 	/*
@@ -164,7 +164,7 @@ public class MainActivity extends Activity {
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 				if (statusCode == 200) {
 					System.out.println("Successfully created jam on server.");
-					g.jam.startKeepAlive(serverHostname);
+					g.jam.startServerKeepAlive(serverHostname);
 					g.jam.setMaster(true);
 					nameDialog.dismiss();
 					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);

@@ -410,7 +410,7 @@ public class Server extends NanoHTTPD {
     
     private Response keepAliveResponse(String ipAddr) {
     	if (g.jam.checkMaster()) {
-    		g.jam.setKeepAliveTimestamp(ipAddr);
+    		g.jam.setClientKeepAliveTimestamp(ipAddr);
     	}
 		return new NanoHTTPD.Response("OK");
     }
