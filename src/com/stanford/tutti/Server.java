@@ -3,7 +3,6 @@ package com.stanford.tutti;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +40,7 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_START = "/start"; 
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
+	private static final String REMOVE_ALL = "/removeAll";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private Globals g = null;
 	
@@ -122,13 +122,16 @@ public class Server extends NanoHTTPD {
     	} 
     	else if (uri.startsWith(UPDATE_JAM)) {
     		return updateJamResponse(uri.substring(UPDATE_JAM.length()), parameters); 
-    	} 
+    	}
+    	else if (uri.startsWith(REMOVE_ALL)) {
+    		return leaveJamResponse(uri.substring(REMOVE_ALL.length()), parameters);
+    	}
     	else {
     		return badRequestResponse();
     	}
     }
-    
-    public Response postResponse(IHTTPSession session) {
+
+	public Response postResponse(IHTTPSession session) {
     	String uri = session.getUri();
     	Map<String, String> parameters = session.getParms();
     	if (uri.startsWith(UPDATE_LIBRARY)) {
@@ -387,5 +390,18 @@ public class Server extends NanoHTTPD {
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonJam.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
 		return response;
+	}
+	
+	/*
+	 * Returns an OK HTTP response once all of the songs associated with the specified user
+	 * have been removed from the library and jam.
+	 */
+    private Response leaveJamResponse(String substring,
+			Map<String, String> parameters) {
+    	String ipAddr = parameters.get("ip");
+    	g.db.deleteJamSongsFromIp(ipAddr);
+    	g.db.deleteSongsFromIp(ipAddr);
+    	// TODO: update UI accordingly
+		return null;
 	}
 }
