@@ -40,7 +40,8 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_START = "/start"; 
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
-	private static final String REMOVE_ALL = "/removeAll";
+	private static final String REMOVE_FROM_JAM = "/removeFromJam";
+	private static final String KEEP_ALIVE = "/keepAlive";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private Globals g = null;
 	
@@ -123,8 +124,11 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(UPDATE_JAM)) {
     		return updateJamResponse(uri.substring(UPDATE_JAM.length()), parameters); 
     	}
-    	else if (uri.startsWith(REMOVE_ALL)) {
-    		return leaveJamResponse(uri.substring(REMOVE_ALL.length()), parameters);
+    	else if (uri.startsWith(REMOVE_FROM_JAM)) {
+    		return removeFromJamResponse(parameters);
+    	}
+    	else if (uri.startsWith(KEEP_ALIVE)) {
+    		return keepAliveResponse(headers.get(HTTP_CLIENT_IP));
     	}
     	else {
     		return badRequestResponse();
@@ -396,12 +400,18 @@ public class Server extends NanoHTTPD {
 	 * Returns an OK HTTP response once all of the songs associated with the specified user
 	 * have been removed from the library and jam.
 	 */
-    private Response leaveJamResponse(String substring,
-			Map<String, String> parameters) {
+    private Response removeFromJamResponse(Map<String, String> parameters) {
     	String ipAddr = parameters.get("ip");
     	g.db.deleteJamSongsFromIp(ipAddr);
     	g.db.deleteSongsFromIp(ipAddr);
     	g.uiUpdateHandler.sendMessage(g.uiUpdateHandler.obtainMessage(0));
 		return null;
 	}
+    
+    private Response keepAliveResponse(String ipAddr) {
+    	if (g.jam.checkMaster()) {
+    		//g.jam.setKeepAliveTimestamp(ipAddr);
+    	}
+		return new NanoHTTPD.Response("OK");
+    }
 }
