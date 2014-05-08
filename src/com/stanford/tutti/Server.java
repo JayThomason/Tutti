@@ -401,7 +401,7 @@ public class Server extends NanoHTTPD {
     	String ipAddr = parameters.get("ip");
     	g.db.deleteJamSongsFromIp(ipAddr);
     	g.db.deleteSongsFromIp(ipAddr);
-    	// TODO: update UI accordingly
+    	g.uiUpdateHandler.sendMessage(g.uiUpdateHandler.obtainMessage(0));
 		return null;
 	}
 }
