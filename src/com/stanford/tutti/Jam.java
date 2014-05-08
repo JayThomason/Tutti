@@ -286,7 +286,7 @@ public class Jam {
 	
 	/*
 	 * Starts the keepAliveThread that sends keep alive requests to the server to ensure
-	 * that the jam is not deleted.
+	 * that the jam is not deleted. One request is sent every minute.
 	 */
 	public void startKeepAlive(String serverHostname) {
 		keepAlive = new AtomicBoolean(true);
@@ -296,7 +296,7 @@ public class Jam {
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(10 * 1000);
+						Thread.sleep(60 * 1000);
 						if (keepAlive.get()) {
 							client.get(url, new AsyncHttpResponseHandler() {});
 						}
