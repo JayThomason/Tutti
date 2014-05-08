@@ -710,4 +710,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			}
 		}
 	}
+	
+	/*
+	 * Deletes all songs associated with the given ip address from the jam table.
+	 * 
+	 * Returns the number of rows deleted.
+	 */
+	public int deleteJamSongsFromIp(String ipAddr) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_JAM, KEY_IP + "=" + ipAddr, null);
+	}
+	
+	/*
+	 * Deletes all songs associated with the given ip address from the song table.
+	 * 
+	 * Returns the number of rows deleted.
+	 */
+	public int deleteSongsFromIp(String ipAddr) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_SONGS, KEY_IP + "=" + ipAddr, null);
+	}
 }
