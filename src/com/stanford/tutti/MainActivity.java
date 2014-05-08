@@ -33,7 +33,13 @@ public class MainActivity extends Activity {
 
 		loadLocalMusic(); 
 		initializeJam(); 
-		setWelcomeText(); 
+		setWelcomeText();
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		g.jam.endKeepAlive();
 	}
 
 	/*
@@ -63,7 +69,7 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, HelpMenuActivity.class);
 		startActivity(intent);
 	}
-	
+
 	private void loadLocalMusic() {
 		g.db.dropTable("songs"); 
 		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
@@ -84,7 +90,7 @@ public class MainActivity extends Activity {
 			welcomeText.setText("Welcome back " + g.getUsername() + "!"); 
 		}
 	}
-	
+
 	private void showNameJamDialog() {
 		final EditText input = new EditText(MainActivity.this);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -102,7 +108,7 @@ public class MainActivity extends Activity {
 		setNameDialogShowListener(nameDialog, input);
 		nameDialog.show();
 	}
-	
+
 	private void setNameDialogShowListener(final AlertDialog nameDialog, final EditText input) {
 		nameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
@@ -124,23 +130,19 @@ public class MainActivity extends Activity {
 			}
 		});
 	}
-	
+
 	private void startJam(String jamName, final AlertDialog nameDialog) {
-        try {
-    		(new Server(1234, g)).start();
-			createJamInDatabase(jamName.isEmpty() ? null : jamName);
-			g.jam.setMaster(true);
-			nameDialog.dismiss();
-			Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
-			startActivity(intent);
-        }
-        catch (IOException e) {
-        	e.printStackTrace();
-        }
+		try {
+			(new Server(1234, g)).start();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		createJamInDatabase(jamName.isEmpty() ? null : jamName, nameDialog);
 	}
 
-	private void createJamInDatabase(String name) {
-		String serverHostname = getString(R.string.ec2_server);
+	private void createJamInDatabase(String name, final AlertDialog nameDialog) {
+		final String serverHostname = getString(R.string.ec2_server);
 		Uri.Builder builder = Uri.parse("http://" + serverHostname).buildUpon();
 		builder.path("/createJam");
 		builder.appendQueryParameter("private",  g.getIpAddr());
@@ -152,15 +154,28 @@ public class MainActivity extends Activity {
 		}
 
 		AsyncHttpClient client = new AsyncHttpClient();
-		client.get(builder.build().toString(), new AsyncHttpResponseHandler() {
+		getCreateJam(client, builder.build().toString(), serverHostname, nameDialog);
+	}
+	
+	private void getCreateJam(AsyncHttpClient client, String url,
+			final String serverHostname, final AlertDialog nameDialog) {
+		client.get(url, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 				if (statusCode == 200) {
 					System.out.println("Successfully created jam on server.");
+					g.jam.startKeepAlive(serverHostname);
+					g.jam.setMaster(true);
+					nameDialog.dismiss();
+					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
+					startActivity(intent);
 				}
 				else {
 					System.out.println("Failed to create jam on server.");
 					System.out.println("Response body: " + new String(responseBody));
+					Toast.makeText(MainActivity.this,
+							"Unable to create jam on server." , Toast.LENGTH_SHORT)
+							.show();				
 				}
 			}
 

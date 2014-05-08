@@ -3,10 +3,14 @@ package com.stanford.tutti;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -23,7 +27,9 @@ public class Jam {
 	private HashSet<Client> clientSet;
 	private HashMap<String, String> usernameMap; 
 	private String masterIpAddr;
-	private Globals g; 
+	private Globals g;
+	private Thread keepAliveThread;
+	private AtomicBoolean keepAlive;
 	
 	public Jam(Globals g) {
 		this.g = g; 
@@ -276,5 +282,42 @@ public class Jam {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
+	}
+	
+	/*
+	 * Starts the keepAliveThread that sends keep alive requests to the server to ensure
+	 * that the jam is not deleted.
+	 */
+	public void startKeepAlive(String serverHostname) {
+		keepAlive = new AtomicBoolean(true);
+		final String url = "http://" + serverHostname + "/keepAlive?private=" + g.getIpAddr();
+		keepAliveThread = new Thread() {
+			AsyncHttpClient client = new AsyncHttpClient();
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(10 * 1000);
+						if (keepAlive.get()) {
+							client.get(url, new AsyncHttpResponseHandler() {});
+						}
+						else {
+							return;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		keepAliveThread.start();
+	}
+	
+	/*
+	 * Stops the jam from sending keep alive messages to the server.
+	 */
+	public void endKeepAlive() {
+		if (keepAliveThread != null && keepAlive != null) {
+			keepAlive.set(false);
+		}
 	}
 }
