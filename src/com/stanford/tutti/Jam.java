@@ -65,7 +65,7 @@ public class Jam {
 	public void addClient(Client client) {
 		clientSet.add(client);
 		usernameMap.put(client.getIpAddress(), client.getUsername()); 
-		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
+//		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
 	}
 	
 	public boolean checkMaster() {
