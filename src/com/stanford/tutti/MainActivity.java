@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
 	private void loadLocalMusic() {
 		g.db.dropTable("songs"); 
 		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
-		loaderThread.run();	
+		loaderThread.start();	
 	}
 
 	private void initializeJam() {
