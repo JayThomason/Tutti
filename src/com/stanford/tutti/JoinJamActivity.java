@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.net.Uri;
 import android.net.Uri.Builder;
 
@@ -110,13 +111,18 @@ public class JoinJamActivity extends Activity {
 				
 				Globals g = (Globals) getApplication();
 				String jamName = ((TextView) arg1).getText().toString();
-				
-				if (requestedMap.containsKey(jamName)) { 
-					return; 
-				}
-				requestedMap.put(jamName, "true"); 
-				
 				final String ip = ipMap.get(jamName);
+				
+				if (requestedMap.containsKey(ip)) { 
+					Toast.makeText(g, "Already sent request to join " + jamName, Toast.LENGTH_SHORT).show(); 
+					return; 
+				} else {
+					requestedMap.put(ip, "true"); 
+					Toast.makeText(g, "Requested to join " + jamName, Toast.LENGTH_SHORT).show(); 
+				}
+				
+				
+				
 				final Client masterClient = new Client(g, "", ip, PORT); 
 				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
 					@Override
@@ -134,23 +140,28 @@ public class JoinJamActivity extends Activity {
 			@Override
 			public void handleMessage(Message msg) {
 				String message = (String)msg.obj; 
-				if (message != null) {			
-					final String ipAddr = message.split("//")[0]; 
-					final String username = message.split("//")[1]; 
-
-					g.jam.setMaster(false); 
-					g.jam.setMasterIp(ipAddr);
-					g.jam.setIPUsername(ipAddr, username);
-
-					Client masterClient = new Client(g, username, ipAddr, PORT);
-					g.jam.addClient(masterClient);
-
-					Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
-					getLibraryThread.start();
-
-					Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
-					startActivity(intent);
-					finish();
+				if (message != null) {		
+					String[] tokens = message.split("//"); 
+					final String ipAddr = tokens[1]; 
+					if (tokens[0].equals("ACCEPTED")) {
+						final String username = tokens[2]; 
+	
+						g.jam.setMaster(false); 
+						g.jam.setMasterIp(ipAddr);
+						g.jam.setIPUsername(ipAddr, username);
+	
+						Client masterClient = new Client(g, username, ipAddr, PORT);
+						g.jam.addClient(masterClient);
+	
+						Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+						getLibraryThread.start();
+	
+						Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
+						startActivity(intent);
+						finish();
+					} else if (tokens[0].equals("REJECTED")) {
+						requestedMap.remove(ipAddr); 
+					}
 				}
 			}
 		};
