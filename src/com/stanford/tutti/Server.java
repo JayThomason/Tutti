@@ -38,6 +38,7 @@ public class Server extends NanoHTTPD {
 	private static final String UPDATE_ALBUM_ART = "/updateAlbumArt"; 
 	private static final String JAM_ADD_SONG = "/add"; 
 	private static final String JAM_SET_SONG = "/set"; 
+	private static final String JAM_MOVE_SONG = "/move"; 
 	private static final String JAM_START = "/start"; 
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
@@ -202,6 +203,9 @@ public class Server extends NanoHTTPD {
     	else if (path.startsWith(JAM_SET_SONG)) {
     		return jamSetSongResponse(path.substring(JAM_SET_SONG.length())); 
     	} 
+    	else if (path.startsWith(JAM_MOVE_SONG)) {
+    		return jamMoveSongResponse(parameters.get("from"), parameters.get("to")); 
+    	}
     	else if (path.startsWith(JAM_START)) {
     		return jamStartResponse(); 
     	} 
@@ -318,6 +322,13 @@ public class Server extends NanoHTTPD {
 		}
 		return new NanoHTTPD.Response("Set new currently playing song");
 	}
+	
+	
+	private Response jamMoveSongResponse(String from, String to) {
+		g.jam.changeSongIndexInJam(Integer.parseInt(from), Integer.parseInt(to));
+		return new NanoHTTPD.Response("Moved song index in Jam"); 
+	}
+	
 	
     /*
      * Start playing the Jam. 
