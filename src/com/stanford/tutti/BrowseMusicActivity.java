@@ -170,28 +170,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				if (message != null) {
 					// We've received a String message containing a username
 					// Need to display a "Join Jam?" alert dialog					
-					final String ipAddr = message.split("//")[0]; 
-					final String username = message.split("//")[1]; 
-					
-					View currView = viewPager.getFocusedChild(); 
-					
-					new android.app.AlertDialog.Builder(currView.getContext())
-				    .setTitle("Join Jam Request Received")
-				    .setMessage("Accept Join Jam request from " + username + "?")
-				    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-				        public void onClick(DialogInterface dialog, int whichButton) {
-				        	Client newClient = new Client(g, username, ipAddr, 1234);
-							g.jam.addClient(newClient);
-							g.jam.setIPUsername(ipAddr, username);
-							newClient.acceptJoinJam(new AsyncHttpResponseHandler() { }); 
-					    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
-					    	getLibraryThread.start();
-				        }
-				    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				        public void onClick(DialogInterface dialog, int whichButton) {
-				            // Do nothing.
-				        }
-				    }).show();
+					displayJoinJamRequest(message); 
 				}
 				
 				if (msg.what == 0) {
@@ -236,6 +215,38 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				super.handleMessage(msg);
 			}
 		};		
+	}
+	
+	public void displayJoinJamRequest(String message) {
+		final String ipAddr = message.split("//")[0]; 
+		final String username = message.split("//")[1]; 
+		
+		View currView = viewPager.getFocusedChild(); 
+		
+		new android.app.AlertDialog.Builder(currView.getContext())
+	    .setTitle("Join Jam Request Received")
+	    .setMessage("Accept Join Jam request from " + username + "?")
+	    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int whichButton) {
+	        	// Accept join jam request and request new client's music library. 
+	        	Client newClient = new Client(g, username, ipAddr, 1234);
+				g.jam.addClient(newClient);
+				g.jam.setIPUsername(ipAddr, username);
+				newClient.acceptJoinJam(new AsyncHttpResponseHandler() { 
+					
+				}); 
+		    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+		    	getLibraryThread.start();
+	        }
+	    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int whichButton) {
+	            // Reject join jam request. 
+	        	Client newClient = new Client(g, username, ipAddr, 1234); 
+	        	newClient.rejectJoinJam(new AsyncHttpResponseHandler() { 
+	        		
+	        	}); 
+	        }
+	    }).show();
 	}
 	
 	public class TabsPagerAdapter extends FragmentPagerAdapter {
