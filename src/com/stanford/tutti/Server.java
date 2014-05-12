@@ -30,6 +30,7 @@ public class Server extends NanoHTTPD {
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
 	private static final String ACCEPT_JOIN_JAM = "/acceptJoinJam"; 
+	private static final String REJECT_JOIN_JAM = "/rejectJoinJam"; 
 	private static final String UPDATE_JAM = "/jam"; 
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String UPDATE_LIBRARY = "/updateLibrary";
@@ -109,6 +110,9 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(ACCEPT_JOIN_JAM)) {
     		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username")); 
     	}
+    	else if (uri.startsWith(REJECT_JOIN_JAM)) {
+    		return rejectJoinJamResponse(); 
+    	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
     	} 
@@ -176,6 +180,15 @@ public class Server extends NanoHTTPD {
 			g.joinJamHandler.sendMessage(msg);
 		}
 		return new NanoHTTPD.Response("Joining jam");
+    }
+    
+    private Response rejectJoinJamResponse() {
+    	if (g.joinJamHandler != null) {
+    		Message msg = g.joinJamHandler.obtainMessage(); 
+    		msg.what = 0; 
+    		g.joinJamHandler.sendMessage(msg); 
+    	}
+    	return new NanoHTTPD.Response("Not joining jam"); 
     }
     
     /*
