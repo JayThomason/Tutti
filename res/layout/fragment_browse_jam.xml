@@ -10,7 +10,7 @@
         android:id="@+id/jamListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="95dp" >
+        android:paddingBottom="60dp" >
 
     </ListView>
 
@@ -28,11 +28,12 @@
     	    android:id="@+id/progress_time" 
     	    android:layout_height="wrap_content" 
     	    android:layout_width="wrap_content" />
-         
+      
         <SeekBar 
             android:id="@+id/progress_bar" 
             android:layout_height="wrap_content" 
-            android:layout_width="230dp" 
+            android:layout_width="300dp" 
+            android:maxHeight="3dp"
             android:paddingRight="15dp"
             android:paddingLeft="15dp"
             android:progressDrawable="@drawable/custom_progress_bar"
@@ -57,8 +58,8 @@
          
         <ImageButton
             android:id="@+id/song_media_player_back_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="7dp"
             android:contentDescription="@string/imgdesc"
@@ -66,17 +67,17 @@
 
         <ImageButton
             android:id="@+id/song_media_player_start_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="7dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="9dp"
             android:layout_marginRight="7dp"
             android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_play_button_v2" />
 
         <ImageButton
             android:id="@+id/song_media_player_pause_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
             android:contentDescription="@string/imgdesc"
@@ -84,8 +85,8 @@
 
         <ImageButton
             android:id="@+id/song_media_player_next_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="20dp"
             android:contentDescription="@string/imgdesc"
