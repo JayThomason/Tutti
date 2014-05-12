@@ -5,11 +5,11 @@
     <gradient
         android:gradientRadius="40"
         android:startColor="#FF0927"
-        android:endColor="#ffe6e9"
+        android:endColor="#FF0927"
         android:type="radial" />
 
     <size
-        android:height="30dp"
-        android:width="30dp" />
+        android:height="15dp"
+        android:width="15dp" />
 
 </shape>
