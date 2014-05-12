@@ -37,6 +37,7 @@ public class JoinJamActivity extends Activity {
 	private Handler h;
 	private final String path = "/discoverJams";
 	private Map<String, String> ipMap;
+	private Map<String, String> requestedMap; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class JoinJamActivity extends Activity {
 		g = (Globals) getApplication();
 
 		ipMap = new HashMap<String, String>();
+		requestedMap = new HashMap<String, String>(); 
 
 		server = new Server(PORT, g);
 		try {
@@ -107,6 +109,9 @@ public class JoinJamActivity extends Activity {
 					long arg3) {
 				Globals g = (Globals) getApplication();
 				String jamName = ((TextView) arg1).getText().toString();
+				
+				requestedMap.put(jamName, "true"); 
+				
 				final String ip = ipMap.get(jamName);
 				final Client masterClient = new Client(g, "", ip, PORT); 
 				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {

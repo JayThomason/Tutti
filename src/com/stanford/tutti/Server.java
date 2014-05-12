@@ -150,14 +150,7 @@ public class Server extends NanoHTTPD {
     }
     
     /*
-     * Responds to a request to join the jam. Should pop up a box in the ui 
-     * asking the user to accept/reject the join.
-     * 
-     * Right now it just always allows it.
-     * 
-     * When allowing the other phone to join the jam it should also create a
-     * client thread to request the local music on the joining phone and
-     * sync jam libraries.
+     * Responds to a request to join the jam. 
      */
     private Response joinJamResponse(String otherIpAddr, String username) {
     	if (username == null) {
