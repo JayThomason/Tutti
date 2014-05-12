@@ -336,6 +336,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(TABLE_JAM, args, KEY_HASH + " = '" + hashCode + "'", null);
     }
     
+    public void exchangeSongIndexInJam(int from, int to) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_JAM_INDEX, -2);
+        db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + from + "", null);
+        
+        args = new ContentValues();
+        args.put(KEY_JAM_INDEX, from);
+        db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + to + "", null);
+        
+        args = new ContentValues();
+        args.put(KEY_JAM_INDEX, to);
+        db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + -2 + "", null);
+    }
+    
     public void setAlbumArt(String albumTitle, String path) {
     	String escapedAlbumTitle = albumTitle.replace("'",  "''");
         ContentValues args = new ContentValues();
