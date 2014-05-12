@@ -44,20 +44,18 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private TextView mediaTimeCurrent;
 	private TextView mediaTimeEnd;
 	private Client masterClient;	
+	
+	private BrowseMusicAdapter adapter; 
 
 	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener()
 	{
 	    @Override
 	    public void drop(int from, int to)
 	    {
-	    	/*
 	        if (from != to)
 	        {
-	            String item = adapter.getItem(from);
-	            adapter.remove(item);
-	            adapter.insert(item, to);
+	            g.db.exchangeSongIndexInJam(from, to); 
 	        }
-	        */
 	    }
 	};
 	
@@ -286,7 +284,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		String[] columns = new String[] { "art", "title", "addedBy" };
 		int[] to = new int[] { R.id.browserArt, R.id.browserText, R.id.ownerText };
 
-		BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to); 
+		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to); 
 		listView.setAdapter(adapter);
 		listView.setFastScrollEnabled(true);
 
