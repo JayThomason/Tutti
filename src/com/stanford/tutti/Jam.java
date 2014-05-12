@@ -144,6 +144,13 @@ public class Jam {
 		return songList.get(index); 
 	}
 	
+	public void changeSongIndexInJam(int from, int to) {
+		g.db.changeSongIndexInJam(from, to);
+		Song temp = songList.get(from); 
+		songList.remove(from); 
+		songList.set(to, temp);  
+	}
+	
 	public boolean containsSong(Song song) {
 		for (Song jamSong : songList) {
 			if (jamSong.hashCode() == song.hashCode()) {
