@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.os.Message;
 import android.provider.MediaStore;
 
 /**
@@ -107,6 +108,12 @@ public class MusicLibraryLoaderThread extends Thread {
 	            g.db.addSongToLibrary(song); 
 	        }
 	        cursor.close(); 
+	        
+	    	if (g.uiUpdateHandler != null) {
+	    		Message msg = g.uiUpdateHandler.obtainMessage(); 
+	    		msg.what = 0;  
+	    		g.uiUpdateHandler.sendMessage(msg); 
+	    	}
 		}	
 	}
 }

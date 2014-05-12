@@ -65,9 +65,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	    @Override
 	    public void remove(int which)
 	    {
-	    	/*
-	        adapter.remove(adapter.getItem(which));
-	        */
+	    	g.db.removeSongFromJam(which); 
 	    }
 	};
 
