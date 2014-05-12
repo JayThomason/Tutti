@@ -102,7 +102,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -115,7 +114,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
-	
 	}
 	
 	private void setupTabHighlightListener() {
