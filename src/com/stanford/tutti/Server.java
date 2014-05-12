@@ -111,7 +111,7 @@ public class Server extends NanoHTTPD {
     		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username")); 
     	}
     	else if (uri.startsWith(REJECT_JOIN_JAM)) {
-    		return rejectJoinJamResponse(); 
+    		return rejectJoinJamResponse(headers.get(HTTP_CLIENT_IP)); 
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
     		return getLocalLibraryResponse();
@@ -176,16 +176,16 @@ public class Server extends NanoHTTPD {
     private Response acceptJoinJamResponse(String otherIpAddr, String username) {
 		if (g.joinJamHandler != null) {
 			Message msg = g.joinJamHandler.obtainMessage();
-			msg.obj = otherIpAddr + "//" + username; 
+			msg.obj = "ACCEPTED//" + otherIpAddr + "//" + username; 
 			g.joinJamHandler.sendMessage(msg);
 		}
 		return new NanoHTTPD.Response("Joining jam");
     }
     
-    private Response rejectJoinJamResponse() {
+    private Response rejectJoinJamResponse(String otherIpAddr) {
     	if (g.joinJamHandler != null) {
     		Message msg = g.joinJamHandler.obtainMessage(); 
-    		msg.what = 0; 
+    		msg.obj = "REJECTED//" + otherIpAddr; 
     		g.joinJamHandler.sendMessage(msg); 
     	}
     	return new NanoHTTPD.Response("Not joining jam"); 
