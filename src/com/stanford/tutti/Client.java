@@ -61,6 +61,11 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
+	public void requestMoveSong(String from, String to, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/move/", "?from=" + from + "&to=" + to); 
+		client.get(url, null, responseHandler); 
+	}
+	
 	public void refreshJam(AsyncHttpResponseHandler responseHandler) {
 		String url = getUrl("/getJam/", ""); 
 		client.get(url, null, responseHandler); 
