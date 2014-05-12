@@ -148,7 +148,17 @@ public class Jam {
 		g.db.changeSongIndexInJam(from, to);
 		Song temp = songList.get(from); 
 		songList.remove(from); 
-		songList.set(to, temp);  
+		songList.add(to, temp);  
+		
+		if (currentSongIndex == from) {
+			currentSongIndex = to; 
+		} else if (currentSongIndex == to) {
+			if (from < to) {
+				currentSongIndex--; 
+			} else if (from > to) {
+				currentSongIndex++; 
+			}
+		}
 	}
 	
 	public boolean containsSong(Song song) {
