@@ -2,6 +2,7 @@ package com.stanford.tutti;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
@@ -63,34 +64,34 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         text += songTitle; 
         titleView.setText(text); 
         
-        if (columns.length == 2) {
-            Globals g = (Globals) context.getApplicationContext(); 
-            String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
-            if (username == null) 
-            	username = ""; 
-            
-        	bindLibraryView(titleView, ownerView, cursor, username); 
+        if (columns.length == 2) { 
+        	bindLibraryView(titleView, ownerView, cursor); 
         } else {
-        	bindJamView(titleView, ownerView, cursor); 
-        	String addedBy = cursor.getString(cursor.getColumnIndex(columns[2])); 
-        	ownerView.setText("Added by: " + addedBy);
+        	bindJamView(view, titleView, ownerView, cursor); 
         }
     }
     
     
-    private void bindLibraryView(TextView titleView, TextView ownerView, Cursor cursor, String username) {
+    private void bindLibraryView(TextView titleView, TextView ownerView, Cursor cursor) {
+        String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
+        if (username == null) 
+        	username = ""; 
         String title = cursor.getString(cursor.getColumnIndex(columns[1])); 
         titleView.setText(title); 
         ownerView.setText(username); 
     }
     
     
-    private void bindJamView(TextView titleView, TextView ownerView, Cursor cursor) {
+    private void bindJamView(View mainView, TextView titleView, TextView ownerView, Cursor cursor) {
         String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 
         int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
         String text = ""; 
-        if (g.jam != null && g.jam.getCurrentSongIndex() == songIndex) {
-        	text += "Now playing: "; 
+        if (g.jam != null) {
+        	if (songIndex == g.jam.getCurrentSongIndex()) {
+        		text += "Now playing: "; 
+        	} else if (songIndex < g.jam.getCurrentSongIndex()) {
+        		mainView.setBackgroundColor(Color.rgb(0, 0, 0));
+        	}
         }
         text += songTitle; 
         titleView.setText(text); 
