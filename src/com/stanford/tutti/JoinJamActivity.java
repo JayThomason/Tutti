@@ -107,9 +107,13 @@ public class JoinJamActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
+				
 				Globals g = (Globals) getApplication();
 				String jamName = ((TextView) arg1).getText().toString();
 				
+				if (requestedMap.containsKey(jamName)) { 
+					return; 
+				}
 				requestedMap.put(jamName, "true"); 
 				
 				final String ip = ipMap.get(jamName);
