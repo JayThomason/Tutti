@@ -55,6 +55,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	        if (from != to)
 	        {
 	            g.db.exchangeSongIndexInJam(from, to); 
+	            initializeJamList(); 
 	        }
 	    }
 	};
