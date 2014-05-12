@@ -326,6 +326,26 @@ public class Server extends NanoHTTPD {
 	
 	private Response jamMoveSongResponse(String from, String to) {
 		g.jam.changeSongIndexInJam(Integer.parseInt(from), Integer.parseInt(to));
+		
+		if (g.uiUpdateHandler != null) {
+			Message msg = g.uiUpdateHandler.obtainMessage();
+			msg.what = 7; 
+			g.uiUpdateHandler.sendMessage(msg);
+		}
+		
+		if (g.jam.checkMaster()) {
+			for (Client client : g.jam.getClientSet()) {
+				if (client.getIpAddress().equals(g.getIpAddr())) 
+					continue; 
+				client.requestMoveSong(from, to, new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						System.out.println("request to move song on client returned: " + statusCode);
+					}
+				});
+			}
+		}
+		
 		return new NanoHTTPD.Response("Moved song index in Jam"); 
 	}
 	
