@@ -28,7 +28,10 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private ImageButton pauseButton;
 	private ImageButton backButton;
 	private ImageButton nextButton;
-	private ListView listView;
+	
+	//private ListView listView;
+	private DragSortListView listView; 
+	
 	private final int port = 1234;
 
 	private Cursor cursor; 
@@ -40,8 +43,37 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private SeekBar seekBar;  
 	private TextView mediaTimeCurrent;
 	private TextView mediaTimeEnd;
-	private Client masterClient;
+	private Client masterClient;	
 
+	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener()
+	{
+	    @Override
+	    public void drop(int from, int to)
+	    {
+	    	/*
+	        if (from != to)
+	        {
+	            String item = adapter.getItem(from);
+	            adapter.remove(item);
+	            adapter.insert(item, to);
+	        }
+	        */
+	    }
+	};
+	
+	private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener()
+	{
+	    @Override
+	    public void remove(int which)
+	    {
+	    	/*
+	        adapter.remove(adapter.getItem(which));
+	        */
+	    }
+	};
+
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -50,8 +82,30 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
 
-		listView = (ListView) rootView.findViewById(R.id.jamListView);
+		
+		
+		
+		// listView = (ListView) rootView.findViewById(R.id.jamListView);
 
+		listView = (DragSortListView) rootView.findViewById(R.id.jamListView);
+		listView.setDropListener(onDrop);
+	    listView.setRemoveListener(onRemove);
+
+	    DragSortController controller = new DragSortController(listView);
+	    controller.setDragHandleId(R.id.browserText);
+	            //controller.setClickRemoveId(R.id.);
+	    controller.setRemoveEnabled(false);
+	    controller.setSortEnabled(true);
+	    controller.setDragInitMode(1);
+	            //controller.setRemoveMode(removeMode);
+
+	    listView.setFloatViewManager(controller);
+	    listView.setOnTouchListener(controller);
+	    listView.setDragEnabled(true);
+		
+	    
+	    
+	    
 		g.playerListener = this; 
 		g.jam.mediaPlayer.setOnPreparedListener(this); 
 
