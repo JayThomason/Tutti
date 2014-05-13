@@ -27,15 +27,14 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class BrowseSongsFragment extends Fragment {
 
-	private Cursor cursor = null; 
 	private Globals g; 
 	private View rootView; 
-	private ViewPager viewPager; 
 	private ListView listView; 
 	private EditText searchBar; 
 	
 	private String columns[]; 
 	private int views[]; 
+	private BrowseMusicAdapter adapter; 
 	
 	private FilterQueryProvider searchFilter;
 
@@ -47,48 +46,38 @@ public class BrowseSongsFragment extends Fragment {
 			Bundle savedInstanceState) {
 		
 		rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
-		
 		listView = (ListView) rootView.findViewById(R.id.songListView); 
-		listView.setFastScrollEnabled(true);
-		listView.setTextFilterEnabled(true);
-		
 		searchBar = (EditText) rootView.findViewById(R.id.song_search_box);
-
-
-		viewPager = (ViewPager) container.findViewById(R.id.pager);
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
 		
-		columns = new String[] { "art", "title" };
-		views = new int[] { R.id.browserArt, R.id.browserText };
-
-		initializeQueryFilter(); 
 		initializeSongList(); 
+		initializeQueryFilter(); 
 		initializeSearchBar(); 
 
 		return rootView;
 	}
-	
-	public void initializeQueryFilter() {
-		searchFilter = new FilterQueryProvider() {
-			public Cursor runQuery(CharSequence constraint) {
-				if (!g.currentAlbumView.equals("") && !g.currentArtistView.equals("")) {
-					return g.db.searchSongsByArtistAndAlbum(constraint, g.currentArtistView, g.currentAlbumView); 
-				} else if (!g.currentArtistView.equals("")) {
-					return g.db.searchSongsByArtist(constraint, g.currentArtistView); 
-				} else {
-					return g.db.searchSongs(constraint); 
-				} 
-			}
-		}; 
-	}
 
 	public void initializeSongList() {
-		searchBar.setText("");
+		Cursor cursor = g.db.getAllSongs(); 
 		
-		if (cursor != null) 
-			cursor.close(); 
-
+		columns = new String[] { "art", "title" };
+		views = new int[] { R.id.browserArt, R.id.browserText };
+		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views); 
+		
+		adapter.setFilterQueryProvider(searchFilter);
+		listView.setAdapter(adapter);
+		
+		listView.setFastScrollEnabled(true);
+		listView.setTextFilterEnabled(true);
+		
+		setSongListItemClickListener();
+	}
+	
+	
+	public void refreshSongList() {
+		Cursor cursor; 
+		
 		if (!g.currentAlbumView.equals("") && !g.currentAlbumView.equals("Music") && !g.currentArtistView.equals("")) {
 			cursor = g.db.getSongsByArtistAndAlbum(g.currentArtistView, g.currentAlbumView); 
 		} else if (!g.currentAlbumView.equals("") && !g.currentAlbumView.equals("Music")) {
@@ -99,11 +88,8 @@ public class BrowseSongsFragment extends Fragment {
 			cursor = g.db.getAllSongs(); 
 		}
 
-		BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views); 
-		adapter.setFilterQueryProvider(searchFilter);
-		listView.setAdapter(adapter);
-
-		setSongListItemClickListener();
+		Cursor oldCursor = adapter.swapCursor(cursor); 
+		oldCursor.close(); 
 	}
 
 
@@ -147,7 +133,6 @@ public class BrowseSongsFragment extends Fragment {
 					}
 				}
 				else {
-					// will want to refactor this to use the Client or a similar Master class
 					Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
 					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
 						@Override
@@ -171,6 +156,20 @@ public class BrowseSongsFragment extends Fragment {
 				}
 			}
 		});
+	}
+	
+	public void initializeQueryFilter() {
+		searchFilter = new FilterQueryProvider() {
+			public Cursor runQuery(CharSequence constraint) {
+				if (!g.currentAlbumView.equals("") && !g.currentArtistView.equals("")) {
+					return g.db.searchSongsByArtistAndAlbum(constraint, g.currentArtistView, g.currentAlbumView); 
+				} else if (!g.currentArtistView.equals("")) {
+					return g.db.searchSongsByArtist(constraint, g.currentArtistView); 
+				} else {
+					return g.db.searchSongs(constraint); 
+				} 
+			}
+		}; 
 	}
 
 	private void initializeSearchBar() {
