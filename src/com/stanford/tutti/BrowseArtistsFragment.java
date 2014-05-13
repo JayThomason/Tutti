@@ -51,15 +51,6 @@ public class BrowseArtistsFragment extends Fragment {
         return rootView;
     }
     
-    
-    public void initializeQueryFilter() {
-    	searchFilter = new FilterQueryProvider() {
-	        public Cursor runQuery(CharSequence constraint) {
-	            return g.db.searchArtists(constraint);
-	        }
-	    }; 
-    }
-    
 
 	public void initializeArtistList() {		
 		columns = new String[] { "art", "artist" };
@@ -108,6 +99,14 @@ public class BrowseArtistsFragment extends Fragment {
 			}
 		});
 	}
+	
+    public void initializeQueryFilter() {
+    	searchFilter = new FilterQueryProvider() {
+	        public Cursor runQuery(CharSequence constraint) {
+	            return g.db.searchArtists(constraint);
+	        }
+	    }; 
+    }
 	
 	private void initializeSearchBar() {
 	    searchBar.addTextChangedListener(new TextWatcher() {
