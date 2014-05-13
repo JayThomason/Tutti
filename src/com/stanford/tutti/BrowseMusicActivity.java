@@ -180,7 +180,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 							songsFragment.refreshSongList(); 
 					} else if (index == 2) {
 						if (jamFragment != null) 
-							jamFragment.initializeJamList(); 
+							jamFragment.refreshJamList(); 
 					}
 				} else if (msg.what == 1) {
 					artistsFragment.initializeArtistList(); 
