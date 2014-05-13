@@ -8,7 +8,9 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class BrowseMusicAdapter extends SimpleCursorAdapter {
@@ -58,9 +60,22 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         String title = cursor.getString(cursor.getColumnIndex("title")); 
         if (title.equals("DISPLAY_ALBUM")) {
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
-            titleView.setText("ALBUM: " + cursor.getString(cursor.getColumnIndex("album"))); 
+            titleView.setText("ALBUM: " + cursor.getString(cursor.getColumnIndex("album")));  
+            
+            LayoutParams layoutParams = artView.getLayoutParams(); 
+            layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_large);
+            layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_large); 
+            artView.setLayoutParams(layoutParams); 
+            artView.requestLayout(); 
+           
             return; 
-        } 
+        } else {
+            LayoutParams layoutParams = artView.getLayoutParams(); 
+            layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_small);
+            layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_small); 
+            artView.setLayoutParams(layoutParams); 
+            artView.requestLayout(); 
+        }
         
         if (columns.length == 2) { 
         	bindArtistsView(view, cursor); 
