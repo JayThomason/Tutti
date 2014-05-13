@@ -54,7 +54,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	        if (from != to)
 	        {
 	            g.jam.changeSongIndexInJam(from, to); 
-	            initializeJamList(); 
+	            refreshJamList(); 
 	        	if (g.jam.checkMaster()) {
 		            for (Client client : g.jam.getClientSet()) {
 		            	client.requestMoveSong(Integer.toString(from), Integer.toString(to), new AsyncHttpResponseHandler() {
