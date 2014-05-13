@@ -76,6 +76,8 @@ public class MusicLibraryLoaderThread extends Thread {
 	        	    null, 
 	        	    MediaStore.Audio.Albums.ARTIST + " ASC");
 	        
+	        ArrayList<String> albumList = new ArrayList<String>(); 
+	        
 	        while (cursor.moveToNext()) {
 	            String songTitle = cursor.getString(
 	            		cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
@@ -87,6 +89,7 @@ public class MusicLibraryLoaderThread extends Thread {
 	            song.setAlbum(albumTitle);
 	            song.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
 	            
+	            String artPath = ""; 
 	            if (albumTitle != "") {
 	            	song.setTrackNum(Integer.parseInt(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK))));
 	            	
@@ -96,7 +99,6 @@ public class MusicLibraryLoaderThread extends Thread {
 		                    new String[] { albumTitle }, 
 		                    null);
 	
-		            String artPath = ""; 
 		            if (artCursor.moveToFirst() && artCursor.getString(1) != null) {
 		            	artPath = artCursor.getString(1);
 		            }
@@ -106,10 +108,22 @@ public class MusicLibraryLoaderThread extends Thread {
 	            } else {
 	            	song.setTrackNum(0);
 	            	
-	            	// SET DEFAULT ALBUM ART
+	            	// SET DEFAULT ALBUM ART??
 	            }
 	            
 	            song.setIpAddr(g.getIpAddr());
+	            
+	            if (!albumList.contains(albumTitle)) {
+	            	Song albumSong = new Song("DISPLAY_ALBUM", "", true); 
+	            	albumSong.setAlbum(albumTitle);
+	            	albumSong.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))); 
+	            	albumSong.setTrackNum(-1); 
+	            	albumSong.setAlbumArt(artPath);
+	            	albumSong.setIpAddr(g.getIpAddr());
+	            	g.db.addSongToLibrary(albumSong); 
+	            	albumList.add(albumTitle); 
+	            }
+	            
 	            
 	            g.db.addSongToLibrary(song); 
 	        }
