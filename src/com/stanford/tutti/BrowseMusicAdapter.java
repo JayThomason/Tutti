@@ -70,14 +70,16 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             artView.setLayoutParams(layoutParams); 
             artView.requestLayout(); 
             
+            
+            /*
             if (view != null) {
-            	/*
+            	view.getLayoutParams(); 
             	if (p != null){
 		            p.setMargins(0, 50, 0, 0);
 		            view.requestLayout();
             	}
-            	*/
             }
+            */
            
            
             return; 
@@ -117,11 +119,26 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	
         String title = cursor.getString(cursor.getColumnIndex("title")); 
         String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+        
+        
+        int trackNum = cursor.getInt(cursor.getColumnIndex("trackNum")); 
+        if (trackNum > 1000) {
+        	trackNum %= 1000; 
+        }
 
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
         	username = ""; 
-        titleView.setText(artist + ": " + title); 
+        
+        String titleText = ""; 
+        if (trackNum != 0) {
+        	titleText += trackNum + ". "; 
+        }
+        if (g.currentArtistView.equals("")) {
+        	titleText += artist + ": "; 
+        }
+        titleText += title; 
+    	titleView.setText(titleText); 
         ownerView.setText(username); 
     }
     
