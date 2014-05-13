@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 public class BrowseMusicAdapter extends SimpleCursorAdapter {
 
-    private Context mContext;
-    private Context appContext;
     private int layout;
     private Cursor cr;
     private String[] columns; 
