@@ -593,11 +593,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	        	String title = songCursor.getString(COL_TITLE);
 	        	String path = songCursor.getString(COL_PATH);
 	        	String ip = songCursor.getString(COL_IP); 
+	        	int trackNum = songCursor.getInt(COL_TRACK_NUM); 
 	        	
 	    		try {
 	    			song.put("title", title);
 	    			song.put("path", path);
-	    			song.put("ip", ip); 	    			
+	    			song.put("ip", ip); 	
+	    			song.put("num", trackNum); 
 	    			songArray.put(song); 
 	    		} catch (JSONException e) {
 	    			e.printStackTrace();
@@ -670,11 +672,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						String songTitle = (String)jsonSong.get("title"); 
 						String songPath = (String)jsonSong.get("path");
 						String songIp = (String)jsonSong.get("ip"); 
+						int trackNum = Integer.parseInt((String)jsonSong.get("num")); 
 						Song song = new Song(songTitle, songPath, false);
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
 						song.setIpAddr(songIp);
 						song.setAlbumArt("");
+						song.setTrackNum(trackNum);
 												
 						addSongToLibrary(song); 
 					}
