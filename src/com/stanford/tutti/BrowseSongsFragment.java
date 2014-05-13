@@ -143,10 +143,6 @@ public class BrowseSongsFragment extends Fragment {
 						@Override
 						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 							System.out.println("request to add song to master returned: " + statusCode);
-
-							if (statusCode == 200) {
-
-							}
 						}
 					});
 				}
