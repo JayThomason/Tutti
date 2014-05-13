@@ -175,11 +175,21 @@ public class Jam {
 	}
 	
 	
-	// THIS SHOULD CLEAR INDICES IN THE DB AS WELL
 	public void clearSongs() {
+		g.db.clearJam(); 
 		songList = new ArrayList<Song>(); 
 		currentSong = null; 
 		currentSongIndex = -1; 
+	}
+	
+	
+	public void removeSong(int index) {
+		g.db.removeSongFromJam(index); 
+		
+		songList.remove(index); 
+		if (currentSongIndex > index) {
+			currentSongIndex--; 
+		}
 	}
 	
 	
