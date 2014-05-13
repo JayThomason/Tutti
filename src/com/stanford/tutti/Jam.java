@@ -192,6 +192,7 @@ public class Jam {
 		} else if (currentSongIndex == index) {
 			currentSong = null; 
 			currentSongIndex = -1; 
+			playCurrentSong(); 
 		}
 	}
 	

@@ -377,8 +377,7 @@ public class Server extends NanoHTTPD {
 				});
 			}
 		}
-		
-		return new NanoHTTPD.Response("Moved song index in Jam"); 
+		return new NanoHTTPD.Response("Removed song from Jam"); 
 	}
 	
 	

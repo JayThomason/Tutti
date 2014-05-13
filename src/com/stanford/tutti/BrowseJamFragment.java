@@ -75,9 +75,9 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener()
 	{
 	    @Override
-	    public void remove(int which)
+	    public void remove(int index)
 	    {
-	    	g.db.removeSongFromJam(which); 
+	    	g.jam.removeSong(index); 
 	    }
 	};
 
