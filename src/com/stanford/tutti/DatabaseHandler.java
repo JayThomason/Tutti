@@ -443,7 +443,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(table, null, null); 
     }
     
-    private Song rowToSong(Cursor cursor) {
+    public Song rowToSong(Cursor cursor) {
     	boolean local = false; 
     	if (Integer.parseInt(cursor.getString(COL_LOCAL)) == 1) {
     		local = true; 
