@@ -71,7 +71,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             artView.requestLayout(); 
             
             if (view != null) {
-            	AbsListView.LayoutParams p = (AbsListView.LayoutParams) view.getLayoutParams();
             	/*
             	if (p != null){
 		            p.setMargins(0, 50, 0, 0);

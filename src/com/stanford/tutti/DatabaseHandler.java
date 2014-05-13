@@ -672,7 +672,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						String songTitle = (String)jsonSong.get("title"); 
 						String songPath = (String)jsonSong.get("path");
 						String songIp = (String)jsonSong.get("ip"); 
-						int trackNum = Integer.parseInt((String)jsonSong.get("num")); 
+						int trackNum = jsonSong.getInt("num"); 
 						Song song = new Song(songTitle, songPath, false);
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
