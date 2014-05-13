@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,44 +16,36 @@ import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.AsyncTaskLoader;
  
 public class BrowseArtistsFragment extends Fragment {
 	
-	private Cursor cursor = null; 
 	private Globals g; 
 	private View rootView; 
 	private ListView listView; 
-	private ViewPager viewPager; 
 	private EditText searchBar;
 	
 	private String columns[]; 
 	private int views[]; 
+	private BrowseMusicAdapter adapter; 
 	
 	private FilterQueryProvider searchFilter;
-	
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
      	
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
-        
-        listView = (ListView) rootView.findViewById(R.id.artistListView);
-	    listView.setFastScrollEnabled(true);
-	    listView.setTextFilterEnabled(true);
-
+		listView = (ListView) rootView.findViewById(R.id.artistListView);
 	    searchBar = (EditText) rootView.findViewById(R.id.artist_search_box);
 
-        
         g = (Globals) rootView.getContext().getApplicationContext(); 
-         
-        viewPager = (ViewPager) container.findViewById(R.id.pager);
         
-		columns = new String[] { "art", "artist" };
-	    views = new int[] { R.id.browserArt, R.id.browserText };
-        
-	    initializeQueryFilter(); 
         initializeArtistList(); 
+	    initializeQueryFilter(); 
         initializeSearchBar(); 
         
         return rootView;
@@ -71,19 +62,27 @@ public class BrowseArtistsFragment extends Fragment {
     
 
 	public void initializeArtistList() {		
-		searchBar.setText("");
-		
-		if (cursor != null) 
-	    	cursor.close(); 
-		
-		cursor = g.db.getAllArtists(); 
+		columns = new String[] { "art", "artist" };
+	    views = new int[] { R.id.browserArt, R.id.browserText };
 	    
-	    BrowseMusicAdapter adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
+		Cursor cursor = g.db.getAllArtists(); 
+	    adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
 	    adapter.setFilterQueryProvider(searchFilter);
-	    listView.setAdapter(adapter);
-	    		
-		setArtistListItemClickListener();		
+	    listView.setAdapter(adapter); 
+	    
+	    listView.setFastScrollEnabled(true);
+	    listView.setTextFilterEnabled(true);	
+	    
+	    setArtistListItemClickListener();
+	}  
+	
+	
+	public void refreshArtistList() {
+		Cursor newCursor = g.db.getAllArtists(); 
+	    Cursor oldCursor = adapter.swapCursor(newCursor);
+	    oldCursor.close(); 
 	}
+	
 	
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
