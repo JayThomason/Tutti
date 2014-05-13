@@ -104,7 +104,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		if (g.jam.checkMaster()) {
 			initializeSeekBar(); 
 		} else {
-			seekBar.setEnabled(false); 
+			seekBar.setVisibility(View.GONE); 
 		}
 
 		assignButtons();
