@@ -369,6 +369,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	    db.execSQL(restructureQuery, updateArgs);
     }
     
+    public void clearJam() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_JAM, null, null);
+    }
+    
     public void setAlbumArt(String albumTitle, String path) {
     	String escapedAlbumTitle = albumTitle.replace("'",  "''");
         ContentValues args = new ContentValues();
