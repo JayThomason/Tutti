@@ -32,6 +32,9 @@ public class Song {
 	/* Username that added this song to the Jam */
 	private String addedBy = ""; 
 	
+	/* Track number of this song on its album, if any */
+	private int trackNum = 0; 
+	
 	
 	/*
 	 * Constructor
@@ -129,6 +132,14 @@ public class Song {
 	
 	public void setAddedBy(String addedBy) {
 		this.addedBy = addedBy; 
+	}
+	
+	public int getTrackNum() {
+		return trackNum; 
+	}
+	
+	public void setTrackNum(int num) {
+		trackNum = num; 
 	}
 	
 	@Override
