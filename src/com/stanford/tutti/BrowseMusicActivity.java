@@ -189,11 +189,11 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				} else if (msg.what == 3) {
 					if (songsFragment != null)
 						songsFragment.refreshSongList(); 
-			        viewPager.setCurrentItem(2); 
+			        viewPager.setCurrentItem(1); 
 				} else if (msg.what == 4) {
 					if (jamFragment != null)
 						jamFragment.refreshJamList(); 
-					viewPager.setCurrentItem(3); 
+					viewPager.setCurrentItem(2); 
 				} else if (msg.what == 5) {
 					
 				} else if (msg.what == 6) {

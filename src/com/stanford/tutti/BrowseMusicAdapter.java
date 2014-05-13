@@ -22,7 +22,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     private int noArtImgID;
     
     private String lastAlbum = ""; 
-
+    
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
         this.layout=layout;
@@ -47,6 +47,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	
         super.bindView(view, context, cursor);
     	                
+        System.out.println("BINDING VIEW: " + cursor.getString(cursor.getColumnIndex("title"))); 
+        
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 
         if (artPath != null && !artPath.equals("")) {
@@ -54,17 +56,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         } else {
             artView.setImageResource(noArtImgID);
         }
-        
-        TextView titleView = (TextView) view.findViewById(R.id.browserText); 
-
-        // SHOULD BE DOING THIS BY HASH CODE
-        String songTitle = cursor.getString(cursor.getColumnIndex("title")); 
-        String text = ""; 
-        if (g.jam != null && g.jam.getCurrentSong() != null && g.jam.getCurrentSong().getTitle().equals(songTitle)) {
-        	text += "Now playing: "; 
-        }
-        text += songTitle; 
-        titleView.setText(text); 
         
         if (columns.length == 2) { 
         	bindArtistsView(view, cursor); 
@@ -96,18 +87,22 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
         TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
     	
+        String title = cursor.getString(cursor.getColumnIndex("title")); 
+
     	String album = cursor.getString(cursor.getColumnIndex("album"));
     	System.out.println("BINDING SONGS VIEW, ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
     	if (!album.equals(lastAlbum)) {
-            albumView.setText("NEW ALBUM: " + album); 
+    		System.out.println("SETTING NEW ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
+            albumView.setText("NEW ALBUM: " + album + " " + title); 
             lastAlbum = album; 
     	} else {
+    		System.out.println("HIDING ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
     		albumView.setVisibility(View.GONE); 
+    		//albumView.setBackgroundColor(Color.rgb(0, 0, 0));
     	}
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
         	username = ""; 
-        String title = cursor.getString(cursor.getColumnIndex("title")); 
         titleView.setText(title); 
         ownerView.setText(username); 
     }
