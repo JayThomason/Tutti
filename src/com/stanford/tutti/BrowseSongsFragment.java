@@ -114,13 +114,14 @@ public class BrowseSongsFragment extends Fragment {
 				// AND NOT ASSUMING THAT THE SONG TITLE DOES NOT CONTAIN A COLON
 				final Song song = g.db.getSongByTitle(title); 
                
+				Toast.makeText(g,
+						song.getArtist()
+						+ ": " + song.getTitle()
+						+ " added to Jam", Toast.LENGTH_SHORT).show(); 
+				
 				if (g.jam.checkMaster()) {
 					song.setAddedBy(g.getUsername());
 					g.jam.addSong(song); 
-					Toast.makeText(g,
-							song.getArtist()
-							+ " : " + song.getTitle()
-							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 					if (g.jam.getCurrentSong() == null) {
 						g.jam.setCurrentSong(song, g.jam.getJamSize() - 1);
 						g.jam.playCurrentSong();
@@ -137,10 +138,6 @@ public class BrowseSongsFragment extends Fragment {
 					}
 				}
 				else {
-					Toast.makeText(g,
-							song.getArtist()
-							+ ": " + song.getTitle()
-							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 					Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
 					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
 						@Override
