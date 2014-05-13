@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linear_listview_lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
    
-    
-    <TextView 
-        android:id="@+id/browserAlbum"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:gravity="center|left"
-        android:textSize="18dp"
-        android:textColor="#ffffff"
-        android:layout_gravity="center_vertical"
-        android:cacheColorHint="#00000000"
-        android:listSelector="@android:color/transparent"
-        />
-    
     <ImageView
         android:id="@+id/browserArt"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:duplicateParentState="false"
         android:scaleType="fitXY"
-        android:layout_below="@+id/browserAlbum"
         android:background="#000000"
     />
    
@@ -36,18 +18,18 @@
         android:id="@+id/browserText"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
+        android:layout_weight="0.54"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="5dp"
+        android:gravity="center|left"
         android:textSize="16dp"
         android:background="@android:color/transparent"
         android:textColor="#ffffff"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center_vertical"
-        android:layout_below="@+id/browserAlbum"
         android:cacheColorHint="#00000000"
-        android:listSelector="@android:color/transparent"/>
+            android:listSelector="@android:color/transparent"/>
      
     <TextView
         android:id="@+id/ownerText"
@@ -57,13 +39,11 @@
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:layout_alignParentRight="true"
         android:gravity="right"
         android:textSize="14dp"
         android:textColor="#ffffff"
         android:layout_gravity="center_vertical"
-        android:layout_below="@+id/browserAlbum"
         android:cacheColorHint="#00000000"
-        android:listSelector="@android:color/transparent"/>
+            android:listSelector="@android:color/transparent"/>
              
-</RelativeLayout>
+</LinearLayout>
