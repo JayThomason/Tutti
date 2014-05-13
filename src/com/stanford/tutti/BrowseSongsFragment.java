@@ -99,11 +99,19 @@ public class BrowseSongsFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view, 
 					int position, long id) {
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
-				String title = textView.getText().toString();
+				
+				String[] tokens = textView.getText().toString().split(":");
+				String title = ""; 
+				if (tokens[0].equals("Now playing")) {
+					title = tokens[2].substring(1); 
+				} else {
+					title = tokens[1].substring(1); 
+				}
 				
 				// IN THE LONG TERM
 				// WE NEED TO BE USING GETSONGBYID
 				// OR GETSONGBY UNIQUE HASH
+				// AND NOT ASSUMING THAT THE SONG TITLE DOES NOT CONTAIN A COLON
 				final Song song = g.db.getSongByTitle(title); 
                
 				if (g.jam.checkMaster()) {
