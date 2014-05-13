@@ -198,10 +198,10 @@ public class Server extends NanoHTTPD {
      */
     private Response updateJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
     	if (path.startsWith(JAM_ADD_SONG)) {
-    		return jamAddSongResponse(parameters.get("songId"), parameters.get("addedBy")); 
+    		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy")); 
     	} 
     	else if (path.startsWith(JAM_SET_SONG)) {
-    		return jamSetSongResponse(path.substring(JAM_SET_SONG.length())); 
+    		return jamSetSongResponse(otherIpAddr, path.substring(JAM_SET_SONG.length())); 
     	} 
     	else if (path.startsWith(JAM_MOVE_SONG)) {
     		return jamMoveSongResponse(otherIpAddr, parameters.get("from"), parameters.get("to")); 
@@ -258,7 +258,7 @@ public class Server extends NanoHTTPD {
     /*
      * Adds the requested song to the jam.
      */
-	private Response jamAddSongResponse(String songId, String addedBy) {
+	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy) {
 		Song song = g.db.getSongByHash(songId);
 		if (song == null) 
 			return fileNotFoundResponse();
@@ -274,6 +274,8 @@ public class Server extends NanoHTTPD {
 		}
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
+				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr))
+					continue; 
 				client.requestAddSong(songId, addedBy, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -295,7 +297,7 @@ public class Server extends NanoHTTPD {
     /*
      * Sets the requested song to be the currently playing song. 
      */
-	private Response jamSetSongResponse(String keyPath) {
+	private Response jamSetSongResponse(String otherIpAddr, String keyPath) {
 		Song song = g.db.getSongInJamByIndex(keyPath.substring(1)); 
 		if (song == null) 
 			return fileNotFoundResponse();
@@ -310,7 +312,7 @@ public class Server extends NanoHTTPD {
 		if (g.jam.checkMaster()) {
 			g.jam.playCurrentSong(); 
 			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr())) 
+				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
 				client.requestSetSong(keyPath.substring(1), new AsyncHttpResponseHandler() {
 					@Override
