@@ -58,9 +58,10 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         }
         
         String title = cursor.getString(cursor.getColumnIndex("title")); 
+        String artist = cursor.getString(cursor.getColumnIndex("artist")); 
         if (title.equals("DISPLAY_ALBUM")) {
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
-            titleView.setText("ALBUM: " + cursor.getString(cursor.getColumnIndex("album")));  
+            titleView.setText(artist + ": " + cursor.getString(cursor.getColumnIndex("album")));  
             
             LayoutParams layoutParams = artView.getLayoutParams(); 
             layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_large);
@@ -104,11 +105,12 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
     	
         String title = cursor.getString(cursor.getColumnIndex("title")); 
+        String artist = cursor.getString(cursor.getColumnIndex("artist")); 
 
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
         	username = ""; 
-        titleView.setText(title); 
+        titleView.setText(artist + ": " + title); 
         ownerView.setText(username); 
     }
     
@@ -117,7 +119,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
     	
-        String songTitle = cursor.getString(cursor.getColumnIndex("title")); 
+        String songTitle = cursor.getString(cursor.getColumnIndex("title"));
+        String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+
         int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
         String text = ""; 
         if (g.jam != null) {
@@ -127,7 +131,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         		view.setBackgroundColor(Color.rgb(0, 0, 0));
         	}
         }
-        text += songTitle; 
+        text += artist + ": " + songTitle; 
         titleView.setText(text); 
         
     	String addedBy = cursor.getString(cursor.getColumnIndex("addedBy")); 
