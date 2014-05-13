@@ -88,6 +88,8 @@ public class MusicLibraryLoaderThread extends Thread {
 	            song.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
 	            
 	            if (albumTitle != "") {
+	            	song.setTrackNum(Integer.parseInt(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK))));
+	            	
 		            Cursor artCursor = activity.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
 		                    new String[] {MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_ART}, 
 		                    MediaStore.Audio.Albums.ALBUM + "=?", 
@@ -101,6 +103,10 @@ public class MusicLibraryLoaderThread extends Thread {
 		            
 		            song.setAlbumArt(artPath); 
 		            artCursor.close(); 
+	            } else {
+	            	song.setTrackNum(0);
+	            	
+	            	// SET DEFAULT ALBUM ART
 	            }
 	            
 	            song.setIpAddr(g.getIpAddr());
