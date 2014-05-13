@@ -23,7 +23,7 @@ import android.util.Base64;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
