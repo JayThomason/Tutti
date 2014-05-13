@@ -137,6 +137,10 @@ public class BrowseSongsFragment extends Fragment {
 					}
 				}
 				else {
+					Toast.makeText(g,
+							song.getArtist()
+							+ ": " + song.getTitle()
+							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 					Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
 					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
 						@Override
@@ -144,10 +148,7 @@ public class BrowseSongsFragment extends Fragment {
 							System.out.println("request to add song to master returned: " + statusCode);
 
 							if (statusCode == 200) {
-								Toast.makeText(g,
-										song.getArtist()
-										+ " : " + song.getTitle()
-										+ " added to Jam", Toast.LENGTH_SHORT).show(); 
+
 							}
 						}
 					});
