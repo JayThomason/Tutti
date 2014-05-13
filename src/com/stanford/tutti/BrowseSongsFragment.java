@@ -78,11 +78,7 @@ public class BrowseSongsFragment extends Fragment {
 	public void refreshSongList() {
 		Cursor cursor; 
 		
-		if (!g.currentAlbumView.equals("") && !g.currentAlbumView.equals("Music") && !g.currentArtistView.equals("")) {
-			cursor = g.db.getSongsByArtistAndAlbum(g.currentArtistView, g.currentAlbumView); 
-		} else if (!g.currentAlbumView.equals("") && !g.currentAlbumView.equals("Music")) {
-			cursor = g.db.getSongsByAlbum(g.currentAlbumView); 
-		} else if (!g.currentArtistView.equals("")) {
+		if (!g.currentArtistView.equals("")) {
 			cursor = g.db.getSongsByArtist(g.currentArtistView); 
 		} else {
 			cursor = g.db.getAllSongs(); 
@@ -161,9 +157,7 @@ public class BrowseSongsFragment extends Fragment {
 	public void initializeQueryFilter() {
 		searchFilter = new FilterQueryProvider() {
 			public Cursor runQuery(CharSequence constraint) {
-				if (!g.currentAlbumView.equals("") && !g.currentArtistView.equals("")) {
-					return g.db.searchSongsByArtistAndAlbum(constraint, g.currentArtistView, g.currentAlbumView); 
-				} else if (!g.currentArtistView.equals("")) {
+				if (!g.currentArtistView.equals("")) {
 					return g.db.searchSongsByArtist(constraint, g.currentArtistView); 
 				} else {
 					return g.db.searchSongs(constraint); 

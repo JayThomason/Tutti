@@ -25,7 +25,6 @@ public class Globals extends Application {
 	public Jam jam = new Jam(this); 
 
 	public String currentArtistView = ""; 
-	public String currentAlbumView = ""; 
 	public Handler uiUpdateHandler; 
 	public Handler joinJamHandler; 
 
