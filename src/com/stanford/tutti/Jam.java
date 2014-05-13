@@ -189,6 +189,9 @@ public class Jam {
 		songList.remove(index); 
 		if (currentSongIndex > index) {
 			currentSongIndex--; 
+		} else if (currentSongIndex == index) {
+			currentSong = null; 
+			currentSongIndex = -1; 
 		}
 	}
 	
