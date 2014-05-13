@@ -103,7 +103,7 @@ public class BrowseArtistsFragment extends Fragment {
 				
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 2; 
+					msg.what = 3; 
 					g.uiUpdateHandler.sendMessage(msg);
 				}								
 			}

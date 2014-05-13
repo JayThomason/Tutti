@@ -25,10 +25,9 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     // Tab titles
-    private String[] tabs = { "Artists", "Albums", "Songs", "Jam" };
+    private String[] tabs = { "Artists", "Songs", "Jam" };
     
     private BrowseArtistsFragment artistsFragment;
-    private BrowseAlbumsFragment albumsFragment; 
     private BrowseSongsFragment songsFragment; 
     private BrowseJamFragment jamFragment; 
     
@@ -177,20 +176,16 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 						if (artistsFragment != null) 
 							artistsFragment.initializeArtistList(); 
 					} else if (index == 1) {
-						if (albumsFragment != null)
-							albumsFragment.initializeAlbumList(); 
-					} else if (index == 2) {
 						if (songsFragment != null)
 							songsFragment.initializeSongList(); 
-					} else if (index == 3) {
+					} else if (index == 2) {
 						if (jamFragment != null) 
 							jamFragment.initializeJamList(); 
 					}
 				} else if (msg.what == 1) {
 					artistsFragment.initializeArtistList(); 
 				} else if (msg.what == 2) {
-					albumsFragment.initializeAlbumList(); 
-					viewPager.setCurrentItem(1);
+
 				} else if (msg.what == 3) {
 					if (songsFragment != null)
 						songsFragment.initializeSongList(); 
@@ -200,9 +195,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 						jamFragment.initializeJamList(); 
 					viewPager.setCurrentItem(3); 
 				} else if (msg.what == 5) {
-					if (albumsFragment != null) 
-						albumsFragment.initializeAlbumList();
-					albumsFragment.initializeAlbumList(); 
+					
 				} else if (msg.what == 6) {
 					if (songsFragment != null)
 						songsFragment.initializeSongList(); 
@@ -260,10 +253,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		        case 0:
 		            return new BrowseArtistsFragment();
 		        case 1:
-		            return new BrowseAlbumsFragment();
-		        case 2:
 		            return new BrowseSongsFragment();
-		        case 3: 
+		        case 2: 
 		        	return new BrowseJamFragment();
 	        }
 	 
@@ -273,7 +264,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	    @Override
 	    public int getCount() {
 	        // get item count - equal to number of tabs
-	        return 4;
+	        return 3;
 	    }
 	    
 	    @Override
@@ -281,8 +272,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	    	Object fragment = super.instantiateItem(container, position); 
 	    	if (fragment instanceof BrowseArtistsFragment) {
     			artistsFragment = (BrowseArtistsFragment) fragment; 
-	    	} else if (fragment instanceof BrowseAlbumsFragment) {
-    			albumsFragment = (BrowseAlbumsFragment) fragment; 
 	    	} else if (fragment instanceof BrowseSongsFragment) {
     			songsFragment = (BrowseSongsFragment) fragment; 
 	    	} else if (fragment instanceof BrowseJamFragment) {
