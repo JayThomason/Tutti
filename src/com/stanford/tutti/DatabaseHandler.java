@@ -221,7 +221,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     
     public Cursor getSongsByArtist(String artist) {
     	String escapedArtist = artist.replace("'", "''");
-        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC";
         
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -229,13 +229,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
-    public Cursor getAllSongs() {
-        List<Song> songs = new LinkedList<Song>();
+    public Cursor getAllSongs() {  
+        String query = "SELECT * FROM " + TABLE_SONGS + " ORDER BY " + KEY_ARTIST + " ASC, " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC";
   
-        // 1. build the query
-        String query = "SELECT * FROM " + TABLE_SONGS;
-  
-        // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
   
@@ -243,7 +239,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAllArtists() {
-        //String query = "SELECT DISTINCT " + KEY_ARTIST + " FROM " + TABLE_SONGS;
         String query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ARTIST; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
