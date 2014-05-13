@@ -42,6 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ART = "art";
     private static final String KEY_HASH = "hash";
     private static final String KEY_IP = "_ip";
+    private static final String KEY_TRACK_NUM = "trackNum"; 
     
     // Jam table-exclusive column names
     private static final String KEY_JAM_INDEX = "jamIndex"; 
@@ -57,13 +58,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int COL_ART = 6; 
     private static final int COL_HASH = 7; 
     private static final int COL_IP = 8;
+    private static final int COL_TRACK_NUM = 9; 
     
     // Jam table-exclusive column indices
     private static final int COL_JAM_INDEX = 9; 
     private static final int COL_ADDED_BY = 10; 
 
     
-    private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP};
+    private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_TRACK_NUM};
     private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY};
 
     private Globals g; 
@@ -86,6 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ART + " TEXT,"
         		+ KEY_HASH + " TEXT," 
         		+ KEY_IP + " TEXT,"
+        		+ KEY_TRACK_NUM + " INTEGER,"
                 + " UNIQUE (" 
         		+ KEY_TITLE + ", " 
                 + KEY_ARTIST + ", "
@@ -133,6 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_ART, song.getAlbumArt());
     	values.put(KEY_HASH, Integer.toString(song.hashCode())); 
     	values.put(KEY_IP, song.getIpAddr());
+    	values.put(KEY_TRACK_NUM, song.getTrackNum()); 
     	
     	int local = 0; 
     	if (song.isLocal()) {
@@ -203,7 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Song getSongByHash(String hash) {
-        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = " + hash;
+        String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = '" + hash + "'";
         
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
