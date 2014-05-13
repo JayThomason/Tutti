@@ -313,7 +313,14 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 					int position, long id) {
 
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
-				final String title = textView.getText().toString();
+				
+				final String title; 
+				String[] tokens = textView.getText().toString().split(":"); 
+				if (tokens[0].equals("Now playing")) {
+					title = tokens[2]; 
+				} else {
+					title = tokens[1]; 
+				}
 
 				final int index = position; 
 

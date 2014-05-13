@@ -134,7 +134,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         String artist = cursor.getString(cursor.getColumnIndex("artist")); 
 
         int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
-        String text = ""; 
+        String text = songIndex + ". "; 
         if (g.jam != null) {
         	if (songIndex == g.jam.getCurrentSongIndex()) {
         		text += "Now playing: "; 
