@@ -20,6 +20,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     
     private Globals g; 
     private int noArtImgID;
+    
+    private String lastAlbum = ""; 
 
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
@@ -40,6 +42,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+    	if (cursor == null)
+    		return; 
+    	
         super.bindView(view, context, cursor);
                 
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
