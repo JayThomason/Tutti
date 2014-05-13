@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -68,6 +69,17 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_large); 
             artView.setLayoutParams(layoutParams); 
             artView.requestLayout(); 
+            
+            if (view != null) {
+            	AbsListView.LayoutParams p = (AbsListView.LayoutParams) view.getLayoutParams();
+            	/*
+            	if (p != null){
+		            p.setMargins(0, 50, 0, 0);
+		            view.requestLayout();
+            	}
+            	*/
+            }
+           
            
             return; 
         } else {
