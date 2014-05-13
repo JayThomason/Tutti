@@ -397,35 +397,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
-    public Cursor searchAlbums(CharSequence constraint) {
-    	String query; 
-    	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ALBUM; 
-    	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
-    	}
-  
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-    	
-        return cursor; 
-    }
-    
-    public Cursor searchAlbumsByArtist(String artist, CharSequence constraint) {
-    	String escapedArtist = artist.replace("'", "''"); 
-    	String query; 
-    	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
-    	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' GROUP BY " + KEY_ALBUM; 
-    	}
-  
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-    	
-        return cursor; 
-    }
-    
     public Cursor searchSongs(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
@@ -455,22 +426,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
-    public Cursor searchSongsByArtistAndAlbum(CharSequence constraint, String artist, String album) {
-    	String escapedArtist = artist.replace("'", "''"); 
-    	String escapedAlbum = album.replace("'", "''");
-    	String query; 
-    	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'";
-    	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "' AND " + KEY_ALBUM + " = '" + escapedAlbum + "'"; 
-    	}
-  
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-    	
-        return cursor; 
-    }
-    
     public boolean containsSong(int hash) {
     	String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = " + hash; 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -482,22 +437,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         	return false; 
         }
     }
-    
-    /*
-    public void deleteSong(Song song) {
-    	 
-        // 1. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
- 
-        // 2. delete
-        db.delete(TABLE_SONGS, //table name
-                KEY_ID + " = ?",  // selections
-                new String[] { String.valueOf(song.getId()) }); //selections args
- 
-        // 3. close
-        db.close();
-    }
-    */
     
     public void dropTable(String table) {
         SQLiteDatabase db = this.getWritableDatabase();
