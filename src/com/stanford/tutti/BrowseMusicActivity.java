@@ -123,16 +123,14 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	 
     	    @Override
     	    public void onPageSelected(int position) {
-				int index = actionBar.getSelectedNavigationIndex(); 
-    	    	if (position == 0 && position < index && !g.currentArtistView.equals("")) {
+    	    	if (position == 0) {
     	    		g.currentArtistView = ""; 
     				if (g.uiUpdateHandler != null) {
     					Message msg = g.uiUpdateHandler.obtainMessage();
-    					msg.what = 5; 
+    					msg.what = 6; 
     					g.uiUpdateHandler.sendMessage(msg);
     				}
-    	    	} else if (position == 1 && position < index && !g.currentAlbumView.equals("")) {
-    	    		g.currentAlbumView = ""; 
+    	    	} else if (position == 1) {
     				if (g.uiUpdateHandler != null) {
     					Message msg = g.uiUpdateHandler.obtainMessage();
     					msg.what = 6; 
