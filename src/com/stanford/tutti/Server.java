@@ -127,7 +127,7 @@ public class Server extends NanoHTTPD {
     		return getSong(uri.substring(GET_SONG.length()));  
     	} 
     	else if (uri.startsWith(UPDATE_JAM)) {
-    		return updateJamResponse(uri.substring(UPDATE_JAM.length()), parameters); 
+    		return updateJamResponse(headers.get(HTTP_CLIENT_IP), uri.substring(UPDATE_JAM.length()), parameters); 
     	}
     	else if (uri.startsWith(REMOVE_FROM_JAM)) {
     		return removeFromJamResponse(parameters);
@@ -196,7 +196,7 @@ public class Server extends NanoHTTPD {
      * Responds to a request to update the jam. 
      * Pause, play, skip song, set song, etc. 
      */
-    private Response updateJamResponse(final String path, Map<String, String> parameters) {
+    private Response updateJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
     	if (path.startsWith(JAM_ADD_SONG)) {
     		return jamAddSongResponse(parameters.get("songId"), parameters.get("addedBy")); 
     	} 
@@ -204,7 +204,7 @@ public class Server extends NanoHTTPD {
     		return jamSetSongResponse(path.substring(JAM_SET_SONG.length())); 
     	} 
     	else if (path.startsWith(JAM_MOVE_SONG)) {
-    		return jamMoveSongResponse(parameters.get("from"), parameters.get("to")); 
+    		return jamMoveSongResponse(otherIpAddr, parameters.get("from"), parameters.get("to")); 
     	}
     	else if (path.startsWith(JAM_START)) {
     		return jamStartResponse(); 
@@ -324,7 +324,7 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-	private Response jamMoveSongResponse(String from, String to) {
+	private Response jamMoveSongResponse(String otherIpAddr, String from, String to) {
 		g.jam.changeSongIndexInJam(Integer.parseInt(from), Integer.parseInt(to));
 		
 		if (g.uiUpdateHandler != null) {
@@ -335,7 +335,7 @@ public class Server extends NanoHTTPD {
 		
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr())) 
+				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
 				client.requestMoveSong(from, to, new AsyncHttpResponseHandler() {
 					@Override
