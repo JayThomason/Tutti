@@ -46,8 +46,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     		return; 
     	
         super.bindView(view, context, cursor);
-    	                
-        System.out.println("BINDING VIEW: " + cursor.getString(cursor.getColumnIndex("title"))); 
         
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 
@@ -56,6 +54,13 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         } else {
             artView.setImageResource(noArtImgID);
         }
+        
+        String title = cursor.getString(cursor.getColumnIndex("title")); 
+        if (title.equals("DISPLAY_ALBUM")) {
+            TextView titleView = (TextView) view.findViewById(R.id.browserText); 
+            titleView.setText("ALBUM: " + cursor.getString(cursor.getColumnIndex("album"))); 
+            return; 
+        } 
         
         if (columns.length == 2) { 
         	bindArtistsView(view, cursor); 
@@ -70,9 +75,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     private void bindArtistsView(View view, Cursor cursor) {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
-        TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
-        
-		albumView.setVisibility(View.GONE); 
 
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
@@ -85,21 +87,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     private void bindSongsView(View view, Cursor cursor) {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
-        TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
     	
         String title = cursor.getString(cursor.getColumnIndex("title")); 
 
-    	String album = cursor.getString(cursor.getColumnIndex("album"));
-    	System.out.println("BINDING SONGS VIEW, ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
-    	if (!album.equals(lastAlbum)) {
-    		System.out.println("SETTING NEW ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
-            albumView.setText("NEW ALBUM: " + album + " " + title); 
-            lastAlbum = album; 
-    	} else {
-    		System.out.println("HIDING ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
-    		albumView.setVisibility(View.GONE); 
-    		//albumView.setBackgroundColor(Color.rgb(0, 0, 0));
-    	}
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
         	username = ""; 
@@ -111,9 +101,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     private void bindJamView(View view, Cursor cursor) {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
-        TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
-    	
-		albumView.setVisibility(View.GONE); 
     	
         String songTitle = cursor.getString(cursor.getColumnIndex("title")); 
         int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
