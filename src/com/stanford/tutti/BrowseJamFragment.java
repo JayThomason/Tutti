@@ -34,7 +34,6 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	
 	private final int port = 1234;
 
-	private Cursor cursor; 
 	private View rootView; 
 	private Globals g; 
 
@@ -89,39 +88,17 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			Bundle savedInstanceState) {
 
 		rootView = inflater.inflate(R.layout.fragment_browse_jam, container, false);
-
-		g = (Globals) rootView.getContext().getApplicationContext(); 
-
-		
-		
-		
-		// listView = (ListView) rootView.findViewById(R.id.jamListView);
-
 		listView = (DragSortListView) rootView.findViewById(R.id.jamListView);
-		listView.setDropListener(onDrop);
-	    listView.setRemoveListener(onRemove);
-
-	    DragSortController controller = new DragSortController(listView);
-	    controller.setDragHandleId(R.id.browserText);
-	            //controller.setClickRemoveId(R.id.);
-	    controller.setRemoveEnabled(false);
-	    controller.setSortEnabled(true);
-	    controller.setDragInitMode(1);
-	            //controller.setRemoveMode(removeMode);
-
-	    listView.setFloatViewManager(controller);
-	    listView.setOnTouchListener(controller);
-	    listView.setDragEnabled(true);
+		seekBar = (SeekBar)rootView.findViewById(R.id.progress_bar);  
+		mediaTimeCurrent = (TextView)rootView.findViewById(R.id.progress_time); 
+		mediaTimeEnd = (TextView)rootView.findViewById(R.id.progress_time_end); 
 		
-	    
-	    
+		g = (Globals) rootView.getContext().getApplicationContext(); 
+		
 	    
 		g.playerListener = this; 
 		g.jam.mediaPlayer.setOnPreparedListener(this); 
 
-		mediaTimeCurrent = (TextView)rootView.findViewById(R.id.progress_time); 
-		mediaTimeEnd = (TextView)rootView.findViewById(R.id.progress_time_end); 
-		seekBar = (SeekBar)rootView.findViewById(R.id.progress_bar);  
 		masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port); 
 
 		if (g.jam.checkMaster()) {
@@ -284,14 +261,29 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		});
 	}
 
+	
 	/*
 	 * Initializes the listView with a list of the current songs in the jam.
 	 */
 	public void initializeJamList() {
-		if (cursor != null) 
-			cursor.close(); 
+		listView.setDropListener(onDrop);
+	    listView.setRemoveListener(onRemove);
+	    
 
-		cursor = g.db.getSongsInJam(); 
+	    DragSortController controller = new DragSortController(listView);
+	    controller.setDragHandleId(R.id.browserText);
+	            //controller.setClickRemoveId(R.id.);
+	    controller.setRemoveEnabled(false);
+	    controller.setSortEnabled(true);
+	    controller.setDragInitMode(1);
+	            //controller.setRemoveMode(removeMode);
+
+	    listView.setFloatViewManager(controller);
+	    listView.setOnTouchListener(controller);
+	    listView.setDragEnabled(true);
+		
+		
+		Cursor cursor = g.db.getSongsInJam(); 
 
 		String[] columns = new String[] { "art", "title", "addedBy" };
 		int[] to = new int[] { R.id.browserArt, R.id.browserText, R.id.ownerText };
@@ -302,7 +294,14 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 
 		setJamListItemClickListener();
 	}
+	
+	public void refreshJamList() {
+		Cursor newCursor = g.db.getSongsInJam(); 
+	    Cursor oldCursor = adapter.swapCursor(newCursor);
+	    oldCursor.close(); 
+	}
 
+	
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * play the song which is clicked on.
