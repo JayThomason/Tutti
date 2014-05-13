@@ -61,7 +61,7 @@ public class BrowseSongsFragment extends Fragment {
 	public void initializeSongList() {
 		Cursor cursor = g.db.getAllSongs(); 
 		
-		columns = new String[] { "art", "title" };
+		columns = new String[] { "art", "artist", "title" };
 		views = new int[] { R.id.browserArt, R.id.browserText };
 		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views); 
 		

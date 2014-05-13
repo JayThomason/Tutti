@@ -285,7 +285,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		
 		Cursor cursor = g.db.getSongsInJam(); 
 
-		String[] columns = new String[] { "art", "title", "addedBy" };
+		String[] columns = new String[] { "art", "artist", "title", "addedBy" };
 		int[] to = new int[] { R.id.browserArt, R.id.browserText, R.id.ownerText };
 
 		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, to); 

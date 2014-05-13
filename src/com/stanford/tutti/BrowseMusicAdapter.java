@@ -46,7 +46,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     		return; 
     	
         super.bindView(view, context, cursor);
-                
+    	                
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 
         if (artPath != null && !artPath.equals("")) {
@@ -54,12 +54,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         } else {
             artView.setImageResource(noArtImgID);
         }
-
-        TextView titleView = (TextView) view.findViewById(R.id.browserText); 
-        TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
         
+        TextView titleView = (TextView) view.findViewById(R.id.browserText); 
+
         // SHOULD BE DOING THIS BY HASH CODE
-        String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 
+        String songTitle = cursor.getString(cursor.getColumnIndex("title")); 
         String text = ""; 
         if (g.jam != null && g.jam.getCurrentSong() != null && g.jam.getCurrentSong().getTitle().equals(songTitle)) {
         	text += "Now playing: "; 
@@ -68,38 +67,73 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         titleView.setText(text); 
         
         if (columns.length == 2) { 
-        	bindLibraryView(titleView, ownerView, cursor); 
+        	bindArtistsView(view, cursor); 
+        } else if (columns.length == 3) {
+        	bindSongsView(view, cursor); 
         } else {
-        	bindJamView(view, titleView, ownerView, cursor); 
+        	bindJamView(view, cursor); 
         }
     }
     
     
-    private void bindLibraryView(TextView titleView, TextView ownerView, Cursor cursor) {
+    private void bindArtistsView(View view, Cursor cursor) {
+        TextView titleView = (TextView) view.findViewById(R.id.browserText); 
+        TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
+        TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
+        
+		albumView.setVisibility(View.GONE); 
+
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
         	username = ""; 
-        String title = cursor.getString(cursor.getColumnIndex(columns[1])); 
+        String title = cursor.getString(cursor.getColumnIndex("artist")); 
+        titleView.setText(title); 
+        ownerView.setText(username); 
+    }
+    
+    private void bindSongsView(View view, Cursor cursor) {
+        TextView titleView = (TextView) view.findViewById(R.id.browserText); 
+        TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
+        TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
+    	
+    	String album = cursor.getString(cursor.getColumnIndex("album"));
+    	System.out.println("BINDING SONGS VIEW, ALBUM: " + album + " LAST ALBUM: " + lastAlbum); 
+    	if (!album.equals(lastAlbum)) {
+            albumView.setText("NEW ALBUM: " + album); 
+            lastAlbum = album; 
+    	} else {
+    		albumView.setVisibility(View.GONE); 
+    	}
+        String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
+        if (username == null) 
+        	username = ""; 
+        String title = cursor.getString(cursor.getColumnIndex("title")); 
         titleView.setText(title); 
         ownerView.setText(username); 
     }
     
     
-    private void bindJamView(View mainView, TextView titleView, TextView ownerView, Cursor cursor) {
-        String songTitle = cursor.getString(cursor.getColumnIndex(columns[1])); 
+    private void bindJamView(View view, Cursor cursor) {
+        TextView titleView = (TextView) view.findViewById(R.id.browserText); 
+        TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
+        TextView albumView = (TextView) view.findViewById(R.id.browserAlbum); 
+    	
+		albumView.setVisibility(View.GONE); 
+    	
+        String songTitle = cursor.getString(cursor.getColumnIndex("title")); 
         int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
         String text = ""; 
         if (g.jam != null) {
         	if (songIndex == g.jam.getCurrentSongIndex()) {
         		text += "Now playing: "; 
         	} else if (songIndex < g.jam.getCurrentSongIndex()) {
-        		mainView.setBackgroundColor(Color.rgb(0, 0, 0));
+        		view.setBackgroundColor(Color.rgb(0, 0, 0));
         	}
         }
         text += songTitle; 
         titleView.setText(text); 
         
-    	String addedBy = cursor.getString(cursor.getColumnIndex(columns[2])); 
+    	String addedBy = cursor.getString(cursor.getColumnIndex("addedBy")); 
     	ownerView.setText("Added by: " + addedBy);
     }
 	
