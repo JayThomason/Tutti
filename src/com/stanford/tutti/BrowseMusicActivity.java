@@ -183,25 +183,25 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 							jamFragment.refreshJamList(); 
 					}
 				} else if (msg.what == 1) {
-					artistsFragment.initializeArtistList(); 
+					artistsFragment.refreshArtistList(); 
 				} else if (msg.what == 2) {
 
 				} else if (msg.what == 3) {
 					if (songsFragment != null)
-						songsFragment.initializeSongList(); 
+						songsFragment.refreshSongList(); 
 			        viewPager.setCurrentItem(2); 
 				} else if (msg.what == 4) {
 					if (jamFragment != null)
-						jamFragment.initializeJamList(); 
+						jamFragment.refreshJamList(); 
 					viewPager.setCurrentItem(3); 
 				} else if (msg.what == 5) {
 					
 				} else if (msg.what == 6) {
 					if (songsFragment != null)
-						songsFragment.initializeSongList(); 
+						songsFragment.refreshSongList(); 
 				} else if (msg.what == 7) {
 					if (jamFragment != null) 
-						jamFragment.initializeJamList(); 
+						jamFragment.refreshJamList(); 
 				} 
 				super.handleMessage(msg);
 			}
