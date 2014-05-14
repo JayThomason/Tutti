@@ -25,7 +25,7 @@ public class BrowseArtistsFragment extends Fragment {
 	
 	private Globals g; 
 	private View rootView; 
-	private ListView listView; 
+	public ListView listView; 
 	
 	private String columns[]; 
 	private int views[]; 
@@ -56,7 +56,7 @@ public class BrowseArtistsFragment extends Fragment {
 	    adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
 	    
 	    
-	    //adapter.setFilterQueryProvider(searchFilter);
+	    //adapter.setFilterQueryProvider(g.searchFilterProvider);
 	    
 	    
 	    listView.setAdapter(adapter); 
@@ -70,6 +70,13 @@ public class BrowseArtistsFragment extends Fragment {
 	
 	public void refreshArtistList() {
 		Cursor newCursor = g.db.getAllArtists(); 
+	    Cursor oldCursor = adapter.swapCursor(newCursor);
+	    oldCursor.close(); 
+	}
+	
+	
+	public void searchArtistList(String query) {
+		Cursor newCursor = g.db.searchArtists(query); 
 	    Cursor oldCursor = adapter.swapCursor(newCursor);
 	    oldCursor.close(); 
 	}

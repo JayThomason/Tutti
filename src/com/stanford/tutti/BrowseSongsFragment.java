@@ -29,11 +29,11 @@ public class BrowseSongsFragment extends Fragment {
 
 	private Globals g; 
 	private View rootView; 
-	private ListView listView; 
+	public ListView listView; 
 	
 	private String columns[]; 
 	private int views[]; 
-	private BrowseMusicAdapter adapter; 
+	public BrowseMusicAdapter adapter; 
 	
 	private final int port = 1234;
 
@@ -85,6 +85,13 @@ public class BrowseSongsFragment extends Fragment {
 
 		Cursor oldCursor = adapter.swapCursor(cursor); 
 		oldCursor.close(); 
+	}
+	
+	
+	public void searchSongList(String query) {
+		Cursor newCursor = g.db.searchSongs(query); 
+	    Cursor oldCursor = adapter.swapCursor(newCursor);
+	    oldCursor.close(); 
 	}
 
 

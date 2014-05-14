@@ -3,7 +3,7 @@
     tools:context="com.stanford.tutti.BrowseMusicActivity" >
     
     
-    <item android:id="@+id/search"
+    <item android:id="@+id/action_search"
           android:title="@string/action_search"
           android:icon="@drawable/ic_action_search"
           android:showAsAction="collapseActionView|ifRoom"
