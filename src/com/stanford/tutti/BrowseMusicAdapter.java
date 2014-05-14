@@ -163,7 +163,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         		text += "Now playing: "; 
         	} else if (songIndex < g.jam.getCurrentSongIndex()) {
         		view.setBackgroundColor(Color.rgb(0, 0, 0));
-        	} 
+        	} else {
+        		view.setBackgroundColor(Color.TRANSPARENT); 
+        	}
         }
         text += artist + ": " + songTitle; 
         titleView.setText(text); 
