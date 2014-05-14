@@ -400,10 +400,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Cursor searchSongs(CharSequence constraint) {
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_SONGS;  
+    		query = "SELECT * FROM " + TABLE_SONGS
+    				+ " ORDER BY " + KEY_ARTIST + " ASC, " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC"; ;  
     	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' OR " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' "
-        			+ "OR " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' ORDER BY " + KEY_TRACK_NUM + " ASC"; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " "
+        			+ "WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' "
+        			+ "OR " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' "
+        			+ "OR " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' "
+        			+ "ORDER BY " + KEY_ARTIST + " ASC, " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC"; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -416,10 +420,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	String escapedArtist = artist.replace("'", "''"); 
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_TRACK_NUM;
+    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' "
+    				+ "ORDER BY " + KEY_ARTIST + " ASC, " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC"; 
     	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE (" + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' OR " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%') "
-        			+ "AND " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_TRACK_NUM; 
+        	query = "SELECT * FROM " + TABLE_SONGS 
+        			+ " WHERE (" + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' "
+        			+ "OR " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%') "
+        			+ "AND " + KEY_ARTIST + " = '" + escapedArtist + "' "
+        			+ "ORDER BY " + KEY_ARTIST + " ASC, " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC"; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
