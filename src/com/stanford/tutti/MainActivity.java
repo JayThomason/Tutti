@@ -166,13 +166,13 @@ public class MainActivity extends Activity {
 					System.out.println("Successfully created jam on server.");
 					g.jam.startServerKeepAlive(serverHostname);
 					g.jam.setMaster(true);
+					if (jamName != null && !jamName.equals("")) {
+						g.jam.setJamName(jamName);
+					} else {
+						g.jam.setJamName("");
+					}
 					nameDialog.dismiss();
-					
 					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
-					Bundle b = new Bundle();
-					b.putString("jamName", jamName); //Your id
-					intent.putExtras(b);
-					
 					startActivity(intent);
 				}
 				else {

@@ -145,7 +145,10 @@ public class JoinJamActivity extends Activity {
 					final String ipAddr = tokens[1]; 
 					if (tokens[0].equals("ACCEPTED")) {
 						final String username = tokens[2]; 
+						final String jamName = tokens[3]; 
 	
+						g.jam.setJamName(jamName);
+						
 						g.jam.setMaster(false); 
 						g.jam.setMasterIp(ipAddr);
 						g.jam.setIPUsername(ipAddr, username);
