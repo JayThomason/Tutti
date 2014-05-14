@@ -12,7 +12,7 @@
     <string name="help">Help</string>
     <string name="tutti_logo">Tutti Logo</string>
     <string name="title_activity_new_jam">NewJamActivity</string>
-    <string name="title_activity_join_jam">JoinJamActivity</string>
+    <string name="title_activity_join_jam">Join a Nearby Jam</string>
     <string name="nearby_jams">Nearby Jams</string>
     <string name="add_to_jam">Add Songs to Jam</string>
     <string name="title_activity_view_jam">ViewJamActivity</string>
