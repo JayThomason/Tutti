@@ -570,7 +570,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				String albumName = artCursor.getString(COL_ALBUM); 
 				String artPath = artCursor.getString(COL_ART); 	        	
     	        String encodedImage = ""; 
-    	        if (artPath != null & !artPath.equals("")) {
+    	        if (artPath != null && !artPath.equals("")) {
 					Bitmap bitmap = BitmapFactory.decodeFile(artPath); 
 			    	ByteArrayOutputStream byteStream = new ByteArrayOutputStream();  
 			    	bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteStream);
