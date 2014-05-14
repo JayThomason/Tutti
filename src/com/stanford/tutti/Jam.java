@@ -3,6 +3,7 @@ package com.stanford.tutti;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.Header;
@@ -33,6 +34,7 @@ public class Jam {
 	private Globals g;
 	private Thread serverKeepAliveThread;
 	private Thread clientKeepAliveThread;
+	private Thread masterKeepAliveThread;
 	private AtomicBoolean serverKeepAlive;
 	private AtomicBoolean clientKeepAlive;
 
@@ -53,6 +55,7 @@ public class Jam {
 		clientSet = new HashSet<Client>();
 		usernameMap = new HashMap<String, String>(); 
 		name = ""; 
+		keepAliveTimestampMap = new HashMap<String, Long>();
 	}
 
 	public String getMasterIpAddr() {
@@ -70,7 +73,7 @@ public class Jam {
 	public void addClient(Client client) {
 		clientSet.add(client);
 		usernameMap.put(client.getIpAddress(), client.getUsername()); 
-		//		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
+		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
 	}
 
 	public boolean checkMaster() {
@@ -395,14 +398,14 @@ public class Jam {
 	 */
 	public void startClientKeepAliveThread() {
 		clientKeepAlive = new AtomicBoolean(true);
-		final String url = "http://" + g.jam.getMasterIpAddr() + "/keepAlive";
+		final String url = "http://" + g.jam.getMasterIpAddr() + ":1234/keepAlive";
 		clientKeepAliveThread = new Thread() {
 			public void run() {
 				while (true) {
 					try {
 						AsyncHttpClient client = new AsyncHttpClient();
 						Thread.sleep(3 * 1000);
-						if (serverKeepAlive.get()) {
+						if (clientKeepAlive.get()) {
 							client.get(url, new AsyncHttpResponseHandler() {
 								@Override
 								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
@@ -410,6 +413,7 @@ public class Jam {
 									System.out.println("failed keepAlive to master...");
 								}
 							});
+							System.out.println("send keep alive to master");
 						}
 						else {
 							return;
@@ -420,11 +424,53 @@ public class Jam {
 				}
 			}
 		};
-		clientKeepAliveThread.start();	}
+		clientKeepAliveThread.start();	
+	}
 
 	public void endClientKeepAlive() {
 		if (clientKeepAliveThread != null && clientKeepAlive != null) {
 			clientKeepAlive.set(false);
 		}
+	}
+	
+	public void startMasterKeepAliveThread() {
+		masterKeepAliveThread = new Thread() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(8 * 1000);
+						Long currTimestamp = System.currentTimeMillis() / 1000L;
+						// need to make client set thread safe
+						Set<Client> clientSet = g.jam.getClientSet();
+						Set<Client> removeSet = new HashSet<Client>();
+						for (Client client : g.jam.getClientSet()) {
+							Long lastTimestamp = g.jam.keepAliveTimestampMap.get(client.getIpAddress());
+							System.out.println("last timestamp: " + lastTimestamp);
+							if (lastTimestamp < (currTimestamp - 8)) { // remove if no
+								String ipAddr = client.getIpAddress();
+								System.out.println("Removing " + client.getUsername() + " from jam.");
+								
+								g.db.deleteJamSongsFromIp(ipAddr);
+								g.db.deleteSongsFromIp(ipAddr);
+								g.sendUIMessage(0);
+								removeSet.add(client);
+								
+								for (Client otherClient : g.jam.getClientSet()) {
+									if (otherClient != client) {
+										//otherClient.removeFromJam(ipAddr);
+									}
+								}
+							}
+						}
+						for (Client client : removeSet) {
+							clientSet.remove(client);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		masterKeepAliveThread.start();
 	}
 }
