@@ -31,6 +31,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     public ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
+    private MenuItem searchMenu; 
     private SearchView searchView; 
     
     // Tab titles
@@ -88,24 +89,19 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		// Inflate the menu; this adds items to the action bar.
 		getMenuInflater().inflate(R.menu.music_browser, menu);
 		
-	    MenuItem menuItem = menu.findItem(R.id.action_search);
+	    searchMenu = menu.findItem(R.id.action_search);
 	    
 	    searchView = (SearchView) menu.findItem(R.id.action_search).getActionView(); 
-	    	    
-	    MenuItemCompat.setOnActionExpandListener(menuItem, new OnActionExpandListener() {
-	        @Override
-	        public boolean onMenuItemActionCollapse(MenuItem item) {
-	            // Do something when collapsed?
-	            return true;  // Return true to collapse action view
-	        }
-
-	        @Override
-	        public boolean onMenuItemActionExpand(MenuItem item) {
-	            return true;  // Return true to expand action view
-	        }
-	    });
 	    
-	    final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() { 
+	    initializeSearchQueryListener(); 
+
+	    initializeSizeChangeListeners(); 
+	    	    
+		return true;
+	}
+	
+	private void initializeSearchQueryListener() {
+		final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() { 
 	        @Override 
 	        public boolean onQueryTextChange(String newText) { 
 	            if (actionBar.getSelectedNavigationIndex() == 0) {
@@ -136,12 +132,26 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	        	searchView.clearFocus(); 
 	        	return true; 
 	        } 
-	    }; 
-
+	    };
+	    
 	    searchView.setOnQueryTextListener(queryTextListener); 
-
-		return true;
 	}
+	
+	private void initializeSizeChangeListeners() {
+	    MenuItemCompat.setOnActionExpandListener(searchMenu, new OnActionExpandListener() {
+	        @Override
+	        public boolean onMenuItemActionCollapse(MenuItem item) {
+	            // Do something when collapsed?
+	            return true;  // Return true to collapse action view
+	        }
+
+	        @Override
+	        public boolean onMenuItemActionExpand(MenuItem item) {
+	            return true;  // Return true to expand action view
+	        }
+	    });	    
+	}
+	
 
 	@Override
 	public void onBackPressed() {
@@ -194,10 +204,13 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	    public void onPageSelected(int position) {
     	    	if (position == 0) {
     	    		g.currentArtistView = ""; 
+    	    		resetSearchView(); 
     				g.sendUIMessage(6);
     	    	} else if (position == 1) {
+    	    		resetSearchView(); 
     				g.sendUIMessage(6); 
     	    	} else if (position == 2) {
+    	    		resetSearchView(); 
     				g.sendUIMessage(7); 
     	    	}
     	        // on changing the page
@@ -215,6 +228,14 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	});
     	
 	}
+	
+	
+	private void resetSearchView() {
+		searchView.setQuery("", false); 
+		searchMenu.collapseActionView(); 
+		searchView.clearFocus(); 
+	}
+	
 	
 	/*
 	 * Initializes the handler. The handler is used to receive messages from
