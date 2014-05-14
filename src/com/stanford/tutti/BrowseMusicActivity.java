@@ -108,6 +108,11 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	        public boolean onQueryTextChange(String newText) { 
 	            if (actionBar.getSelectedNavigationIndex() == 0) {
 	            	if (artistsFragment!= null) {
+	            		if (newText.equals("")) {
+	            			artistsFragment.refreshArtistList(); 
+	            			return true; 
+	            		}
+	            		
 	            		SimpleCursorAdapter listAdapter = (SimpleCursorAdapter) artistsFragment.listView.getAdapter();
 	            	
 		            	if (listAdapter != null) {
@@ -119,10 +124,15 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	            	
 	            } else if (actionBar.getSelectedNavigationIndex() == 1) {
 	            	if (songsFragment!= null) {
+	            		if (newText.equals("")) {
+	            			songsFragment.refreshSongList(); 
+	            			return true; 
+	            		}
+	            		
 	            		SimpleCursorAdapter listAdapter = (SimpleCursorAdapter) songsFragment.listView.getAdapter();
 	            	
 		            	if (listAdapter != null) {
-			        		Cursor newCursor = g.db.searchArtists(newText); 
+			        		Cursor newCursor = g.db.searchSongs(newText); 
 			        	    Cursor oldCursor = listAdapter.swapCursor(newCursor);
 			        	    oldCursor.close(); 
 		            	}
