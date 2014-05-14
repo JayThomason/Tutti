@@ -105,4 +105,18 @@ public class Globals extends Application {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		return preferences.getString("prefUsername", "anonymous"); 
 	}
+	
+	/*
+	 * Sends a String message to the global UI update handler.
+	 */
+	public void sendUIMessage(String message) {
+		
+	}
+	
+	/*
+	 * Sends an int message to the global UI update handler.
+	 */
+	public void sendUIMessage(int message) {
+		
+	}
 }
