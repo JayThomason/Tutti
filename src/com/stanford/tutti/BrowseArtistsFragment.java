@@ -75,6 +75,13 @@ public class BrowseArtistsFragment extends Fragment {
 	}
 	
 	
+	public void searchArtistList(String query) {
+		Cursor newCursor = g.db.searchArtists(query); 
+	    Cursor oldCursor = adapter.swapCursor(newCursor);
+	    oldCursor.close(); 
+	}
+	
+	
 	/*
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * move to the ViewAlbumsActivity and filter on the selected artist. 
