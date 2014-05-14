@@ -138,6 +138,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	Song song = g.db.rowToSong(cursor); 
     	if (g.jam.containsSong(song)) {
     		titleView.setBackgroundColor(Color.rgb(0, 0, 0));
+    	} else {
+    		titleView.setBackgroundColor(Color.TRANSPARENT); 
     	}
     	
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
@@ -154,14 +156,14 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         String songTitle = cursor.getString(cursor.getColumnIndex("title"));
         String artist = cursor.getString(cursor.getColumnIndex("artist")); 
 
-        int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+        int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")) + 1; 
         String text = songIndex + ". "; 
         if (g.jam != null) {
         	if (songIndex == g.jam.getCurrentSongIndex()) {
         		text += "Now playing: "; 
         	} else if (songIndex < g.jam.getCurrentSongIndex()) {
         		view.setBackgroundColor(Color.rgb(0, 0, 0));
-        	}
+        	} 
         }
         text += artist + ": " + songTitle; 
         titleView.setText(text); 

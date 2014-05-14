@@ -104,8 +104,14 @@ public class BrowseSongsFragment extends Fragment {
 				String title = ""; 
 				if (tokens[0].equals("Now playing")) {
 					title = tokens[2].substring(1); 
-				} else {
+				} else if (tokens.length > 1){
 					title = tokens[1].substring(1); 
+				} else {
+					if (Character.isDigit(tokens[0].charAt(0))) {
+						title = tokens[0].substring(tokens[0].indexOf(" ") + 1);
+					} else {
+						title = tokens[0]; 
+					}
 				}
 				
 				// IN THE LONG TERM
