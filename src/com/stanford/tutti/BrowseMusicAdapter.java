@@ -69,7 +69,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_large); 
             artView.setLayoutParams(layoutParams); 
             artView.requestLayout(); 
-            
+                        
             
             /*
             if (view != null) {

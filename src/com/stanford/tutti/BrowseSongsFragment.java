@@ -51,9 +51,9 @@ public class BrowseSongsFragment extends Fragment {
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
 		
-		initializeSongList(); 
 		initializeQueryFilter(); 
 		initializeSearchBar(); 
+		initializeSongList(); 
 
 		return rootView;
 	}

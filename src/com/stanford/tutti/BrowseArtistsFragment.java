@@ -44,9 +44,9 @@ public class BrowseArtistsFragment extends Fragment {
 
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
-        initializeArtistList(); 
 	    initializeQueryFilter(); 
         initializeSearchBar(); 
+        initializeArtistList(); 
         
         return rootView;
     }
@@ -98,6 +98,7 @@ public class BrowseArtistsFragment extends Fragment {
     public void initializeQueryFilter() {
     	searchFilter = new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {
+	        	System.out.println("RUNNING QUERY"); 
 	            return g.db.searchArtists(constraint);
 	        }
 	    }; 
@@ -112,6 +113,7 @@ public class BrowseArtistsFragment extends Fragment {
 	        }
 
 	        public void afterTextChanged(Editable s) {
+	        	System.out.println("AFTER TEXT CHANGED"); 
 	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
 	            filterAdapter.getFilter().filter(s.toString());
 	        }
