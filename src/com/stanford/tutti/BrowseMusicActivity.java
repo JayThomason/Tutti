@@ -258,8 +258,13 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 						if (artistsFragment != null) 
 							artistsFragment.refreshArtistList(); 
 					} else if (index == 1) {
-						if (songsFragment != null)
-							songsFragment.refreshSongList(); 
+						if (songsFragment != null) {
+							if (searchView.getQuery().equals("")) {
+								songsFragment.refreshSongList(); 
+							} else {
+								songsFragment.searchSongList(searchView.getQuery().toString());
+							}
+						}
 					} else if (index == 2) {
 						if (jamFragment != null) 
 							jamFragment.refreshJamList(); 
