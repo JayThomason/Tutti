@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +33,7 @@ public class Jam {
 	private Globals g;
 	private Thread keepAliveThread;
 	private AtomicBoolean keepAlive;
-	
+
 	public Jam(Globals g) {
 		this.g = g; 
 		songList = new ArrayList<Song>();
@@ -40,126 +41,126 @@ public class Jam {
 		currentSongIndex = -1; 
 		mediaPlayer = new MediaPlayer(); 
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-            	if (iterateCurrentSong()) 
-            		playCurrentSong();
-            }
-        });
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				if (iterateCurrentSong()) 
+					playCurrentSong();
+			}
+		});
 		master = false; 
 		clientSet = new HashSet<Client>();
 		usernameMap = new HashMap<String, String>(); 
 		name = ""; 
 	}
-	
+
 	public String getMasterIpAddr() {
 		return masterIpAddr;
 	}
-	
+
 	public void setMasterIp(String masterIpAddr) {
 		this.masterIpAddr = masterIpAddr;
 	}
-	
+
 	public HashSet<Client> getClientSet() {
 		return clientSet; // careful - set is mutable
 	}
-	
+
 	public void addClient(Client client) {
 		clientSet.add(client);
 		usernameMap.put(client.getIpAddress(), client.getUsername()); 
-//		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
+		//		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
 	}
-	
+
 	public boolean checkMaster() {
 		return master; 
 	}
-	
+
 	public void setMaster(boolean master) {
 		this.master = master; 
 	}
-	
+
 	public void setIPUsername(String ipAddress, String username) {
 		usernameMap.put(ipAddress, username); 
 	}
-	
+
 	public String getIPUsername(String ipAddress) {
 		return usernameMap.get(ipAddress); 
 	}
-	
+
 	public String getJamName() {
 		return name; 
 	}
-	
+
 	public void setJamName(String name) {
 		this.name = name; 
 	}
-	
+
 	public void start() {
 		if (!master)
 			return; 
-		
+
 		mediaPlayer.start(); 
 	}
-	
+
 	public void pause() {
 		if (!master)
 			return; 
-		
+
 		mediaPlayer.pause(); 
 	}
-	
+
 	public void seekTo(int time) {
 		if (!master)
 			return; 
-		
+
 		mediaPlayer.seekTo(time); 
 	}
-	
+
 	public void addSong(Song song) {
 		songList.add(song);
 		g.db.addSongToJam(song, songList.size() - 1); 
 	}
-	
+
 	public Song getCurrentSong() {
 		return currentSong; 
 	}
-	
+
 	public int getCurrentSongIndex() {
 		return currentSongIndex; 
 	}
-	
+
 	public boolean iterateCurrentSong() {
 		currentSongIndex++;
 		if (currentSongIndex >= songList.size()) {
-            currentSongIndex = 0;
+			currentSongIndex = 0;
 			return false;
-        }
-    	currentSong = songList.get(currentSongIndex); 
-    	return true;
+		}
+		currentSong = songList.get(currentSongIndex); 
+		return true;
 	}
-	
+
 	public void setCurrentSong(Song song, int index) {
 		currentSong = song; 
 		currentSongIndex = index; 
 	}
-	
+
 	public void setCurrentSongByIndex(int index) {
 		if (index < songList.size()) {
 			currentSongIndex = index; 
 			currentSong = songList.get(index); 
 		}
 	}
-	
+
 	public Song getSongByIndex(int index) {
 		return songList.get(index); 
 	}
-	
+
 	public void changeSongIndexInJam(int from, int to) {
 		g.db.changeSongIndexInJam(from, to);
 		Song temp = songList.get(from); 
 		songList.remove(from); 
 		songList.add(to, temp);  
-		
+
 		if (currentSongIndex == from) {
 			currentSongIndex = to; 
 		} else if (currentSongIndex == to) {
@@ -170,7 +171,7 @@ public class Jam {
 			}
 		}
 	}
-	
+
 	public boolean containsSong(Song song) {
 		for (Song jamSong : songList) {
 			if (jamSong.hashCode() == song.hashCode()) {
@@ -179,23 +180,23 @@ public class Jam {
 		}
 		return false; 
 	}
-	
+
 	public int getJamSize() {
 		return songList.size(); 
 	}
-	
-	
+
+
 	public void clearSongs() {
 		g.db.clearJam(); 
 		songList = new ArrayList<Song>(); 
 		currentSong = null; 
 		currentSongIndex = -1; 
 	}
-	
-	
+
+
 	public void removeSong(int index) {
 		g.db.removeSongFromJam(index); 
-		
+
 		songList.remove(index); 
 		if (currentSongIndex > index) {
 			currentSongIndex--; 
@@ -205,8 +206,8 @@ public class Jam {
 			playCurrentSong(); 
 		}
 	}
-	
-	
+
+
 	/*
 	 * Plays the current song. 
 	 * 
@@ -215,7 +216,7 @@ public class Jam {
 	public boolean playCurrentSong() {
 		//if (!master)
 		//	return false; 
-		
+
 		if (getCurrentSong() != null) {
 			mediaPlayer.reset();
 		}
@@ -227,7 +228,7 @@ public class Jam {
 			String ipAddr = getCurrentSong().getIpAddr();
 			if (!local)
 				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + getCurrentSong().getPath());
-			
+
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource((Globals) Globals.getAppContext(), myUri);
 			if (local) {
@@ -280,7 +281,7 @@ public class Jam {
 		} 
 		return jam; 
 	}
-	
+
 	/*
 	 * Load existing Jam state by parsing
 	 * the JSON response from another phone. 
@@ -299,16 +300,16 @@ public class Jam {
 				song.setArtist((String)jsonSong.get("artist")); 
 				song.setAlbum((String)jsonSong.get("album")); 
 				song.setIpAddr((String)jsonSong.get("ip"));
-				
+
 				song.setAddedBy((String)jsonSong.get("addedBy")); 
-				
+
 				addSong(song);
-								
+
 				if (i == nowPlayingIndex) {
 					setCurrentSong(song, i);
 				}
 			}
-			
+
 			JSONArray ipArray = jam.getJSONArray("ips"); 
 			JSONArray usernameArray = jam.getJSONArray("usernames"); 
 			for (int i = 0; i < ipArray.length(); i++) {
@@ -316,13 +317,13 @@ public class Jam {
 					usernameMap.put((String)ipArray.get(i), (String)usernameArray.get(i)); 
 				}
 			}
-			
+
 			g.sendUIMessage(7); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
 	}
-	
+
 	/*
 	 * Starts the keepAliveThread that sends keep alive requests to the server to ensure
 	 * that the jam is not deleted. One request is sent every minute.
@@ -337,7 +338,17 @@ public class Jam {
 					try {
 						Thread.sleep(60 * 1000);
 						if (keepAlive.get()) {
-							client.get(url, new AsyncHttpResponseHandler() {});
+							client.get(url, new AsyncHttpResponseHandler() {
+								@Override
+								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+									System.out.println("successful keepAlive to server...");
+								}
+
+								@Override
+								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+									System.out.println("failed keepAlive to server...");
+								}
+							});
 						}
 						else {
 							return;
@@ -350,7 +361,7 @@ public class Jam {
 		};
 		keepAliveThread.start();
 	}
-	
+
 	/*
 	 * Stops the jam from sending keep alive messages to the server.
 	 */
@@ -359,7 +370,7 @@ public class Jam {
 			keepAlive.set(false);
 		}
 	}
-	
+
 	/*
 	 * Updates the keepAlive timestamp for the provided client ip address.
 	 * 
@@ -375,12 +386,12 @@ public class Jam {
 			return true;
 		}
 	}
-	
+
 	public void startClientKeepAliveThread() {
-		
+
 	}
-	
+
 	public void endClientKeepAlive() {
-		
+
 	}
 }
