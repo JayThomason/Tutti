@@ -172,4 +172,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	ownerView.setText("Added by: " + addedBy);
     }
 	
+    @Override
+    public boolean isEnabled(int position) {
+        /*if(YOUR CONDTITION){
+            return false;
+        }*/
+        return true;
+    }
 }
