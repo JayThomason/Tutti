@@ -23,9 +23,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     
     private Globals g; 
     private int noArtImgID;
-    
-    private String lastAlbum = ""; 
-    
+        
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
         this.layout=layout;
@@ -157,8 +155,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         	artist = "Unknown Artist"; 
         }
 
-        int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")) + 1; 
-        String text = songIndex + ". "; 
+        int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+        int displayIndex = songIndex + 1; 
+        String text = displayIndex + ". "; 
         if (g.jam != null) {
         	if (songIndex == g.jam.getCurrentSongIndex()) {
         		text += "Now playing: "; 
