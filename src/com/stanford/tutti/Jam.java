@@ -31,8 +31,10 @@ public class Jam {
 	private String name; 
 	private String masterIpAddr;
 	private Globals g;
-	private Thread keepAliveThread;
-	private AtomicBoolean keepAlive;
+	private Thread serverKeepAliveThread;
+	private Thread clientKeepAliveThread;
+	private AtomicBoolean serverKeepAlive;
+	private AtomicBoolean clientKeepAlive;
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -329,15 +331,15 @@ public class Jam {
 	 * that the jam is not deleted. One request is sent every minute.
 	 */
 	public void startServerKeepAlive(String serverHostname) {
-		keepAlive = new AtomicBoolean(true);
+		serverKeepAlive = new AtomicBoolean(true);
 		final String url = "http://" + serverHostname + "/keepAlive?private=" + g.getIpAddr();
-		keepAliveThread = new Thread() {
-			AsyncHttpClient client = new AsyncHttpClient();
+		serverKeepAliveThread = new Thread() {
 			public void run() {
 				while (true) {
 					try {
+						AsyncHttpClient client = new AsyncHttpClient();
 						Thread.sleep(60 * 1000);
-						if (keepAlive.get()) {
+						if (serverKeepAlive.get()) {
 							client.get(url, new AsyncHttpResponseHandler() {
 								@Override
 								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -359,15 +361,15 @@ public class Jam {
 				}
 			}
 		};
-		keepAliveThread.start();
+		serverKeepAliveThread.start();
 	}
 
 	/*
 	 * Stops the jam from sending keep alive messages to the server.
 	 */
 	public void endServerKeepAlive() {
-		if (keepAliveThread != null && keepAlive != null) {
-			keepAlive.set(false);
+		if (serverKeepAliveThread != null && serverKeepAlive != null) {
+			serverKeepAlive.set(false);
 		}
 	}
 
@@ -387,11 +389,42 @@ public class Jam {
 		}
 	}
 
+	/*
+	 * Starts the keepAliveThread that sends keep alive requests to the master to ensure
+	 * that the client's music is not deleted. One request is sent every 3 seconds.
+	 */
 	public void startClientKeepAliveThread() {
-
-	}
+		clientKeepAlive = new AtomicBoolean(true);
+		final String url = "http://" + g.jam.getMasterIpAddr() + "/keepAlive";
+		clientKeepAliveThread = new Thread() {
+			public void run() {
+				while (true) {
+					try {
+						AsyncHttpClient client = new AsyncHttpClient();
+						Thread.sleep(3 * 1000);
+						if (serverKeepAlive.get()) {
+							client.get(url, new AsyncHttpResponseHandler() {
+								@Override
+								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+									// TODO: in this case we want to display some notification to the user and exit the jam
+									System.out.println("failed keepAlive to master...");
+								}
+							});
+						}
+						else {
+							return;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		clientKeepAliveThread.start();	}
 
 	public void endClientKeepAlive() {
-
+		if (clientKeepAliveThread != null && clientKeepAlive != null) {
+			clientKeepAlive.set(false);
+		}
 	}
 }
