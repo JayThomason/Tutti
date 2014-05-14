@@ -30,14 +30,11 @@ public class BrowseSongsFragment extends Fragment {
 	private Globals g; 
 	private View rootView; 
 	private ListView listView; 
-	private EditText searchBar; 
 	
 	private String columns[]; 
 	private int views[]; 
 	private BrowseMusicAdapter adapter; 
 	
-	private FilterQueryProvider searchFilter;
-
 	private final int port = 1234;
 
 
@@ -47,12 +44,11 @@ public class BrowseSongsFragment extends Fragment {
 		
 		rootView = inflater.inflate(R.layout.fragment_browse_songs, container, false);
 		listView = (ListView) rootView.findViewById(R.id.songListView); 
-		searchBar = (EditText) rootView.findViewById(R.id.song_search_box);
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
 		
-		initializeQueryFilter(); 
-		initializeSearchBar(); 
+		//initializeQueryFilter(); 
+		//initializeSearchBar(); 
 		initializeSongList(); 
 
 		return rootView;
@@ -65,7 +61,10 @@ public class BrowseSongsFragment extends Fragment {
 		views = new int[] { R.id.browserArt, R.id.browserText };
 		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views); 
 		
-		adapter.setFilterQueryProvider(searchFilter);
+		
+		//adapter.setFilterQueryProvider(searchFilter);
+		
+		
 		listView.setAdapter(adapter);
 		
 		listView.setFastScrollEnabled(true);
@@ -163,6 +162,7 @@ public class BrowseSongsFragment extends Fragment {
 		});
 	}
 	
+	/*
 	public void initializeQueryFilter() {
 		searchFilter = new FilterQueryProvider() {
 			public Cursor runQuery(CharSequence constraint) {
@@ -189,4 +189,5 @@ public class BrowseSongsFragment extends Fragment {
 			}
 		});
 	}
+	*/
 }

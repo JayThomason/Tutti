@@ -26,26 +26,22 @@ public class BrowseArtistsFragment extends Fragment {
 	private Globals g; 
 	private View rootView; 
 	private ListView listView; 
-	private EditText searchBar;
 	
 	private String columns[]; 
 	private int views[]; 
 	private BrowseMusicAdapter adapter; 
-	
-	private FilterQueryProvider searchFilter;
-	
+		
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
      	
         rootView = inflater.inflate(R.layout.fragment_browse_artists, container, false);
 		listView = (ListView) rootView.findViewById(R.id.artistListView);
-	    searchBar = (EditText) rootView.findViewById(R.id.artist_search_box);
 
         g = (Globals) rootView.getContext().getApplicationContext(); 
         
-	    initializeQueryFilter(); 
-        initializeSearchBar(); 
+	    //initializeQueryFilter(); 
+        //initializeSearchBar(); 
         initializeArtistList(); 
         
         return rootView;
@@ -58,7 +54,11 @@ public class BrowseArtistsFragment extends Fragment {
 	    
 		Cursor cursor = g.db.getAllArtists(); 
 	    adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views);
-	    adapter.setFilterQueryProvider(searchFilter);
+	    
+	    
+	    //adapter.setFilterQueryProvider(searchFilter);
+	    
+	    
 	    listView.setAdapter(adapter); 
 	    
 	    listView.setFastScrollEnabled(true);
@@ -95,6 +95,8 @@ public class BrowseArtistsFragment extends Fragment {
 		});
 	}
 	
+	/*
+	
     public void initializeQueryFilter() {
     	searchFilter = new FilterQueryProvider() {
 	        public Cursor runQuery(CharSequence constraint) {
@@ -119,4 +121,5 @@ public class BrowseArtistsFragment extends Fragment {
 	        }
 	    });
 	}
+	*/
 }
