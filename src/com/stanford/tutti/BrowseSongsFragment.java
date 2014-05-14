@@ -89,9 +89,15 @@ public class BrowseSongsFragment extends Fragment {
 	
 	
 	public void searchSongList(String query) {
-		Cursor newCursor = g.db.searchSongs(query); 
-	    Cursor oldCursor = adapter.swapCursor(newCursor);
-	    oldCursor.close(); 
+		if (g.currentArtistView.equals("")) {
+			Cursor newCursor = g.db.searchSongs(query); 
+		    Cursor oldCursor = adapter.swapCursor(newCursor);
+		    oldCursor.close(); 
+		} else {
+			Cursor newCursor = g.db.searchSongsByArtist(query, g.currentArtistView); 
+		    Cursor oldCursor = adapter.swapCursor(newCursor);
+		    oldCursor.close(); 
+		}
 	}
 
 
