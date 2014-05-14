@@ -143,7 +143,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		int index = actionBar.getSelectedNavigationIndex(); 
 		int newIndex = index - 1; 
 		if (newIndex == -1) {
-			newIndex = 0; 
+			return; 
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
