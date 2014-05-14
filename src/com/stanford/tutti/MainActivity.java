@@ -154,10 +154,10 @@ public class MainActivity extends Activity {
 		}
 
 		AsyncHttpClient client = new AsyncHttpClient();
-		getCreateJam(client, builder.build().toString(), serverHostname, nameDialog);
+		getCreateJam(name, client, builder.build().toString(), serverHostname, nameDialog);
 	}
 	
-	private void getCreateJam(AsyncHttpClient client, String url,
+	private void getCreateJam(final String jamName, AsyncHttpClient client, String url,
 			final String serverHostname, final AlertDialog nameDialog) {
 		client.get(url, new AsyncHttpResponseHandler() {
 			@Override
@@ -167,7 +167,12 @@ public class MainActivity extends Activity {
 					g.jam.startServerKeepAlive(serverHostname);
 					g.jam.setMaster(true);
 					nameDialog.dismiss();
+					
 					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
+					Bundle b = new Bundle();
+					b.putString("jamName", jamName); //Your id
+					intent.putExtras(b);
+					
 					startActivity(intent);
 				}
 				else {

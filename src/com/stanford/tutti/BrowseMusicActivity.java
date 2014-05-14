@@ -51,7 +51,13 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
          
         //MenuItem item = actionBar.findItem(R.id.action_settings);
 
-        //actionBar.setDisplayShowTitleEnabled(true);
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+        	actionBar.setTitle(getIntent().getStringExtra("jamName"));
+        } else {
+        	actionBar.setTitle("Jam"); 
+        }
+        actionBar.setDisplayShowTitleEnabled(true);        
         //System.out.println("ACTIONBAR TITLE: " + actionBar.getTitle()); 
         
         // Adding Tabs
@@ -61,7 +67,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         }
         
         getActionBar().setDisplayShowHomeEnabled(false);              
-        getActionBar().setDisplayShowTitleEnabled(false);
+        //getActionBar().setDisplayShowTitleEnabled(false);
         
     	g = (Globals) getApplicationContext(); 
     	    	
