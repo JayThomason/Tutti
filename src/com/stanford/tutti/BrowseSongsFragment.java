@@ -100,6 +100,11 @@ public class BrowseSongsFragment extends Fragment {
 					int position, long id) {
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
 				
+				// super janky
+				if (view.getHeight() > 200) {
+					return; 
+				}
+				
 				String[] tokens = textView.getText().toString().split(":");
 				String title = ""; 
 				if (tokens[0].equals("Now playing")) {
