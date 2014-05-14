@@ -167,14 +167,15 @@ public class Jam {
 		songList.add(to, temp);  
 
 		if (currentSongIndex == from) {
-			currentSongIndex = to; 
-		} else if (currentSongIndex == to) {
+			currentSongIndex = to;
+		} else if (currentSongIndex > from && currentSongIndex <= to) {	
 			if (from < to) {
 				currentSongIndex--; 
 			} else if (from > to) {
 				currentSongIndex++; 
 			}
-		}
+		} 
+		currentSong = songList.get(currentSongIndex); 
 	}
 
 	public boolean containsSong(Song song) {
