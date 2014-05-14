@@ -701,7 +701,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 */
 	public int deleteJamSongsFromIp(String ipAddr) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_JAM, KEY_IP + "=" + ipAddr, null);
+        return db.delete(TABLE_JAM, KEY_IP + "='" + ipAddr + "'", null);
 	}
 	
 	/*
@@ -711,6 +711,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 */
 	public int deleteSongsFromIp(String ipAddr) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_SONGS, KEY_IP + "=" + ipAddr, null);
+        return db.delete(TABLE_SONGS, KEY_IP + "='" + ipAddr + "'", null);
 	}
 }
