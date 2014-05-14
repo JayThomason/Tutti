@@ -110,7 +110,7 @@ public class Server extends NanoHTTPD {
     		return joinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username"));
     	}
     	else if (uri.startsWith(ACCEPT_JOIN_JAM)) {
-    		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username")); 
+    		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username"), parameters.get("jamName")); 
     	}
     	else if (uri.startsWith(REJECT_JOIN_JAM)) {
     		return rejectJoinJamResponse(headers.get(HTTP_CLIENT_IP)); 
@@ -171,10 +171,10 @@ public class Server extends NanoHTTPD {
 		return new NanoHTTPD.Response("Requesting master user permission to join");
 	}
     
-    private Response acceptJoinJamResponse(String otherIpAddr, String username) {
+    private Response acceptJoinJamResponse(String otherIpAddr, String username, String jamName) {
 		if (g.joinJamHandler != null) {
 			Message msg = g.joinJamHandler.obtainMessage();
-			msg.obj = "ACCEPTED//" + otherIpAddr + "//" + username; 
+			msg.obj = "ACCEPTED//" + otherIpAddr + "//" + username + "//" + jamName; 
 			g.joinJamHandler.sendMessage(msg);
 		}
 		return new NanoHTTPD.Response("Joining jam");

@@ -31,8 +31,8 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
-	public void acceptJoinJam(AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/acceptJoinJam/", ""); 
+	public void acceptJoinJam(String jamName, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/acceptJoinJam/", "?jamName=" + jamName); 
 		client.get(url, null, responseHandler); 
 	}
 	
