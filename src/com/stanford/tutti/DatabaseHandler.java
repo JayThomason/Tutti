@@ -341,9 +341,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // in-between the to and from songs as necessary
         String restructureQuery = ""; 
         if (from < to) {
-    	    restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "-1"+" WHERE " + KEY_JAM_INDEX + " <= ? AND " + KEY_JAM_INDEX + " > ?";
+    	    restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "-1 WHERE " + KEY_JAM_INDEX + " <= ? AND " + KEY_JAM_INDEX + " > ?";
         } else if (from > to) {
-    	    restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "+1"+" WHERE " + KEY_JAM_INDEX + " >= ? AND " + KEY_JAM_INDEX + " < ?";
+    	    restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "+1 WHERE " + KEY_JAM_INDEX + " >= ? AND " + KEY_JAM_INDEX + " < ?";
         }
         String[] updateArgs = new String[] {"" + to, "" + from}; 
 	    db.execSQL(restructureQuery, updateArgs);
