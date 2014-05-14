@@ -31,6 +31,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     public ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
+    private SearchView searchView; 
     
     // Tab titles
     private String[] tabs = { "Artists", "Songs", "Jam" };
@@ -89,7 +90,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		
 	    MenuItem menuItem = menu.findItem(R.id.action_search);
 	    
-	    SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView(); 
+	    searchView = (SearchView) menu.findItem(R.id.action_search).getActionView(); 
 	    	    
 	    MenuItemCompat.setOnActionExpandListener(menuItem, new OnActionExpandListener() {
 	        @Override
@@ -111,6 +112,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	            	if (artistsFragment!= null) {
 	            		if (newText.equals("")) {
 	            			artistsFragment.refreshArtistList(); 
+	        	        	searchView.clearFocus(); 
 	            		} else {
 			        		artistsFragment.searchArtistList(newText); 
 	            		}
@@ -119,7 +121,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	            } else if (actionBar.getSelectedNavigationIndex() == 1) {
 	            	if (songsFragment!= null) {
 	            		if (newText.equals("")) {
-	            			songsFragment.refreshSongList(); 
+	            			songsFragment.refreshSongList();
+	        	        	searchView.clearFocus(); 
 	            		} else {
 	            			songsFragment.searchSongList(newText); 
 	            		}
@@ -130,6 +133,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 
 	        @Override 
 	        public boolean onQueryTextSubmit(String query) { 
+	        	searchView.clearFocus(); 
 	        	return true; 
 	        } 
 	    }; 
