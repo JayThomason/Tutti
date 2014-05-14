@@ -45,13 +45,13 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+
     	if (cursor == null)
     		return; 
-    	
-        super.bindView(view, context, cursor);
-        
+
         ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
         String artPath = cursor.getString(cursor.getColumnIndex("art")); 
+ 
         if (artPath != null && !artPath.equals("")) {
         	artView.setImageURI(Uri.parse(artPath)); 
         } else {
@@ -60,6 +60,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         
         String title = cursor.getString(cursor.getColumnIndex("title")); 
         String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+
         if (title.equals("DISPLAY_ALBUM")) {
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
             titleView.setText(artist + ": " + cursor.getString(cursor.getColumnIndex("album")));  
@@ -69,19 +70,6 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_large); 
             artView.setLayoutParams(layoutParams); 
             artView.requestLayout(); 
-                        
-            
-            /*
-            if (view != null) {
-            	view.getLayoutParams(); 
-            	if (p != null){
-		            p.setMargins(0, 50, 0, 0);
-		            view.requestLayout();
-            	}
-            }
-            */
-           
-           
             return; 
         } else {
             LayoutParams layoutParams = artView.getLayoutParams(); 
@@ -90,7 +78,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             artView.setLayoutParams(layoutParams); 
             artView.requestLayout(); 
         }
-        
+
         if (columns.length == 2) { 
         	bindArtistsView(view, cursor); 
         } else if (columns.length == 3) {
