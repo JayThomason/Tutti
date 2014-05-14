@@ -136,6 +136,12 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     					msg.what = 6; 
     					g.uiUpdateHandler.sendMessage(msg);
     				}
+    	    	} else if (position == 2) {
+    				if (g.uiUpdateHandler != null) {
+    					Message msg = g.uiUpdateHandler.obtainMessage();
+    					msg.what = 7; 
+    					g.uiUpdateHandler.sendMessage(msg);
+    				}
     	    	}
     	        // on changing the page
     	        // make respected tab selected

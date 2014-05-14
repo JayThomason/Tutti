@@ -155,7 +155,7 @@ public class BrowseSongsFragment extends Fragment {
 
 				if (g.uiUpdateHandler != null) {
 					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 7; 
+					msg.what = 0; 
 					g.uiUpdateHandler.sendMessage(msg);
 				}
 			}
