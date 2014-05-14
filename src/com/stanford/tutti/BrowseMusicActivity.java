@@ -42,6 +42,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         // Initilization
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
+        
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
  
         viewPager.setAdapter(mAdapter);
@@ -50,6 +51,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
          
         //MenuItem item = actionBar.findItem(R.id.action_settings);
 
+        //actionBar.setDisplayShowTitleEnabled(true);
+        //System.out.println("ACTIONBAR TITLE: " + actionBar.getTitle()); 
         
         // Adding Tabs
         for (String tab_name : tabs) {
