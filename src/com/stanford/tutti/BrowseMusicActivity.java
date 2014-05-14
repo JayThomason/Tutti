@@ -48,7 +48,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
          
-        // MenuItem item = actionBar.findItem(R.id.action_settings);
+        //MenuItem item = actionBar.findItem(R.id.action_settings);
 
         
         // Adding Tabs
