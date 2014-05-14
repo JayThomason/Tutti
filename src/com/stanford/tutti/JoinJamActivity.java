@@ -144,8 +144,8 @@ public class JoinJamActivity extends Activity {
 					String[] tokens = message.split("//"); 
 					final String ipAddr = tokens[1]; 
 					if (tokens[0].equals("ACCEPTED")) {
-						final String username = tokens[2]; 
-						final String jamName = tokens[3]; 
+						final String username = tokens[1]; 
+						final String jamName = tokens[2]; 
 	
 						g.jam.setJamName(jamName);
 						
