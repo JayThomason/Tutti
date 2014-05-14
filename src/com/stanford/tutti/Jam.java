@@ -27,6 +27,7 @@ public class Jam {
 	private HashSet<Client> clientSet;
 	private HashMap<String, String> usernameMap; 
 	private HashMap<String, Long> keepAliveTimestampMap;
+	private String name; 
 	private String masterIpAddr;
 	private Globals g;
 	private Thread keepAliveThread;
@@ -48,6 +49,7 @@ public class Jam {
 		master = false; 
 		clientSet = new HashSet<Client>();
 		usernameMap = new HashMap<String, String>(); 
+		name = ""; 
 	}
 	
 	public String getMasterIpAddr() {
@@ -82,6 +84,14 @@ public class Jam {
 	
 	public String getIPUsername(String ipAddress) {
 		return usernameMap.get(ipAddress); 
+	}
+	
+	public String getJamName() {
+		return name; 
+	}
+	
+	public void setJamName(String name) {
+		this.name = name; 
 	}
 	
 	public void start() {
