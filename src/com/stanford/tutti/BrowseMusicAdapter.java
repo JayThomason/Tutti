@@ -59,9 +59,13 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         }
         
         String title = cursor.getString(cursor.getColumnIndex("title")); 
-        String artist = cursor.getString(cursor.getColumnIndex("artist")); 
-
+        
         if (title.equals("DISPLAY_ALBUM")) {
+            String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+            if (artist.equals("<unknown>")) {
+            	artist = "Unknown Artist"; 
+            }
+        	
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
             titleView.setText(artist + ": " + cursor.getString(cursor.getColumnIndex("album")));  
             
@@ -96,8 +100,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
         if (username == null) 
         	username = ""; 
-        String title = cursor.getString(cursor.getColumnIndex("artist")); 
-        titleView.setText(title); 
+        String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+        if (artist.equals("<unknown>")) {
+        	artist = "Unknown Artist"; 
+        }
+        titleView.setText(artist); 
         ownerView.setText(username); 
     }
     
@@ -107,6 +114,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	
         String title = cursor.getString(cursor.getColumnIndex("title")); 
         String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+        if (artist.equals("<unknown>")) {
+        	artist = "Unknown Artist"; 
+        }
         
         int trackNum = cursor.getInt(cursor.getColumnIndex("trackNum")); 
         if (trackNum > 1000) {
@@ -143,6 +153,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	
         String songTitle = cursor.getString(cursor.getColumnIndex("title"));
         String artist = cursor.getString(cursor.getColumnIndex("artist")); 
+        if (artist.equals("<unknown>")) {
+        	artist = "Unknown Artist"; 
+        }
 
         int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")) + 1; 
         String text = songIndex + ". "; 
