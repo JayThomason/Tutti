@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.widget.FilterQueryProvider;
 
 /* 
  * Stores any state which must be globally accessible, eg. variables which cannot
@@ -28,7 +29,7 @@ public class Globals extends Application {
 	public String currentArtistView = ""; 
 	public Handler uiUpdateHandler; 
 	public Handler joinJamHandler; 
-
+	
 	public int playerDuration = 0; 
 	public OnPreparedListener playerListener; 
 

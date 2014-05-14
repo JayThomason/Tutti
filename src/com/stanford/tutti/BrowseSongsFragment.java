@@ -29,11 +29,11 @@ public class BrowseSongsFragment extends Fragment {
 
 	private Globals g; 
 	private View rootView; 
-	private ListView listView; 
+	public ListView listView; 
 	
 	private String columns[]; 
 	private int views[]; 
-	private BrowseMusicAdapter adapter; 
+	public BrowseMusicAdapter adapter; 
 	
 	private final int port = 1234;
 

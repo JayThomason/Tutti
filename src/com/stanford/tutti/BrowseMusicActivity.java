@@ -7,30 +7,37 @@ import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FilterQueryProvider;
+import android.widget.SearchView;
 
 public class BrowseMusicActivity extends FragmentActivity implements ActionBar.TabListener {
 
     public ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
+    
     // Tab titles
     private String[] tabs = { "Artists", "Songs", "Jam" };
     
     private BrowseArtistsFragment artistsFragment;
     private BrowseSongsFragment songsFragment; 
     private BrowseJamFragment jamFragment; 
-    
+        
     private Globals g; 
     private int PORT = 1234; 
  
@@ -76,12 +83,65 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
+		// Inflate the menu; this adds items to the action bar.
 		getMenuInflater().inflate(R.menu.music_browser, menu);
+		
+	    MenuItem menuItem = menu.findItem(R.id.action_search);
+	    
+	    SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView(); 
+	    	    
+	    MenuItemCompat.setOnActionExpandListener(menuItem, new OnActionExpandListener() {
+	        @Override
+	        public boolean onMenuItemActionCollapse(MenuItem item) {
+	            // Do something when collapsed?
+	            return true;  // Return true to collapse action view
+	        }
+
+	        @Override
+	        public boolean onMenuItemActionExpand(MenuItem item) {
+	            return true;  // Return true to expand action view
+	        }
+	    });
+	    
+	    final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() { 
+	        @Override 
+	        public boolean onQueryTextChange(String newText) { 
+	            if (actionBar.getSelectedNavigationIndex() == 0) {
+	            	if (artistsFragment!= null) {
+	            		SimpleCursorAdapter listAdapter = (SimpleCursorAdapter) artistsFragment.listView.getAdapter();
+	            	
+		            	if (listAdapter != null) {
+			        		Cursor newCursor = g.db.searchArtists(newText); 
+			        	    Cursor oldCursor = listAdapter.swapCursor(newCursor);
+			        	    oldCursor.close(); 
+		            	}
+	            	}
+	            	
+	            } else if (actionBar.getSelectedNavigationIndex() == 1) {
+	            	if (songsFragment!= null) {
+	            		SimpleCursorAdapter listAdapter = (SimpleCursorAdapter) songsFragment.listView.getAdapter();
+	            	
+		            	if (listAdapter != null) {
+			        		Cursor newCursor = g.db.searchArtists(newText); 
+			        	    Cursor oldCursor = listAdapter.swapCursor(newCursor);
+			        	    oldCursor.close(); 
+		            	}
+	            	}
+	            }
+	            return true; 
+	        } 
+
+	        @Override 
+	        public boolean onQueryTextSubmit(String query) { 
+	        	return true; 
+	        } 
+	    }; 
+
+	    searchView.setOnQueryTextListener(queryTextListener); 
+
 		return true;
 	}
-	
+
 	/*
 	@Override
 	public void onBackPressed() {
