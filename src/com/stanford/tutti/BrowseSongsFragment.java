@@ -47,8 +47,6 @@ public class BrowseSongsFragment extends Fragment {
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
 		
-		//initializeQueryFilter(); 
-		//initializeSearchBar(); 
 		initializeSongList(); 
 
 		return rootView;
@@ -174,33 +172,4 @@ public class BrowseSongsFragment extends Fragment {
 			}
 		});
 	}
-	
-	/*
-	public void initializeQueryFilter() {
-		searchFilter = new FilterQueryProvider() {
-			public Cursor runQuery(CharSequence constraint) {
-				if (!g.currentArtistView.equals("")) {
-					return g.db.searchSongsByArtist(constraint, g.currentArtistView); 
-				} else {
-					return g.db.searchSongs(constraint); 
-				} 
-			}
-		}; 
-	}
-
-	private void initializeSearchBar() {
-		searchBar.addTextChangedListener(new TextWatcher() {
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			public void afterTextChanged(Editable s) {
-				SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
-				filterAdapter.getFilter().filter(s.toString());
-			}
-		});
-	}
-	*/
 }
