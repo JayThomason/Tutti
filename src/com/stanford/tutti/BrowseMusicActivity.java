@@ -108,7 +108,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	            	if (artistsFragment!= null) {
 	            		if (newText.equals("")) {
 	            			artistsFragment.refreshArtistList(); 
-	        	        	searchView.clearFocus(); 
+	        	        	resetSearchView(); 
 	            		} else {
 			        		artistsFragment.searchArtistList(newText); 
 	            		}
@@ -118,7 +118,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	            	if (songsFragment!= null) {
 	            		if (newText.equals("")) {
 	            			songsFragment.refreshSongList();
-	        	        	searchView.clearFocus(); 
+	        	        	resetSearchView(); 
 	            		} else {
 	            			songsFragment.searchSongList(newText); 
 	            		}

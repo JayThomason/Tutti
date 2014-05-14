@@ -230,7 +230,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAllSongs() {  
-        String query = "SELECT * FROM " + TABLE_SONGS + " ORDER BY " + KEY_ARTIST + " ASC, " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC";
+        String query = "SELECT * FROM " + TABLE_SONGS + " "
+        			   + "ORDER BY " + KEY_ARTIST + " ASC, " 
+        			   + KEY_ALBUM + " ASC, " 
+        			   + KEY_TRACK_NUM + " ASC";
   
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -239,7 +242,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     public Cursor getAllArtists() {
-        String query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ARTIST; 
+        String query = "SELECT * FROM " + TABLE_SONGS + " "
+        			   + "GROUP BY " + KEY_ARTIST; 
     	
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
