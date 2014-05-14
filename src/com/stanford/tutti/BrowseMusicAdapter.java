@@ -135,9 +135,9 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	
     	Song song = g.db.rowToSong(cursor); 
     	if (g.jam.containsSong(song)) {
-    		titleView.setBackgroundColor(Color.rgb(0, 0, 0));
+    		view.setBackgroundColor(Color.rgb(0, 0, 0));
     	} else {
-    		titleView.setBackgroundColor(Color.TRANSPARENT); 
+    		view.setBackgroundColor(Color.TRANSPARENT); 
     	}
     	
         String username = g.jam.getIPUsername(cursor.getString(cursor.getColumnIndex("_ip"))); 
