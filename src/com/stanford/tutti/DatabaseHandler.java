@@ -402,7 +402,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	if (constraint == null || constraint.length() == 0) {
     		query = "SELECT * FROM " + TABLE_SONGS;  
     	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%'"; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' OR " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%' "
+        			+ "OR " + KEY_ARTIST + " LIKE '%" + constraint.toString() + "%' ORDER BY " + KEY_TRACK_NUM + " ASC"; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
@@ -415,9 +416,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	String escapedArtist = artist.replace("'", "''"); 
     	String query; 
     	if (constraint == null || constraint.length() == 0) {
-    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "'";
+    		query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_TRACK_NUM;
     	} else {
-        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' AND " + KEY_ARTIST + " = '" + escapedArtist + "'"; 
+        	query = "SELECT * FROM " + TABLE_SONGS + " WHERE (" + KEY_TITLE + " LIKE '%" + constraint.toString() + "%' OR " + KEY_ALBUM + " LIKE '%" + constraint.toString() + "%') "
+        			+ "AND " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_TRACK_NUM; 
     	}
   
         SQLiteDatabase db = this.getWritableDatabase();
