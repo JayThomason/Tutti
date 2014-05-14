@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -138,17 +139,15 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 
-	/*
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
 		int newIndex = index - 1; 
 		if (newIndex == -1) {
-			newIndex = 0; 
+			return; 
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
-	*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -157,6 +156,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			Intent intent = new Intent(BrowseMusicActivity.this, SettingsMenuActivity.class); 
+			startActivity(intent); 
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

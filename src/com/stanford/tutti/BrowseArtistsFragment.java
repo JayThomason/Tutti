@@ -39,9 +39,7 @@ public class BrowseArtistsFragment extends Fragment {
 		listView = (ListView) rootView.findViewById(R.id.artistListView);
 
         g = (Globals) rootView.getContext().getApplicationContext(); 
-        
-	    //initializeQueryFilter(); 
-        //initializeSearchBar(); 
+
         initializeArtistList(); 
         
         return rootView;
@@ -101,32 +99,4 @@ public class BrowseArtistsFragment extends Fragment {
 			}
 		});
 	}
-	
-	/*
-	
-    public void initializeQueryFilter() {
-    	searchFilter = new FilterQueryProvider() {
-	        public Cursor runQuery(CharSequence constraint) {
-	        	System.out.println("RUNNING QUERY"); 
-	            return g.db.searchArtists(constraint);
-	        }
-	    }; 
-    }
-	
-	private void initializeSearchBar() {
-	    searchBar.addTextChangedListener(new TextWatcher() {
-	        public void onTextChanged(CharSequence s, int start, int before, int count) {
-	        }
-
-	        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	        }
-
-	        public void afterTextChanged(Editable s) {
-	        	System.out.println("AFTER TEXT CHANGED"); 
-	            SimpleCursorAdapter filterAdapter = (SimpleCursorAdapter)listView.getAdapter();
-	            filterAdapter.getFilter().filter(s.toString());
-	        }
-	    });
-	}
-	*/
 }
