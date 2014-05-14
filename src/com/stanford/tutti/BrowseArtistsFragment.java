@@ -90,11 +90,7 @@ public class BrowseArtistsFragment extends Fragment {
 								
 				g.currentArtistView = artist; 
 				
-				if (g.uiUpdateHandler != null) {
-					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 3; 
-					g.uiUpdateHandler.sendMessage(msg);
-				}								
+				g.sendUIMessage(3); 
 			}
 		});
 	}

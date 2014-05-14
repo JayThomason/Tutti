@@ -125,23 +125,11 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	    public void onPageSelected(int position) {
     	    	if (position == 0) {
     	    		g.currentArtistView = ""; 
-    				if (g.uiUpdateHandler != null) {
-    					Message msg = g.uiUpdateHandler.obtainMessage();
-    					msg.what = 6; 
-    					g.uiUpdateHandler.sendMessage(msg);
-    				}
+    				g.sendUIMessage(6);
     	    	} else if (position == 1) {
-    				if (g.uiUpdateHandler != null) {
-    					Message msg = g.uiUpdateHandler.obtainMessage();
-    					msg.what = 6; 
-    					g.uiUpdateHandler.sendMessage(msg);
-    				}
+    				g.sendUIMessage(6); 
     	    	} else if (position == 2) {
-    				if (g.uiUpdateHandler != null) {
-    					Message msg = g.uiUpdateHandler.obtainMessage();
-    					msg.what = 7; 
-    					g.uiUpdateHandler.sendMessage(msg);
-    				}
+    				g.sendUIMessage(7); 
     	    	}
     	        // on changing the page
     	        // make respected tab selected

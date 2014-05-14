@@ -153,11 +153,7 @@ public class BrowseSongsFragment extends Fragment {
 					});
 				}
 
-				if (g.uiUpdateHandler != null) {
-					Message msg = g.uiUpdateHandler.obtainMessage();
-					msg.what = 0; 
-					g.uiUpdateHandler.sendMessage(msg);
-				}
+				g.sendUIMessage(0); 
 			}
 		});
 	}
