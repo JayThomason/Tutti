@@ -138,7 +138,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 
-	/*
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
@@ -148,7 +147,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		}
 	    viewPager.setCurrentItem(newIndex); 
 	}
-	*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
