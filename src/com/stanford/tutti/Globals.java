@@ -32,6 +32,8 @@ public class Globals extends Application {
 	
 	public int playerDuration = 0; 
 	public OnPreparedListener playerListener; 
+	
+	public MusicLibraryLoaderThread localLoaderThread; 
 
 	DatabaseHandler db; 
 

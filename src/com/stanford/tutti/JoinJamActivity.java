@@ -152,6 +152,12 @@ public class JoinJamActivity extends Activity {
 						Client masterClient = new Client(g, username, ipAddr, PORT);
 						g.jam.addClient(masterClient);
 	
+						try {
+							g.localLoaderThread.join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} 
+						
 						Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
 						getLibraryThread.start();
 	

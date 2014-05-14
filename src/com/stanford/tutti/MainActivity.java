@@ -86,8 +86,8 @@ public class MainActivity extends Activity {
 
 	private void loadLocalMusic() {
 		g.db.dropTable("songs"); 
-		MusicLibraryLoaderThread loaderThread = new MusicLibraryLoaderThread(this);
-		loaderThread.start();	
+		g.localLoaderThread = new MusicLibraryLoaderThread(this);
+		g.localLoaderThread.start();	
 	}
 
 	private void initializeJam() {
@@ -186,6 +186,13 @@ public class MainActivity extends Activity {
 						g.jam.setJamName("Jam-" + g.getIpAddr());
 					}
 					nameDialog.dismiss();
+					
+					try {
+						g.localLoaderThread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					
 					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
 					startActivity(intent);
 				}
