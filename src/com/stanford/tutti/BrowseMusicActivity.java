@@ -55,9 +55,9 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 
 
         if (!g.jam.getJamName().equals("")) {
-        	actionBar.setTitle("Jam: " + g.jam.getJamName()); 
+        	actionBar.setTitle(g.jam.getJamName()); 
         } else {
-        	actionBar.setTitle("Jam: Anonymous"); 
+        	actionBar.setTitle("Jam"); 
         }
         actionBar.setDisplayShowTitleEnabled(true);        
         

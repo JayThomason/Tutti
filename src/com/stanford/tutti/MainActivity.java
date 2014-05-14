@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
 		Globals g = (Globals) getApplicationContext(); 
 		TextView welcomeText = (TextView) findViewById(R.id.welcome_message); 
 		if (g.getUsername().equals("anonymous")) {
-			welcomeText.setText("Set your username in the Settings menu so your friends can see which music is yours!");
+			welcomeText.setText("Set your username in the Settings menu!");
 		} else {
 			welcomeText.setText("Welcome back " + g.getUsername() + "!"); 
 		}

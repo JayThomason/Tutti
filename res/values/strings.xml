@@ -3,6 +3,7 @@
 
     <string name="app_name">Tutti</string>
     <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
     <string name="hello_world">Hello world!</string>
     <string name="tuttilogo">Tutti Logo</string>
     <string name="new_jam">Create a new Jam Session</string>
