@@ -39,6 +39,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_browser);
  
+    	g = (Globals) getApplicationContext(); 
+    	
         // Initilization
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
@@ -51,14 +53,13 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
          
         //MenuItem item = actionBar.findItem(R.id.action_settings);
 
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-        	actionBar.setTitle(getIntent().getStringExtra("jamName"));
+
+        if (!g.jam.getJamName().equals("")) {
+        	actionBar.setTitle("Jam: " + g.jam.getJamName()); 
         } else {
-        	actionBar.setTitle("Jam"); 
+        	actionBar.setTitle("Jam: Anonymous"); 
         }
         actionBar.setDisplayShowTitleEnabled(true);        
-        //System.out.println("ACTIONBAR TITLE: " + actionBar.getTitle()); 
         
         // Adding Tabs
         for (String tab_name : tabs) {
@@ -68,9 +69,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         
         getActionBar().setDisplayShowHomeEnabled(false);              
         //getActionBar().setDisplayShowTitleEnabled(false);
-        
-    	g = (Globals) getApplicationContext(); 
-    	    	
+            	    	
         setupTabHighlightListener(); 
         setupHandler(); 
     }
@@ -224,7 +223,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	        	Client newClient = new Client(g, username, ipAddr, 1234);
 				g.jam.addClient(newClient);
 				g.jam.setIPUsername(ipAddr, username);
-				newClient.acceptJoinJam(new AsyncHttpResponseHandler() { 
+				newClient.acceptJoinJam(g.jam.getJamName(), new AsyncHttpResponseHandler() { 
 					
 				}); 
 		    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
