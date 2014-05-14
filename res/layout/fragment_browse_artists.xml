@@ -12,16 +12,5 @@
         android:layout_below="@+id/allArtists"
         android:paddingBottom="25dp"
     	android:clipToPadding="false"/>
-    
-     <EditText
-	    android:id="@+id/artist_search_box"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-	    android:background="#ffffff"
-	    android:inputType="textFilter" 
-	    android:hint="Search artists"
-	    android:textColor="#000000" />
-     
  
 </RelativeLayout>
