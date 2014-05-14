@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
@@ -110,13 +111,21 @@ public class Globals extends Application {
 	 * Sends a String message to the global UI update handler.
 	 */
 	public void sendUIMessage(String message) {
-		
+		if (uiUpdateHandler != null) {
+			Message msg = uiUpdateHandler.obtainMessage();
+			msg.obj = message; 
+			uiUpdateHandler.sendMessage(msg);
+		}
 	}
 	
 	/*
 	 * Sends an int message to the global UI update handler.
 	 */
 	public void sendUIMessage(int message) {
-		
+		if (uiUpdateHandler != null) {
+			Message msg = uiUpdateHandler.obtainMessage();
+			msg.what = message; 
+			uiUpdateHandler.sendMessage(msg);
+		}
 	}
 }
