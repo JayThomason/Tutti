@@ -163,11 +163,7 @@ public class Server extends NanoHTTPD {
     		return badRequestResponse();
     	}
 		if (g.jam.checkMaster()) {
-			if (g.uiUpdateHandler != null) {
-				Message msg = g.uiUpdateHandler.obtainMessage();
-				msg.obj = otherIpAddr + "//" + username; 
-				g.uiUpdateHandler.sendMessage(msg);
-			}
+			g.sendUIMessage(otherIpAddr + "//" + username); 
 		}
 		else {
 			System.out.println("Server: Attempt to join jam on client device -- error");
@@ -289,11 +285,7 @@ public class Server extends NanoHTTPD {
 			}
 		}
 		
-		if (g.uiUpdateHandler != null) {
-			Message msg = g.uiUpdateHandler.obtainMessage();
-			msg.what = 7; 
-			g.uiUpdateHandler.sendMessage(msg);
-		}
+		g.sendUIMessage(7); 
 		
 		return new NanoHTTPD.Response("Added song to jam");
 	}
@@ -308,11 +300,8 @@ public class Server extends NanoHTTPD {
 		
 		g.jam.setCurrentSong(song, Integer.parseInt(keyPath.substring(1)));
 		
-		if (g.uiUpdateHandler != null) {
-			Message msg = g.uiUpdateHandler.obtainMessage();
-			msg.what = 7; 
-			g.uiUpdateHandler.sendMessage(msg);
-		}
+		g.sendUIMessage(7); 
+		
 		if (g.jam.checkMaster()) {
 			g.jam.playCurrentSong(); 
 			for (Client client : g.jam.getClientSet()) {
@@ -333,11 +322,7 @@ public class Server extends NanoHTTPD {
 	private Response jamMoveSongResponse(String otherIpAddr, String from, String to) {
 		g.jam.changeSongIndexInJam(Integer.parseInt(from), Integer.parseInt(to));
 		
-		if (g.uiUpdateHandler != null) {
-			Message msg = g.uiUpdateHandler.obtainMessage();
-			msg.what = 7; 
-			g.uiUpdateHandler.sendMessage(msg);
-		}
+		g.sendUIMessage(7); 
 		
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
@@ -359,11 +344,7 @@ public class Server extends NanoHTTPD {
 	private Response jamRemoveSongResponse(String otherIpAddr, String index) {
 		g.jam.removeSong(Integer.parseInt(index)); 
 		
-		if (g.uiUpdateHandler != null) {
-			Message msg = g.uiUpdateHandler.obtainMessage();
-			msg.what = 7; 
-			g.uiUpdateHandler.sendMessage(msg);
-		}
+		g.sendUIMessage(7); 
 		
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
@@ -472,7 +453,7 @@ public class Server extends NanoHTTPD {
     	String ipAddr = parameters.get("ip");
     	g.db.deleteJamSongsFromIp(ipAddr);
     	g.db.deleteSongsFromIp(ipAddr);
-    	g.uiUpdateHandler.sendMessage(g.uiUpdateHandler.obtainMessage(0));
+    	g.sendUIMessage(0); 
 		return null;
 	}
     

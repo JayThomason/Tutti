@@ -307,11 +307,7 @@ public class Jam {
 				}
 			}
 			
-			if (g.uiUpdateHandler != null) {
-				Message msg = g.uiUpdateHandler.obtainMessage();
-				msg.what = 7; 
-				g.uiUpdateHandler.sendMessage(msg);
-			}
+			g.sendUIMessage(7); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 

@@ -129,11 +129,7 @@ public class MusicLibraryLoaderThread extends Thread {
 	        }
 	        cursor.close(); 
 	        
-	    	if (g.uiUpdateHandler != null) {
-	    		Message msg = g.uiUpdateHandler.obtainMessage(); 
-	    		msg.what = 0;  
-	    		g.uiUpdateHandler.sendMessage(msg); 
-	    	}
+	    	g.sendUIMessage(0); 
 		}	
 	}
 }

@@ -627,11 +627,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						addSongToLibrary(song); 
 					}
 					
-					if (g.uiUpdateHandler != null) {
-						Message msg = g.uiUpdateHandler.obtainMessage();
-						msg.what = 0; 
-						g.uiUpdateHandler.sendMessage(msg);
-					}
+					g.sendUIMessage(0); 
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -684,11 +680,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					e.printStackTrace();
 				} 
 			}
-			if (g.uiUpdateHandler != null) {
-				Message msg = g.uiUpdateHandler.obtainMessage();
-				msg.what = 0; 
-				g.uiUpdateHandler.sendMessage(msg);
-			}
+			g.sendUIMessage(0); 
 		}
 	}
 	
