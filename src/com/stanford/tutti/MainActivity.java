@@ -183,7 +183,7 @@ public class MainActivity extends Activity {
 					if (jamName != null && !jamName.equals("")) {
 						g.jam.setJamName(jamName);
 					} else {
-						g.jam.setJamName("");
+						g.jam.setJamName("Jam-" + g.getIpAddr());
 					}
 					nameDialog.dismiss();
 					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);

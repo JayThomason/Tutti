@@ -32,7 +32,7 @@ public class Client {
 	}
 	
 	public void acceptJoinJam(String jamName, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/acceptJoinJam/", "?jamName=" + jamName); 
+		String url = getUrl("/acceptJoinJam", "?jamName=" + jamName); 
 		client.get(url, null, responseHandler); 
 	}
 	
