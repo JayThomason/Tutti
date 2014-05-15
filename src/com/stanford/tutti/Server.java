@@ -355,7 +355,7 @@ public class Server extends NanoHTTPD {
 		
 		if (g.jam.checkMaster()) {
 			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr)) 
+				if (client.getIpAddress().equals(g.getIpAddr())) //|| client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
 				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
 					

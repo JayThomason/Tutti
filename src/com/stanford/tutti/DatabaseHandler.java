@@ -748,6 +748,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			for (int i = 0; i < albumArray.length(); i++) {
 				try {
 					String albumTitle = (String)albumArray.get(i); 
+					String escapedAlbumTitle = albumTitle.replaceAll("[/]", ""); 
 					String artJSON = (String)artArray.get(i); 
 
 					String artPath = ""; 
