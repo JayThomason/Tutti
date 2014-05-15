@@ -16,7 +16,7 @@
 	    android:layout_margin="10dp"
 	    android:dividerHeight="5dp"
 	    android:paddingBottom="0dp"
-	    android:paddingLeft="10dp"
+	    android:paddingLeft="0dp"
 	    android:paddingTop="0dp"
 	    dslv:collapsed_height="2dp"
 	    dslv:drag_enabled="true"
