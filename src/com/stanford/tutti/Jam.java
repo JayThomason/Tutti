@@ -174,7 +174,7 @@ public class Jam {
 		cursor.close(); 
 	}
 
-	public void setCurrentSongByIndex(int index) {
+	public void setCurrentSongIndex(int index) {
 		if (index < currSize) {
 			currIndex = index; 
 		}
@@ -228,6 +228,7 @@ public class Jam {
 	public void clearSongs() {
 		g.db.clearJam(); 
 		currIndex = -1; 
+		currSize = 0; 
 	}
 
 
@@ -331,7 +332,7 @@ public class Jam {
 		try {
 			clearSongs(); 
 			JSONArray songs = jam.getJSONArray("songs");
-			int nowPlayingIndex = jam.getInt("current"); 
+			currIndex = jam.getInt("current"); 
 			for (int i = 0; i < songs.length(); i++) {
 				JSONObject jsonSong = songs.getJSONObject(i); 
 				String songTitle = (String)jsonSong.get("title"); 
@@ -340,16 +341,14 @@ public class Jam {
 				song.setArtist((String)jsonSong.get("artist")); 
 				song.setAlbum((String)jsonSong.get("album")); 
 				song.setIpAddr((String)jsonSong.get("ip"));
-
 				song.setAddedBy((String)jsonSong.get("addedBy")); 
 
-				addSong(song);
-
-				if (i == nowPlayingIndex) {
-					setCurrentSongByIndex(i);
-				}
+				String timestampID = (String)jsonSong.getString("jamID"); 
+				song.setJamID(timestampID);
+				
+				addSongWithTimestamp(song, timestampID);
 			}
-
+			
 			JSONArray ipArray = jam.getJSONArray("ips"); 
 			JSONArray usernameArray = jam.getJSONArray("usernames"); 
 			for (int i = 0; i < ipArray.length(); i++) {

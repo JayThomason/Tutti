@@ -331,7 +331,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				final int index = position; 
 
 				if (g.jam.checkMaster()) {
-					g.jam.setCurrentSongByIndex(index);
+					g.jam.setCurrentSongIndex(index);
 					g.jam.playCurrentSong(); 
 					Toast.makeText(
 							g, 
@@ -354,7 +354,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 					masterClient.requestSetSong(Integer.toString(index), new AsyncHttpResponseHandler() {
 						@Override
 						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							g.jam.setCurrentSongByIndex(index);
+							g.jam.setCurrentSongIndex(index);
 							Toast.makeText(
 									g, 
 									"Now playing: " + title, Toast.LENGTH_SHORT)
