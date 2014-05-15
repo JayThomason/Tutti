@@ -24,7 +24,8 @@ import android.os.PowerManager;
 
 public class Jam {
 	private int currIndex; 
-	private int size; 
+	private int currSize; 
+	private int totalSize; 
 	
 	private boolean isShuffled; 
 	private boolean master; 
@@ -41,6 +42,8 @@ public class Jam {
 	public Jam(Globals g) {
 		this.g = g; 
 		currIndex = -1; 
+		currSize = 0; 
+		totalSize = 0; 
 		isShuffled = false; 
 		mediaPlayer = new MediaPlayer(); 
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -121,8 +124,9 @@ public class Jam {
 	}
 
 	public void addSong(Song song) {
-		g.db.addSongToJam(song, size);
-		size++; 
+		g.db.addSongToJam(song, currSize, totalSize);
+		currSize++; 
+		totalSize++; 
 	}
 	
 	public boolean hasCurrentSong() {
@@ -143,7 +147,7 @@ public class Jam {
 
 	public boolean iterateCurrentSong() {
 		currIndex++;
-		if (currIndex >= size) {
+		if (currIndex >= currSize) {
 			currIndex = 0;
 			return false;
 		}
@@ -155,7 +159,7 @@ public class Jam {
 	}
 
 	public void setCurrentSongByIndex(int index) {
-		if (index < size) {
+		if (index < currSize) {
 			currIndex = index; 
 		}
 	}
@@ -178,7 +182,7 @@ public class Jam {
 
 	public void shuffle() {
 		if (!isShuffled()) {
-			g.db.shuffleJam(currIndex, size - 1); 
+			g.db.shuffleJam(currIndex, currSize - 1); 
 			isShuffled = true; 
 		} else {
 
@@ -198,7 +202,11 @@ public class Jam {
 	}
 
 	public int getJamSize() {
-		return size; 
+		return currSize; 
+	}
+	
+	public int getTotalSize() {
+		return totalSize; 
 	}
 
 
@@ -217,6 +225,8 @@ public class Jam {
 			currIndex = -1; 
 			playCurrentSong(); 
 		}
+		
+		currSize--; 
 	}
 
 
