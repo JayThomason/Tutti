@@ -14,11 +14,13 @@ import org.json.JSONObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Message;
+import android.os.PowerManager;
 
 public class Jam {
 	ArrayList<Song> songList;
@@ -29,15 +31,12 @@ public class Jam {
 	public MediaPlayer mediaPlayer; 
 	private HashSet<Client> clientSet;
 	private HashMap<String, String> usernameMap; 
-	private HashMap<String, Long> keepAliveTimestampMap;
 	private String name; 
 	private String masterIpAddr;
 	private Globals g;
 	private Thread serverKeepAliveThread;
-	private Thread clientKeepAliveThread;
 	private Thread masterKeepAliveThread;
 	private AtomicBoolean serverKeepAlive;
-	private AtomicBoolean clientKeepAlive;
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -57,7 +56,6 @@ public class Jam {
 		clientSet = new HashSet<Client>();
 		usernameMap = new HashMap<String, String>(); 
 		name = ""; 
-		keepAliveTimestampMap = new HashMap<String, Long>();
 	}
 
 	public String getMasterIpAddr() {
@@ -73,9 +71,10 @@ public class Jam {
 	}
 
 	public void addClient(Client client) {
-		clientSet.add(client);
-		usernameMap.put(client.getIpAddress(), client.getUsername()); 
-		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
+		synchronized (clientSet) {
+			clientSet.add(client);
+		}
+		usernameMap.put(client.getIpAddress(), client.getUsername());
 	}
 
 	public boolean checkMaster() {
@@ -177,7 +176,7 @@ public class Jam {
 		}
 		currentSong = songList.get(currentSongIndex); 
 	}
-	
+
 	public void shuffle() {
 		if (!isShuffled()) {
 			System.out.println("SHUFFLING"); 
@@ -185,14 +184,14 @@ public class Jam {
 			isShuffled = true; 
 			// Add a helper to just reload song list from jam database. 
 		} else {
-			
+
 		}
 	}
-	
+
 	public void unShuffle() {
 		isShuffled = false; 
 	}
-	
+
 	public boolean isShuffled() {
 		return isShuffled; 
 	}
@@ -400,100 +399,70 @@ public class Jam {
 	}
 
 	/*
-	 * Updates the keepAlive timestamp for the provided client ip address.
-	 * 
-	 * Returns true if the value is updated and false if the ip address does
-	 * not already map to a client.
+	 * Periodically checks if the master has received 
 	 */
-	public boolean setClientKeepAliveTimestamp(String ipAddr) {
-		if (!keepAliveTimestampMap.containsKey(ipAddr)) {
-			return false;
-		}
-		else {
-			keepAliveTimestampMap.put(ipAddr, System.currentTimeMillis() / 1000L);
-			return true;
-		}
-	}
-
-	/*
-	 * Starts the keepAliveThread that sends keep alive requests to the master to ensure
-	 * that the client's music is not deleted. One request is sent every 3 seconds.
-	 */
-	public void startClientKeepAliveThread() {
-		clientKeepAlive = new AtomicBoolean(true);
-		final String url = "http://" + g.jam.getMasterIpAddr() + ":1234/keepAlive";
-		clientKeepAliveThread = new Thread() {
-			public void run() {
-				while (true) {
-					try {
-						AsyncHttpClient client = new AsyncHttpClient();
-						Thread.sleep(3 * 1000);
-						if (clientKeepAlive.get()) {
-							client.get(url, new AsyncHttpResponseHandler() {
-								@Override
-								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-									// TODO: in this case we want to display some notification to the user and exit the jam
-									System.out.println("failed keepAlive to master...");
-								}
-							});
-							System.out.println("send keep alive to master");
-						}
-						else {
-							return;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		clientKeepAliveThread.start();	
-	}
-
-	public void endClientKeepAlive() {
-		if (clientKeepAliveThread != null && clientKeepAlive != null) {
-			clientKeepAlive.set(false);
-		}
-	}
-	
-	public void startMasterKeepAliveThread() {
+	public void startMasterClientPingThread() {
 		masterKeepAliveThread = new Thread() {
 			public void run() {
+				int secondsToSleep = 5;
 				while (true) {
 					try {
-						Thread.sleep(8 * 1000);
-						Long currTimestamp = System.currentTimeMillis() / 1000L;
-						// need to make client set thread safe
-						Set<Client> clientSet = g.jam.getClientSet();
-						Set<Client> removeSet = new HashSet<Client>();
-						for (Client client : g.jam.getClientSet()) {
-							Long lastTimestamp = g.jam.keepAliveTimestampMap.get(client.getIpAddress());
-							System.out.println("last timestamp: " + lastTimestamp);
-							if (lastTimestamp < (currTimestamp - 8)) { // remove if no
-								String ipAddr = client.getIpAddress();
-								System.out.println("Removing " + client.getUsername() + " from jam.");
-								
-								g.db.deleteJamSongsFromIp(ipAddr);
-								g.db.deleteSongsFromIp(ipAddr);
-								g.sendUIMessage(0);
-								removeSet.add(client);
-								
-								for (Client otherClient : g.jam.getClientSet()) {
-									if (otherClient != client) {
-										//otherClient.removeFromJam(ipAddr);
+						Thread.sleep(secondsToSleep * 1000);
+						Set<Client> clientSet = getClientSet();
+						synchronized (clientSet) {
+							System.out.println("Pinging clients...");
+							for (final Client client : getClientSet()) {
+								client.ping(new AsyncHttpResponseHandler() {
+									@Override
+									public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+										if (statusCode != 200) {
+											removeFromJam(client);
+										}
 									}
-								}
+
+									@Override
+									public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+										removeFromJam(client);
+									}
+								});
 							}
 						}
-						for (Client client : removeSet) {
-							clientSet.remove(client);
-						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		};
 		masterKeepAliveThread.start();
+	}
+
+	/*
+	 * Removes the specified client from the jam by removing all of its songs from
+	 * the library and jam and sending a message to all clients telling them to 
+	 * remove its songs.
+	 */
+	private void removeFromJam(final Client clientToRemove) {
+		g.db.deleteJamSongsFromIp(clientToRemove.getIpAddress());
+		g.db.deleteSongsFromIp(clientToRemove.getIpAddress());
+		g.sendUIMessage(0);
+		synchronized (clientSet) {
+			clientSet.remove(clientToRemove);
+			for (final Client client : clientSet) {
+				client.removeAllFrom(clientToRemove, new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						if (statusCode == 200) {
+							System.out.println("client " + client.getUsername() + 
+									" removed client " + clientToRemove.getUsername() + " from jam.");
+						}
+						else {
+							System.out.println("client " + client.getUsername() + 
+									" failed to remove client " + clientToRemove.getUsername() + " from jam.");		
+						}
+					}
+				});
+			}
+		}
 	}
 }

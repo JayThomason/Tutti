@@ -42,7 +42,6 @@ public class MainActivity extends Activity {
 		super.onRestart();
 		System.out.println("Main Activity Restarted.");
 		g.jam.endServerKeepAlive();
-		g.jam.endClientKeepAlive();
 	}
 
     @Override
@@ -181,7 +180,7 @@ public class MainActivity extends Activity {
 				if (statusCode == 200) {
 					System.out.println("Successfully created jam on server.");
 					g.jam.startServerKeepAlive(serverHostname);
-					g.jam.startMasterKeepAliveThread();
+					g.jam.startMasterClientPingThread();
 					g.jam.setMaster(true);
 					if (jamName != null && !jamName.equals("")) {
 						g.jam.setJamName(jamName);

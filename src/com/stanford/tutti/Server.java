@@ -43,8 +43,8 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_START = "/start"; 
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
-	private static final String REMOVE_USER_FROM_JAM = "/removeFromJam";
-	private static final String KEEP_ALIVE = "/keepAlive";
+	private static final String REMOVE_USER_FROM_JAM = "/removeAllFrom";
+	private static final String PING = "/ping";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private Globals g = null;
 	
@@ -133,8 +133,8 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(REMOVE_USER_FROM_JAM)) {
     		return removeUserFromJamResponse(parameters);
     	}
-    	else if (uri.startsWith(KEEP_ALIVE)) {
-    		return keepAliveResponse(headers.get(HTTP_CLIENT_IP));
+    	else if (uri.startsWith(PING)) {
+    		return pingResponse(headers.get(HTTP_CLIENT_IP));
     	}
     	else {
     		return badRequestResponse();
@@ -220,7 +220,6 @@ public class Server extends NanoHTTPD {
     
     private Response updateLibraryResponse(IHTTPSession session) {
     	Map<String, String> files = new HashMap<String, String>();
-    	String ipAddr = session.getHeaders().get(HTTP_CLIENT_IP);
     	try {
 			session.parseBody(files);
 			
@@ -231,9 +230,7 @@ public class Server extends NanoHTTPD {
   			String ip = jsonLibrary.getString("ip"); 
   			String username = jsonLibrary.getString("username"); 
   			g.jam.setIPUsername(ip, username); 
-  			
-  			//JSONObject jam = jsonLibrary.getJSONObject("jam"); 
-  			//g.jam.loadJamFromJSON(jam); 
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return badRequestResponse();
@@ -452,15 +449,21 @@ public class Server extends NanoHTTPD {
     private Response removeUserFromJamResponse(Map<String, String> parameters) {
     	String ipAddr = parameters.get("ip");
     	g.db.deleteJamSongsFromIp(ipAddr);
-    	g.db.deleteSongsFromIp(ipAddr);
+    	System.out.println("Songs removed: " + g.db.deleteSongsFromIp(ipAddr));
     	g.sendUIMessage(0); 
-		return null;
+		return new NanoHTTPD.Response("OK");
 	}
     
-    private Response keepAliveResponse(String ipAddr) {
-    	if (g.jam.checkMaster()) {
-    		g.jam.setClientKeepAliveTimestamp(ipAddr);
+    /*
+     * Returns an OK Http response if the correct master phone performs the ping and a 
+     * bad request response if any other phone performs the ping.
+     */
+    private Response pingResponse(String masterIpAddr) {
+    	if (g.jam.getMasterIpAddr().equals(masterIpAddr)) {
+    		return new NanoHTTPD.Response("OK");
     	}
-		return new NanoHTTPD.Response("OK");
+    	else {
+    		return badRequestResponse();
+    	}
     }
 }
