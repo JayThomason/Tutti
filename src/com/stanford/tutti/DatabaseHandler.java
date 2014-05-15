@@ -23,7 +23,7 @@ import android.util.Base64;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
  
     // Database Name
     private static final String DATABASE_NAME = "library";
@@ -47,6 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Jam table-exclusive column names
     private static final String KEY_JAM_INDEX = "jamIndex"; 
     private static final String KEY_ADDED_BY = "addedBy"; 
+    private static final String KEY_SHUFFLE_INDEX = "shuffleIndex"; 
     
     // Song table columns indices
     private static final int COL_ID = 0; 
@@ -63,10 +64,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Jam table-exclusive column indices
     private static final int COL_JAM_INDEX = 9; 
     private static final int COL_ADDED_BY = 10; 
+    private static final int COL_SHUFFLE_INDEX = 11; 
 
     
     private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_TRACK_NUM};
-    private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY};
+    private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_SHUFFLE_INDEX};
 
     private Globals g; 
         
@@ -107,7 +109,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		+ KEY_HASH + " TEXT," 
         		+ KEY_IP + " TEXT,"
         		+ KEY_JAM_INDEX + " INTEGER,"
-        		+ KEY_ADDED_BY + " TEXT" + ")";
+        		+ KEY_ADDED_BY + " TEXT," 
+        		+ KEY_SHUFFLE_INDEX + " INTEGER)";
         db.execSQL(CREATE_JAM_TABLE); 
     }
  
@@ -165,6 +168,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	values.put(KEY_IP, song.getIpAddr());
     	values.put(KEY_JAM_INDEX, index); 
     	values.put(KEY_ADDED_BY, song.getAddedBy());
+    	values.put(KEY_SHUFFLE_INDEX, -1);
     	
     	int local = 0; 
     	if (song.isLocal()) {
