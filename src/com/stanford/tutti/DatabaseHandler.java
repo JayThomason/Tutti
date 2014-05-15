@@ -748,14 +748,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			for (int i = 0; i < albumArray.length(); i++) {
 				try {
 					String albumTitle = (String)albumArray.get(i); 
-					String escapedAlbumTitle = albumTitle.replaceAll("[/]", ""); 
+					String escapedAlbumTitle = albumTitle.replaceAll("/", ""); 
 					String artJSON = (String)artArray.get(i); 
 
 					String artPath = ""; 
 					if (artJSON != null && !artJSON.equals("")) {
 						byte[] artBytes = Base64.decode(artJSON, Base64.DEFAULT);
 						Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length); 
-						String filename = albumTitle; 
+						String filename = escapedAlbumTitle; 
 						FileOutputStream outputStream;
 						try {
 							outputStream = g.openFileOutput(filename, Context.MODE_PRIVATE);
@@ -767,7 +767,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						}
 					}
 
-					System.out.println("SETTING ALBUM ART: " + albumTitle + " = " + artPath); 
 					setAlbumArt(albumTitle, artPath); 
 
 				} catch (JSONException e) {
