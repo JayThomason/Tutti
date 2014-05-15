@@ -292,9 +292,15 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 
 	public void refreshJamList() {
-		Cursor newCursor = g.db.getSongsInJam(); 
-		Cursor oldCursor = adapter.swapCursor(newCursor);
-		oldCursor.close(); 
+		if (g.jam.isShuffled()) {
+			Cursor newCursor = g.db.getShuffledSongsInJam(); 
+			Cursor oldCursor = adapter.swapCursor(newCursor);
+			oldCursor.close(); 
+		} else {
+			Cursor newCursor = g.db.getSongsInJam(); 
+			Cursor oldCursor = adapter.swapCursor(newCursor);
+			oldCursor.close(); 
+		}
 	}
 
 

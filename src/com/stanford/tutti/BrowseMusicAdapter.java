@@ -183,7 +183,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     		@Override
     		public void onClick(View view) {
     			//g.jam.removeSong(songIndex);
-    			g.jam.shuffle(); 
+    			if (g.jam.isShuffled()) {
+    				g.jam.unShuffle(); 
+    			} else {
+        			g.jam.shuffle(); 
+    			}
     			g.sendUIMessage(0); 
     			if (g.jam.checkMaster()) {
     				for (Client client : g.jam.getClientSet()) {

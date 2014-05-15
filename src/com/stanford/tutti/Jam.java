@@ -183,13 +183,14 @@ public class Jam {
 			System.out.println("SHUFFLING"); 
 			g.db.shuffleJam(currentSongIndex, songList.size() - 1); 
 			isShuffled = true; 
-			// randomize the index of each song after the current index in the jam
-			// index of the current song and all before stays the same
-			// set in the DB shuffleIndex column, maintaining originals in jamIndex
 			// Add a helper to just reload song list from jam database. 
 		} else {
 			
 		}
+	}
+	
+	public void unShuffle() {
+		isShuffled = false; 
 	}
 	
 	public boolean isShuffled() {
