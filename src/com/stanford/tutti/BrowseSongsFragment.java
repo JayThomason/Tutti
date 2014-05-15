@@ -142,7 +142,7 @@ public class BrowseSongsFragment extends Fragment {
 				
 				if (g.jam.checkMaster()) {
 					song.setAddedBy(g.getUsername());
-					g.jam.addSong(song); 
+					String timestamp = g.jam.addSong(song); 
 					if (g.jam.getCurrentSong() == null) {
 						g.jam.setCurrentSong(g.jam.getJamSize() - 1);
 						g.jam.playCurrentSong();
@@ -150,7 +150,7 @@ public class BrowseSongsFragment extends Fragment {
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
 					Set<Client> clientSet = g.jam.getClientSet();
 					for (Client client : clientSet) {
-						client.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
+						client.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), timestamp, new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 								System.out.println("request to add song to client returned: " + statusCode);

@@ -51,8 +51,8 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 
-	public void requestAddSong(String songHash, String addedBy, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/jam/add/", "?songId=" + songHash + "&addedBy=" + addedBy); 
+	public void requestAddSong(String songHash, String addedBy, String timestamp, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/add/", "?songId=" + songHash + "&addedBy=" + addedBy + "&timestamp=" + timestamp); 
 		client.get(url, null, responseHandler); 
 	}
 	
