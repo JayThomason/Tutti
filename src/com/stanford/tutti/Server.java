@@ -44,7 +44,6 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
 	private static final String REMOVE_USER_FROM_JAM = "/removeAllFrom";
-	private static final String KEEP_ALIVE = "/keepAlive";
 	private static final String PING = "/ping";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private Globals g = null;
@@ -136,9 +135,6 @@ public class Server extends NanoHTTPD {
     	}
     	else if (uri.startsWith(PING)) {
     		return pingResponse(headers.get(HTTP_CLIENT_IP));
-    	}
-    	else if (uri.startsWith(KEEP_ALIVE)) {
-    		return keepAliveResponse(headers.get(HTTP_CLIENT_IP));
     	}
     	else {
     		return badRequestResponse();
@@ -457,13 +453,6 @@ public class Server extends NanoHTTPD {
     	g.sendUIMessage(0); 
 		return new NanoHTTPD.Response("OK");
 	}
-    
-    private Response keepAliveResponse(String ipAddr) {
-    	if (g.jam.checkMaster()) {
-    		g.jam.setClientKeepAliveTimestamp(ipAddr);
-    	}
-		return new NanoHTTPD.Response("OK");
-    }
     
     /*
      * Returns an OK Http response if the correct master phone performs the ping and a 
