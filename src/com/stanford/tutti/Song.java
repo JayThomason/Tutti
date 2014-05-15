@@ -35,6 +35,9 @@ public class Song {
 	/* Track number of this song on its album, if any */
 	private int trackNum = 0; 
 	
+	/* The ID (i.e. timestamp) if this song within the Jam, if any */
+	private String jamID = ""; 
+	
 	
 	/*
 	 * Constructor
@@ -142,6 +145,14 @@ public class Song {
 		trackNum = num; 
 	}
 	
+	public String getJamID() {
+		return jamID; 
+	}
+	
+	public void setJamID(String jamID) {
+		this.jamID = jamID; 
+	}
+	
 	@Override
 	public int hashCode() {
 		StringBuilder keyBuilder = new StringBuilder("");
@@ -192,6 +203,7 @@ public class Song {
 			song.put("path", path); 
 			song.put("ip", ipAddr); 
 			song.put("addedBy", addedBy);
+			song.put("jamID", jamID); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
