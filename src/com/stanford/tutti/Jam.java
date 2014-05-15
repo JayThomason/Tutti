@@ -73,7 +73,9 @@ public class Jam {
 	}
 
 	public void addClient(Client client) {
-		clientSet.add(client);
+		synchronized (clientSet) {
+			clientSet.add(client);
+		}
 		usernameMap.put(client.getIpAddress(), client.getUsername()); 
 		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
 	}
@@ -463,30 +465,43 @@ public class Jam {
 					try {
 						Thread.sleep(8 * 1000);
 						Long currTimestamp = System.currentTimeMillis() / 1000L;
-						// need to make client set thread safe
 						Set<Client> clientSet = g.jam.getClientSet();
 						Set<Client> removeSet = new HashSet<Client>();
-						for (Client client : g.jam.getClientSet()) {
-							Long lastTimestamp = g.jam.keepAliveTimestampMap.get(client.getIpAddress());
-							System.out.println("last timestamp: " + lastTimestamp);
-							if (lastTimestamp < (currTimestamp - 8)) { // remove if no
+						// add clients to remove set
+						synchronized (clientSet) {
+							for (Client client : g.jam.getClientSet()) {
+								Long lastTimestamp = g.jam.keepAliveTimestampMap.get(client.getIpAddress());
+								System.out.println("last timestamp: " + lastTimestamp);
+								if (lastTimestamp < (currTimestamp - 8)) { // remove if no
+									System.out.println("Removing " + client.getUsername() + " from jam.");
+									removeSet.add(client);
+								}
+							}
+							// remove clients in remove set from library and clientSet
+							for (Client client : removeSet) {
 								String ipAddr = client.getIpAddress();
-								System.out.println("Removing " + client.getUsername() + " from jam.");
-								
 								g.db.deleteJamSongsFromIp(ipAddr);
 								g.db.deleteSongsFromIp(ipAddr);
 								g.sendUIMessage(0);
-								removeSet.add(client);
-								
-								for (Client otherClient : g.jam.getClientSet()) {
-									if (otherClient != client) {
-										//otherClient.removeFromJam(ipAddr);
-									}
+								clientSet.remove(client);
+							}
+							// tell other clients to remove music
+							for (final Client client : clientSet) {
+								for (final Client clientToRemove : removeSet) {
+									client.removeAllFrom(clientToRemove, new AsyncHttpResponseHandler() {
+										@Override
+										public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+											if (statusCode == 200) {
+												System.out.println("client " + client.getUsername() + 
+														" removed client " + clientToRemove.getUsername() + " from jam.");
+											}
+											else {
+												System.out.println("client " + client.getUsername() + 
+														" failed to remove client " + clientToRemove.getUsername() + " from jam.");											}
+										}
+									});
 								}
 							}
-						}
-						for (Client client : removeSet) {
-							clientSet.remove(client);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

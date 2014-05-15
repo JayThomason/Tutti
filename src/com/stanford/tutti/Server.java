@@ -454,7 +454,7 @@ public class Server extends NanoHTTPD {
     	g.db.deleteJamSongsFromIp(ipAddr);
     	g.db.deleteSongsFromIp(ipAddr);
     	g.sendUIMessage(0); 
-		return null;
+		return new NanoHTTPD.Response("OK");
 	}
     
     private Response keepAliveResponse(String ipAddr) {

@@ -123,8 +123,16 @@ public class Client {
 		return username; 
 	}
 	
+	/*
+	 * Sends a message to the client telling it to remove clientToRemove from the jam.
+	 */
+	public void removeAllFrom(Client clientToRemove, 
+			AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/removeAllFrom", "?ip=" + clientToRemove.getIpAddress());
+		client.get(url, responseHandler);
+	}
+	
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}
-
 }
