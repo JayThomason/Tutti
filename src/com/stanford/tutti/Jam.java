@@ -1,6 +1,8 @@
 package com.stanford.tutti;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +27,6 @@ import android.os.PowerManager;
 public class Jam {
 	private int currIndex; 
 	private int currSize; 
-	private int totalSize; 
 	
 	private boolean isShuffled; 
 	private boolean master; 
@@ -43,7 +44,6 @@ public class Jam {
 		this.g = g; 
 		currIndex = -1; 
 		currSize = 0; 
-		totalSize = 0; 
 		isShuffled = false; 
 		mediaPlayer = new MediaPlayer(); 
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -124,9 +124,12 @@ public class Jam {
 	}
 
 	public void addSong(Song song) {
-		g.db.addSongToJam(song, currSize, totalSize);
-		currSize++; 
-		totalSize++; 
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+		String timestamp = sdf.format(date);
+
+		g.db.addSongToJam(song, currSize, timestamp);
+		currSize++;  
 	}
 	
 	public boolean hasCurrentSong() {
@@ -204,11 +207,6 @@ public class Jam {
 	public int getJamSize() {
 		return currSize; 
 	}
-	
-	public int getTotalSize() {
-		return totalSize; 
-	}
-
 
 	public void clearSongs() {
 		g.db.clearJam(); 
