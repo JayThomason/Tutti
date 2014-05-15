@@ -17,6 +17,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -161,8 +162,16 @@ public class Jam {
 		return true;
 	}
 
-	public void setCurrentSong(int index) {
-		currIndex = index; 
+	public void setCurrentSong(String timestamp) {
+		Cursor cursor = g.db.getSongInJamByTimestamp(timestamp); 
+		
+		if (isShuffled()) {
+			currIndex = cursor.getInt(cursor.getColumnIndex("shuffleIndex")); 
+		} else {
+			currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+		}
+		
+		cursor.close(); 
 	}
 
 	public void setCurrentSongByIndex(int index) {
@@ -333,7 +342,7 @@ public class Jam {
 				addSong(song);
 
 				if (i == nowPlayingIndex) {
-					setCurrentSong(i);
+					setCurrentSongByIndex(i);
 				}
 			}
 

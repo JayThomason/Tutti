@@ -144,7 +144,7 @@ public class BrowseSongsFragment extends Fragment {
 					song.setAddedBy(g.getUsername());
 					String timestamp = g.jam.addSong(song); 
 					if (g.jam.getCurrentSong() == null) {
-						g.jam.setCurrentSong(g.jam.getJamSize() - 1);
+						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}
 					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)

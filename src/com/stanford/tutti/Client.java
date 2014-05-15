@@ -51,13 +51,13 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 
-	public void requestAddSong(String songHash, String addedBy, String timestamp, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/jam/add/", "?songId=" + songHash + "&addedBy=" + addedBy + "&timestamp=" + timestamp); 
+	public void requestAddSong(String songHash, String addedBy, String jamSongId, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/add/", "?songId=" + songHash + "&jamSongId=" + jamSongId + "&addedBy=" + addedBy); 
 		client.get(url, null, responseHandler); 
 	}
 	
-	public void requestSetSong(String index, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/jam/set/", index); 
+	public void requestSetSong(String jamSongId, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/set/?jamSongId=", jamSongId); 
 		client.get(url, null, responseHandler); 
 	}
 	

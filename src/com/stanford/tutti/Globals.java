@@ -119,7 +119,7 @@ public class Globals extends Application {
 	 */
 	public String getTimestamp() {
 		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("MMddhhmmssSSSa");
+		SimpleDateFormat sdf = new SimpleDateFormat("ddhhmmssSSSa");
 		return sdf.format(date);
 	}
 	

@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.database.Cursor;
 import android.os.Message;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -194,10 +195,10 @@ public class Server extends NanoHTTPD {
      */
     private Response updateJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
     	if (path.startsWith(JAM_ADD_SONG)) {
-    		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy"), parameters.get("timestamp")); 
+    		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy"), parameters.get("jamSongId")); 
     	} 
     	else if (path.startsWith(JAM_SET_SONG)) {
-    		return jamSetSongResponse(otherIpAddr, path.substring(JAM_SET_SONG.length())); 
+    		return jamSetSongResponse(otherIpAddr, parameters.get("jamSongId")); 
     	} 
     	else if (path.startsWith(JAM_MOVE_SONG)) {
     		return jamMoveSongResponse(otherIpAddr, parameters.get("from"), parameters.get("to")); 
@@ -254,17 +255,17 @@ public class Server extends NanoHTTPD {
     /*
      * Adds the requested song to the jam.
      */
-	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String timestamp) {
+	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String jamSongId) {
 		Song song = g.db.getSongByHash(songId);
 		if (song == null) 
 			return fileNotFoundResponse();
 		
 		song.setAddedBy(addedBy);
 		
-		g.jam.addSongWithTimestamp(song, timestamp);
+		g.jam.addSongWithTimestamp(song, jamSongId);
 		
 		if (!g.jam.hasCurrentSong()) {
-			g.jam.setCurrentSong(g.jam.getJamSize() - 1);
+			g.jam.setCurrentSong(jamSongId);
 			if (g.jam.checkMaster()) {
 				g.jam.playCurrentSong(); 
 			}
@@ -273,7 +274,7 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr())) //|| client.getIpAddress().equals(otherIpAddr))
 					continue; 
-				client.requestAddSong(songId, addedBy, timestamp, new AsyncHttpResponseHandler() {
+				client.requestAddSong(songId, addedBy, jamSongId, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to add song to client returned: " + statusCode);
@@ -290,12 +291,16 @@ public class Server extends NanoHTTPD {
     /*
      * Sets the requested song to be the currently playing song. 
      */
-	private Response jamSetSongResponse(String otherIpAddr, String keyPath) {
-		Song song = g.db.getSongInJamByIndex(Integer.parseInt(keyPath.substring(1))); 
-		if (song == null) 
+	private Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
+		Cursor cursor = g.db.getSongInJamByTimestamp(jamSongId); 
+		if (!cursor.moveToFirst()) {
+			cursor.close(); 
 			return fileNotFoundResponse();
+		} else {
+			cursor.close(); 
+		}
 		
-		g.jam.setCurrentSong(Integer.parseInt(keyPath.substring(1)));
+		g.jam.setCurrentSong(jamSongId);
 		
 		g.sendUIMessage(7); 
 		
@@ -304,7 +309,7 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr()))  //|| client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
-				client.requestSetSong(keyPath.substring(1), new AsyncHttpResponseHandler() {
+				client.requestSetSong(jamSongId, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to add song to client returned: " + statusCode);

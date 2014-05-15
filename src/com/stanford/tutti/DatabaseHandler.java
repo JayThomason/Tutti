@@ -346,6 +346,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		return song; 
 	}
+	
+	public Cursor getSongInJamByTimestamp(String timestamp) {
+		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_TIMESTAMP + " = '" + timestamp + "'";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+
+		return cursor; 
+	}
 
 	public void setSongIndexInJam(String hashCode, int index) {
 		ContentValues args = new ContentValues();
