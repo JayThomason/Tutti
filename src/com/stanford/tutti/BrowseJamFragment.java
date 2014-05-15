@@ -53,18 +53,22 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		{
 			if (from != to)
 			{
-				g.jam.changeSongIndexInJam(from, to); 
+				String timestamp = g.jam.getSongIdByIndex(from); 
+				
+				g.jam.changeSongIndexInJam(timestamp, from, to); 
+				
 				refreshJamList(); 
 				if (g.jam.checkMaster()) {
 					for (Client client : g.jam.getClientSet()) {
-						client.requestMoveSong(Integer.toString(from), Integer.toString(to), new AsyncHttpResponseHandler() {
+						client.requestMoveSong(timestamp, from, to, new AsyncHttpResponseHandler() {
 
 						});
 					}
 				} else {
 					masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port);
-					masterClient.requestMoveSong(Integer.toString(from), Integer.toString(to), 
-							new AsyncHttpResponseHandler() {});
+					masterClient.requestMoveSong(timestamp, from, to, new AsyncHttpResponseHandler() {
+						
+					});
 				}
 			}
 		}

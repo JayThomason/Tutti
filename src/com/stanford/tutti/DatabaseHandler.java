@@ -355,6 +355,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		return cursor; 
 	}
+	
+	public String getSongJamIDByIndex(int index) {
+		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+
+		cursor.moveToFirst(); 
+
+		String timestamp = cursor.getString(COL_TIMESTAMP); 
+		
+		cursor.close(); 
+
+		return timestamp; 
+	}
 
 	public void setSongIndexInJam(String hashCode, int index) {
 		ContentValues args = new ContentValues();

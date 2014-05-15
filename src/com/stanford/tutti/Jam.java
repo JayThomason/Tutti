@@ -183,6 +183,10 @@ public class Jam {
 	public Song getSongByIndex(int index) {
 		return g.db.getSongInJamByIndex(index);  
 	}
+	
+	public String getSongIdByIndex(int index) {
+		return g.db.getSongJamIDByIndex(index); 
+	}
 
 	public void changeSongIndexInJam(String jamSongId, int from, int to) {
 		g.db.changeSongIndexInJam(jamSongId, from, to);
