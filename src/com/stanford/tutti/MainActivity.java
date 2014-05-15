@@ -42,7 +42,6 @@ public class MainActivity extends Activity {
 		super.onRestart();
 		System.out.println("Main Activity Restarted.");
 		g.jam.endServerKeepAlive();
-//		g.jam.endClientKeepAlive();
 	}
 
     @Override

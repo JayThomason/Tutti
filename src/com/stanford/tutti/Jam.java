@@ -36,10 +36,8 @@ public class Jam {
 	private String masterIpAddr;
 	private Globals g;
 	private Thread serverKeepAliveThread;
-	private Thread clientKeepAliveThread;
 	private Thread masterKeepAliveThread;
 	private AtomicBoolean serverKeepAlive;
-	private AtomicBoolean clientKeepAlive;
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -418,54 +416,6 @@ public class Jam {
 		else {
 			keepAliveTimestampMap.put(ipAddr, System.currentTimeMillis() / 1000L);
 			return true;
-		}
-	}
-
-	/*
-	 * Starts the keepAliveThread that sends keep alive requests to the master to ensure
-	 * that the client's music is not deleted. One request is sent every 3 seconds.
-	 */
-	public void startClientKeepAliveThread() {
-		clientKeepAlive = new AtomicBoolean(true);
-		final String url = "http://" + g.jam.getMasterIpAddr() + ":1234/keepAlive";
-		clientKeepAliveThread = new Thread() {
-			public void run() {
-				while (true) {
-					try {
-						AsyncHttpClient client = new AsyncHttpClient();
-						Thread.sleep(3 * 1000);
-						if (clientKeepAlive.get()) {
-							client.get(url, new AsyncHttpResponseHandler() {
-								@Override
-								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-									if (statusCode == 200) {
-										System.out.println("successfully sent keep alive to master");
-									}
-									else {
-										System.out.println("failed to send keep alive to master!");						
-									}
-								}								@Override
-								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-									// TODO: in this case we want to display some notification to the user and exit the jam
-									System.out.println("failed keepAlive to master...");
-								}
-							});
-						}
-						else {
-							return;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		clientKeepAliveThread.start();	
-	}
-
-	public void endClientKeepAlive() {
-		if (clientKeepAliveThread != null && clientKeepAlive != null) {
-			clientKeepAlive.set(false);
 		}
 	}
 
