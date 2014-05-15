@@ -1,5 +1,7 @@
 package com.stanford.tutti;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -23,6 +25,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     
     private Globals g; 
     private int noArtImgID;
+    
+    private int port = 1234; 
         
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
@@ -156,7 +160,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         	artist = "Unknown Artist"; 
         }
 
-        int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+        final int songIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
         int displayIndex = songIndex + 1; 
         String text = displayIndex + ". "; 
         if (g.jam != null) {
@@ -178,7 +182,20 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	artView.setOnClickListener(new View.OnClickListener() {
     		@Override
     		public void onClick(View view) {
-    			
+    			g.jam.removeSong(songIndex);
+    			g.sendUIMessage(0); 
+    			if (g.jam.checkMaster()) {
+    				for (Client client : g.jam.getClientSet()) {
+    					client.requestRemoveSong(Integer.toString(songIndex), new AsyncHttpResponseHandler() {
+    						
+    					}); 
+    				}
+    			} else {
+    				Client masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port); 
+    				masterClient.requestRemoveSong(Integer.toString(songIndex), new AsyncHttpResponseHandler() {
+    					
+    				});
+    			}
     		}
     	});
     }

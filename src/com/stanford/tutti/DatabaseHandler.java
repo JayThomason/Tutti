@@ -358,7 +358,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_JAM, KEY_JAM_INDEX + "=" + index, null);
         
-	    String restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "-1"+" WHERE " + KEY_JAM_INDEX + " > ?";
+	    String restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "-1 WHERE " + KEY_JAM_INDEX + " > ?";
 	    String[] updateArgs = new String[] {"" + index}; 
 	    db.execSQL(restructureQuery, updateArgs);
     }
