@@ -171,7 +171,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         titleView.setText(text); 
         
     	String addedBy = cursor.getString(cursor.getColumnIndex("addedBy")); 
-    	ownerView.setText("Added by: " + addedBy);
+    	ownerView.setText(addedBy);
     }
 	
     @Override
