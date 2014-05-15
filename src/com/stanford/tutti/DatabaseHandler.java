@@ -386,13 +386,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             args.put(KEY_SHUFFLE_INDEX, index);
             db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + i + "", null);
     	}
-    	
-    	///
-    	///
-    	///
-    	///
-    	///
-    	///
+
     }
     
     public void removeSongFromJam(int index) {
@@ -586,10 +580,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	JSONArray songArray = new JSONArray(); 
 		Cursor songCursor = getSongsByArtistAndAlbum(artistName, albumTitle); 
 		
-		HashMap<String, String> encodedArtMap = new HashMap<String, String>(); 
 		if (songCursor.moveToFirst()) {
 			do {
-				
 	        	JSONObject song = new JSONObject(); 
 	        	String title = songCursor.getString(COL_TITLE);
 	        	String path = songCursor.getString(COL_PATH);
@@ -687,7 +679,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					g.sendUIMessage(0); 
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 		}
@@ -733,7 +724,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					setAlbumArt(albumTitle, artPath); 
 					
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 			}
