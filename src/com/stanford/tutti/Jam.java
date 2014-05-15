@@ -31,7 +31,6 @@ public class Jam {
 	public MediaPlayer mediaPlayer; 
 	private HashSet<Client> clientSet;
 	private HashMap<String, String> usernameMap; 
-	private HashMap<String, Long> keepAliveTimestampMap;
 	private String name; 
 	private String masterIpAddr;
 	private Globals g;
@@ -57,7 +56,6 @@ public class Jam {
 		clientSet = new HashSet<Client>();
 		usernameMap = new HashMap<String, String>(); 
 		name = ""; 
-		keepAliveTimestampMap = new HashMap<String, Long>();
 	}
 
 	public String getMasterIpAddr() {
@@ -77,9 +75,6 @@ public class Jam {
 			clientSet.add(client);
 		}
 		usernameMap.put(client.getIpAddress(), client.getUsername());
-		synchronized (keepAliveTimestampMap) {
-			keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
-		}
 	}
 
 	public boolean checkMaster() {
@@ -400,22 +395,6 @@ public class Jam {
 	public void endServerKeepAlive() {
 		if (serverKeepAliveThread != null && serverKeepAlive != null) {
 			serverKeepAlive.set(false);
-		}
-	}
-
-	/*
-	 * Updates the keepAlive timestamp for the provided client ip address.
-	 * 
-	 * Returns true if the value is updated and false if the ip address does
-	 * not already map to a client.
-	 */
-	public boolean setClientKeepAliveTimestamp(String ipAddr) {
-		if (!keepAliveTimestampMap.containsKey(ipAddr)) {
-			return false;
-		}
-		else {
-			keepAliveTimestampMap.put(ipAddr, System.currentTimeMillis() / 1000L);
-			return true;
 		}
 	}
 
