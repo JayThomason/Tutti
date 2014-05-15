@@ -124,10 +124,7 @@ public class Jam {
 	}
 
 	public String addSong(Song song) {
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyhmmssa");
-		String timestamp = sdf.format(date);
-
+		String timestamp = g.getTimestamp(); 
 		g.db.addSongToJam(song, currSize, timestamp);
 		currSize++;
 		
