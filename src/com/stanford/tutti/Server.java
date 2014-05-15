@@ -263,8 +263,8 @@ public class Server extends NanoHTTPD {
 		song.setAddedBy(addedBy);
 		g.jam.addSong(song);
 		
-		if (g.jam.getCurrentSong() == null) {
-			g.jam.setCurrentSong(song, g.jam.getJamSize() - 1);
+		if (g.jam.hasCurrentSong()) {
+			g.jam.setCurrentSong(g.jam.getJamSize() - 1);
 			if (g.jam.checkMaster()) {
 				g.jam.playCurrentSong(); 
 			}
@@ -291,11 +291,11 @@ public class Server extends NanoHTTPD {
      * Sets the requested song to be the currently playing song. 
      */
 	private Response jamSetSongResponse(String otherIpAddr, String keyPath) {
-		Song song = g.db.getSongInJamByIndex(keyPath.substring(1)); 
+		Song song = g.db.getSongInJamByIndex(Integer.parseInt(keyPath.substring(1))); 
 		if (song == null) 
 			return fileNotFoundResponse();
 		
-		g.jam.setCurrentSong(song, Integer.parseInt(keyPath.substring(1)));
+		g.jam.setCurrentSong(Integer.parseInt(keyPath.substring(1)));
 		
 		g.sendUIMessage(7); 
 		

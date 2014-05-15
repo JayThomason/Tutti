@@ -328,7 +328,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
-	public Song getSongInJamByIndex(String index) {
+	public Song getSongInJamByIndex(int index) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -392,6 +392,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + i + "", null);
 		}
 
+	}
+	
+	public boolean jamContainsSong(Song song) {
+		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_HASH + " = " + song.hashCode(); 
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+
+		if (cursor.getCount() > 0) {
+			return true; 
+		} else {
+			return false; 
+		}
 	}
 
 	public void removeSongFromJam(int index) {

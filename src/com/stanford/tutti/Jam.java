@@ -23,9 +23,9 @@ import android.os.Message;
 import android.os.PowerManager;
 
 public class Jam {
-	ArrayList<Song> songList;
-	private Song currentSong;
-	private int currentSongIndex; 
+	private int currIndex; 
+	private int size; 
+	
 	private boolean isShuffled; 
 	private boolean master; 
 	public MediaPlayer mediaPlayer; 
@@ -40,9 +40,7 @@ public class Jam {
 
 	public Jam(Globals g) {
 		this.g = g; 
-		songList = new ArrayList<Song>();
-		currentSong = null; 
-		currentSongIndex = -1; 
+		currIndex = -1; 
 		isShuffled = false; 
 		mediaPlayer = new MediaPlayer(); 
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -123,66 +121,65 @@ public class Jam {
 	}
 
 	public void addSong(Song song) {
-		songList.add(song);
-		g.db.addSongToJam(song, songList.size() - 1); 
+		g.db.addSongToJam(song, size);
+		size++; 
 	}
-
+	
+	public boolean hasCurrentSong() {
+		if (currIndex >= 0) {
+			return true; 
+		} else {
+			return false; 
+		}
+	}
+	
 	public Song getCurrentSong() {
-		return currentSong; 
+		return g.db.getSongInJamByIndex(currIndex); 
 	}
 
 	public int getCurrentSongIndex() {
-		return currentSongIndex; 
+		return currIndex; 
 	}
 
 	public boolean iterateCurrentSong() {
-		currentSongIndex++;
-		if (currentSongIndex >= songList.size()) {
-			currentSongIndex = 0;
+		currIndex++;
+		if (currIndex >= size) {
+			currIndex = 0;
 			return false;
 		}
-		currentSong = songList.get(currentSongIndex); 
 		return true;
 	}
 
-	public void setCurrentSong(Song song, int index) {
-		currentSong = song; 
-		currentSongIndex = index; 
+	public void setCurrentSong(int index) {
+		currIndex = index; 
 	}
 
 	public void setCurrentSongByIndex(int index) {
-		if (index < songList.size()) {
-			currentSongIndex = index; 
-			currentSong = songList.get(index); 
+		if (index < size) {
+			currIndex = index; 
 		}
 	}
 
 	public Song getSongByIndex(int index) {
-		return songList.get(index); 
+		return g.db.getSongInJamByIndex(index);  
 	}
 
 	public void changeSongIndexInJam(int from, int to) {
 		g.db.changeSongIndexInJam(from, to);
-		Song temp = songList.get(from); 
-		songList.remove(from); 
-		songList.add(to, temp);  
-
-		if (currentSongIndex == from) {
-			currentSongIndex = to;
-		} else if (from < to && currentSongIndex > from && currentSongIndex <= to) {
-			currentSongIndex--; 
-		} else if (from > to && currentSongIndex < from && currentSongIndex >= to) {
-			currentSongIndex++; 
+		
+		if (currIndex == from) {
+			currIndex = to;
+		} else if (from < to && currIndex > from && currIndex <= to) {
+			currIndex--; 
+		} else if (from > to && currIndex < from && currIndex >= to) {
+			currIndex++; 
 		}
-		currentSong = songList.get(currentSongIndex); 
 	}
 
 	public void shuffle() {
 		if (!isShuffled()) {
-			System.out.println("SHUFFLING"); 
-			g.db.shuffleJam(currentSongIndex, songList.size() - 1); 
+			g.db.shuffleJam(currIndex, size - 1); 
 			isShuffled = true; 
-			// Add a helper to just reload song list from jam database. 
 		} else {
 
 		}
@@ -197,36 +194,27 @@ public class Jam {
 	}
 
 	public boolean containsSong(Song song) {
-		for (Song jamSong : songList) {
-			if (jamSong.hashCode() == song.hashCode()) {
-				return true; 
-			}
-		}
-		return false; 
+		return g.db.jamContainsSong(song); 
 	}
 
 	public int getJamSize() {
-		return songList.size(); 
+		return size; 
 	}
 
 
 	public void clearSongs() {
 		g.db.clearJam(); 
-		songList = new ArrayList<Song>(); 
-		currentSong = null; 
-		currentSongIndex = -1; 
+		currIndex = -1; 
 	}
 
 
 	public void removeSong(int index) {
 		g.db.removeSongFromJam(index); 
 
-		songList.remove(index); 
-		if (currentSongIndex > index) {
-			currentSongIndex--; 
-		} else if (currentSongIndex == index) {
-			currentSong = null; 
-			currentSongIndex = -1; 
+		if (currIndex > index) {
+			currIndex--; 
+		} else if (currIndex == index) {
+			currIndex = -1; 
 			playCurrentSong(); 
 		}
 	}
@@ -241,7 +229,7 @@ public class Jam {
 		//if (!master)
 		//	return false; 
 
-		if (getCurrentSong() != null) {
+		if (hasCurrentSong()) {
 			mediaPlayer.reset();
 		} else {
 			mediaPlayer.stop(); 
@@ -333,7 +321,7 @@ public class Jam {
 				addSong(song);
 
 				if (i == nowPlayingIndex) {
-					setCurrentSong(song, i);
+					setCurrentSong(i);
 				}
 			}
 
