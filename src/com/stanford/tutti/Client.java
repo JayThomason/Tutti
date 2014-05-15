@@ -100,6 +100,18 @@ public class Client {
 		}
 	}
 	
+	public void updateJam(JSONObject jsonJam, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/updateJam", ""); 
+		try {
+			StringEntity entity = new StringEntity(jsonJam.toString());
+			client.setMaxRetriesAndTimeout(3, 5000);
+			client.post(g.getBaseContext(), url, entity, "application/json", responseHandler);
+		}
+		catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void startPlaying(AsyncHttpResponseHandler responseHandler) {
 		String url = getUrl("/jam/start", "");
 		client.get(url, responseHandler);
