@@ -314,6 +314,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor; 
     }
     
+    public Cursor getShuffledSongsInJam() {
+    	String query = "SELECT * FROM " + TABLE_JAM + " ORDER BY " + KEY_SHUFFLE_INDEX + " ASC";
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        
+        return cursor; 
+    }
+    
     public Song getSongInJamByIndex(String index) {
     	String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
     	
@@ -373,6 +382,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             args = new ContentValues();
             int rand = generator.nextInt(indices.size());
             int index = indices.remove(rand); 
+            System.out.println("SHUFFLING " + i + " TO " + index); 
             args.put(KEY_SHUFFLE_INDEX, index);
             db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + i + "", null);
     	}

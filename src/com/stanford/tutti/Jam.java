@@ -44,6 +44,7 @@ public class Jam {
 		songList = new ArrayList<Song>();
 		currentSong = null; 
 		currentSongIndex = -1; 
+		isShuffled = false; 
 		mediaPlayer = new MediaPlayer(); 
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
@@ -178,8 +179,10 @@ public class Jam {
 	}
 	
 	public void shuffle() {
-		if (isShuffled()) {
+		if (!isShuffled()) {
+			System.out.println("SHUFFLING"); 
 			g.db.shuffleJam(currentSongIndex, songList.size() - 1); 
+			isShuffled = true; 
 			// randomize the index of each song after the current index in the jam
 			// index of the current song and all before stays the same
 			// set in the DB shuffleIndex column, maintaining originals in jamIndex
