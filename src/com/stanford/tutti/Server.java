@@ -261,7 +261,6 @@ public class Server extends NanoHTTPD {
 		
 		song.setAddedBy(addedBy);
 		
-		// NEED TO SET THE SAME TIMESTAMP THAT HAS BEEN RECIVED HERE
 		g.jam.addSongWithTimestamp(song, timestamp);
 		
 		if (g.jam.hasCurrentSong()) {
