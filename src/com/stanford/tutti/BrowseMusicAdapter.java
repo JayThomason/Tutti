@@ -41,6 +41,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             return inflater.inflate(layout, null);
     }
 
+
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
@@ -172,7 +173,17 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         
     	String addedBy = cursor.getString(cursor.getColumnIndex("addedBy")); 
     	ownerView.setText(addedBy);
+    	
+        ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
+    	artView.setOnClickListener(new View.OnClickListener() {
+    		@Override
+    		public void onClick(View view) {
+    			
+    		}
+    	});
     }
+    
+
 	
     @Override
     public boolean isEnabled(int position) {
