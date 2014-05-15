@@ -126,6 +126,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Create tables again
 		onCreate(db);
 	}
+	
+	public void dropTable(String table) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(table, null, null); 
+	}
 
 	public void addSongToLibrary(Song song){
 		// 1. get reference to writable DB
@@ -211,23 +216,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// 6. return Song
 		return song; 
 	}
-
-	public Song getSongByHash(String hash) {
-		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = '" + hash + "'";
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(query, null);
-
-		cursor.moveToFirst(); 
-
-		Song song = rowToSong(cursor); 
-
-		return song;  	
-	}
-
-	public Cursor getSongsByArtist(String artist) {
-		String escapedArtist = artist.replace("'", "''");
-		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC";
+	
+	public Cursor getAllArtists() {
+		String query = "SELECT * FROM " + TABLE_SONGS + " "
+				+ "GROUP BY " + KEY_ARTIST; 
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
@@ -246,15 +238,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		return cursor; 
 	}
-
-	public Cursor getAllArtists() {
-		String query = "SELECT * FROM " + TABLE_SONGS + " "
-				+ "GROUP BY " + KEY_ARTIST; 
+	
+	public Cursor getSongsByArtist(String artist) {
+		String escapedArtist = artist.replace("'", "''");
+		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC";
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
 
 		return cursor; 
+	}
+	
+	public Song getSongByHash(String hash) {
+		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = '" + hash + "'";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+
+		cursor.moveToFirst(); 
+
+		Song song = rowToSong(cursor); 
+
+		return song;  	
 	}
 
 	public Cursor getAllAlbums() {
@@ -487,11 +492,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		} else {
 			return false; 
 		}
-	}
-
-	public void dropTable(String table) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(table, null, null); 
 	}
 
 	public Song rowToSong(Cursor cursor) {
