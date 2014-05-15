@@ -363,14 +363,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.update(TABLE_JAM, args, KEY_HASH + " = '" + hashCode + "'", null);
 	}
 
-	public void changeSongIndexInJam(int from, int to) {
+	public void changeSongIndexInJam(String jamSongId, int from, int to) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		// Overwrite the song that is moving with a temp placeholder index
 		ContentValues args = new ContentValues();
 		args.put(KEY_JAM_INDEX, -2);
-		db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + from + "", null);
+		
+		
+		// INSERT CHECK HERE TO SEE IF THE SONG HAS BEEN MOVED FROM ITS POSITION
+		// BY ANOTHER CONCURRENT EDIT? 
+		db.update(TABLE_JAM, args, KEY_TIMESTAMP + " = '" + jamSongId + "'", null);
 
+		
 		// Increment/decrement the indices of all the songs 
 		// in-between the to and from songs as necessary
 		String restructureQuery = ""; 
@@ -385,7 +390,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Move the original "from" song to its final "to" index
 		args = new ContentValues();
 		args.put(KEY_JAM_INDEX, to);
-		db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + -2 + "", null);
+		db.update(TABLE_JAM, args, KEY_TIMESTAMP + " = '" + jamSongId + "'", null);
 	}
 
 	public void shuffleJam(int currentIndex, int lastIndex) {

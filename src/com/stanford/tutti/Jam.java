@@ -184,8 +184,8 @@ public class Jam {
 		return g.db.getSongInJamByIndex(index);  
 	}
 
-	public void changeSongIndexInJam(int from, int to) {
-		g.db.changeSongIndexInJam(from, to);
+	public void changeSongIndexInJam(String jamSongId, int from, int to) {
+		g.db.changeSongIndexInJam(jamSongId, from, to);
 		
 		if (currIndex == from) {
 			currIndex = to;

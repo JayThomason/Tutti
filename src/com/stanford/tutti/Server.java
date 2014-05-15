@@ -201,7 +201,7 @@ public class Server extends NanoHTTPD {
     		return jamSetSongResponse(otherIpAddr, parameters.get("jamSongId")); 
     	} 
     	else if (path.startsWith(JAM_MOVE_SONG)) {
-    		return jamMoveSongResponse(otherIpAddr, parameters.get("from"), parameters.get("to")); 
+    		return jamMoveSongResponse(otherIpAddr, parameters.get("jamSongId"), parameters.get("from"), parameters.get("to")); 
     	}
     	else if (path.startsWith(JAM_REMOVE_SONG)) {
     		return jamRemoveSongResponse(otherIpAddr, parameters.get("index")); 
@@ -321,8 +321,8 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-	private Response jamMoveSongResponse(String otherIpAddr, String from, String to) {
-		g.jam.changeSongIndexInJam(Integer.parseInt(from), Integer.parseInt(to));
+	private Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String from, String to) {
+		g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(from), Integer.parseInt(to));
 		
 		g.sendUIMessage(7); 
 		
@@ -330,7 +330,7 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
-				client.requestMoveSong(from, to, new AsyncHttpResponseHandler() {
+				client.requestMoveSong(jamSongId, Integer.parseInt(from), Integer.parseInt(to), new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to move song on client returned: " + statusCode);
