@@ -291,12 +291,17 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr())) //|| client.getIpAddress().equals(otherIpAddr))
 					continue; 
+				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
+					
+				});
+				/*
 				client.requestAddSong(songId, addedBy, jamSongId, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to add song to client returned: " + statusCode);
 					}
 				});
+				*/
 			}
 		}
 		
@@ -326,12 +331,17 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr()))  //|| client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
+				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
+					
+				});
+				/*
 				client.requestSetSong(jamSongId, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to add song to client returned: " + statusCode);
 					}
 				});
+				*/
 			}
 		}
 		return new NanoHTTPD.Response("Set new currently playing song");
@@ -347,12 +357,17 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr)) 
 					continue; 
+				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
+					
+				});
+				/*
 				client.requestMoveSong(jamSongId, Integer.parseInt(from), Integer.parseInt(to), new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to move song on client returned: " + statusCode);
 					}
 				});
+				*/
 			}
 		}
 		
