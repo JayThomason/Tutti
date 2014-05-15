@@ -132,6 +132,14 @@ public class Client {
 		client.get(url, responseHandler);
 	}
 	
+	/*
+	 * Sends a ping message to the client to check if it is still there.
+	 */
+	public void ping(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/ping", "");
+		client.get(url,  responseHandler);
+	}
+	
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}

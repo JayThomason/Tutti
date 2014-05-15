@@ -14,11 +14,13 @@ import org.json.JSONObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Message;
+import android.os.PowerManager;
 
 public class Jam {
 	ArrayList<Song> songList;
@@ -76,8 +78,10 @@ public class Jam {
 		synchronized (clientSet) {
 			clientSet.add(client);
 		}
-		usernameMap.put(client.getIpAddress(), client.getUsername()); 
-		keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
+		usernameMap.put(client.getIpAddress(), client.getUsername());
+		synchronized (keepAliveTimestampMap) {
+			keepAliveTimestampMap.put(client.getIpAddress(), System.currentTimeMillis() / 1000L);
+		}
 	}
 
 	public boolean checkMaster() {
@@ -179,7 +183,7 @@ public class Jam {
 		}
 		currentSong = songList.get(currentSongIndex); 
 	}
-	
+
 	public void shuffle() {
 		if (!isShuffled()) {
 			System.out.println("SHUFFLING"); 
@@ -187,14 +191,14 @@ public class Jam {
 			isShuffled = true; 
 			// Add a helper to just reload song list from jam database. 
 		} else {
-			
+
 		}
 	}
-	
+
 	public void unShuffle() {
 		isShuffled = false; 
 	}
-	
+
 	public boolean isShuffled() {
 		return isShuffled; 
 	}
@@ -433,12 +437,19 @@ public class Jam {
 						if (clientKeepAlive.get()) {
 							client.get(url, new AsyncHttpResponseHandler() {
 								@Override
+								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+									if (statusCode == 200) {
+										System.out.println("successfully sent keep alive to master");
+									}
+									else {
+										System.out.println("failed to send keep alive to master!");						
+									}
+								}								@Override
 								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 									// TODO: in this case we want to display some notification to the user and exit the jam
 									System.out.println("failed keepAlive to master...");
 								}
 							});
-							System.out.println("send keep alive to master");
 						}
 						else {
 							return;
@@ -457,58 +468,72 @@ public class Jam {
 			clientKeepAlive.set(false);
 		}
 	}
-	
-	public void startMasterKeepAliveThread() {
+
+	/*
+	 * Periodically checks if the master has received 
+	 */
+	public void startMasterClientPingThread() {
 		masterKeepAliveThread = new Thread() {
 			public void run() {
+				int secondsToSleep = 5;
 				while (true) {
 					try {
-						Thread.sleep(8 * 1000);
-						Long currTimestamp = System.currentTimeMillis() / 1000L;
-						Set<Client> clientSet = g.jam.getClientSet();
-						Set<Client> removeSet = new HashSet<Client>();
-						// add clients to remove set
+						Thread.sleep(secondsToSleep * 1000);
+						Set<Client> clientSet = getClientSet();
 						synchronized (clientSet) {
-							for (Client client : g.jam.getClientSet()) {
-								Long lastTimestamp = g.jam.keepAliveTimestampMap.get(client.getIpAddress());
-								System.out.println("last timestamp: " + lastTimestamp);
-								if (lastTimestamp < (currTimestamp - 8)) { // remove if no
-									System.out.println("Removing " + client.getUsername() + " from jam.");
-									removeSet.add(client);
-								}
-							}
-							// remove clients in remove set from library and clientSet
-							for (Client client : removeSet) {
-								String ipAddr = client.getIpAddress();
-								g.db.deleteJamSongsFromIp(ipAddr);
-								g.db.deleteSongsFromIp(ipAddr);
-								g.sendUIMessage(0);
-								clientSet.remove(client);
-							}
-							// tell other clients to remove music
-							for (final Client client : clientSet) {
-								for (final Client clientToRemove : removeSet) {
-									client.removeAllFrom(clientToRemove, new AsyncHttpResponseHandler() {
-										@Override
-										public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-											if (statusCode == 200) {
-												System.out.println("client " + client.getUsername() + 
-														" removed client " + clientToRemove.getUsername() + " from jam.");
-											}
-											else {
-												System.out.println("client " + client.getUsername() + 
-														" failed to remove client " + clientToRemove.getUsername() + " from jam.");											}
+							System.out.println("Pinging clients...");
+							for (final Client client : getClientSet()) {
+								client.ping(new AsyncHttpResponseHandler() {
+									@Override
+									public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+										if (statusCode != 200) {
+											removeFromJam(client);
 										}
-									});
-								}
+									}
+
+									@Override
+									public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+										removeFromJam(client);
+									}
+								});
 							}
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		};
 		masterKeepAliveThread.start();
+	}
+
+	/*
+	 * Removes the specified client from the jam by removing all of its songs from
+	 * the library and jam and sending a message to all clients telling them to 
+	 * remove its songs.
+	 */
+	private void removeFromJam(final Client clientToRemove) {
+		g.db.deleteJamSongsFromIp(clientToRemove.getIpAddress());
+		g.db.deleteSongsFromIp(clientToRemove.getIpAddress());
+		g.sendUIMessage(0);
+		synchronized (clientSet) {
+			clientSet.remove(clientToRemove);
+			for (final Client client : clientSet) {
+				client.removeAllFrom(clientToRemove, new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						if (statusCode == 200) {
+							System.out.println("client " + client.getUsername() + 
+									" removed client " + clientToRemove.getUsername() + " from jam.");
+						}
+						else {
+							System.out.println("client " + client.getUsername() + 
+									" failed to remove client " + clientToRemove.getUsername() + " from jam.");		
+						}
+					}
+				});
+			}
+		}
 	}
 }

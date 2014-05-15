@@ -158,7 +158,7 @@ public class JoinJamActivity extends Activity {
 							e.printStackTrace();
 						}
 						
-						g.jam.startClientKeepAliveThread();
+//						g.jam.startClientKeepAliveThread();
 						Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
 						getLibraryThread.start();
 	
