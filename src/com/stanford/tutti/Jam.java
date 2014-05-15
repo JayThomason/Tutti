@@ -24,6 +24,7 @@ public class Jam {
 	ArrayList<Song> songList;
 	private Song currentSong;
 	private int currentSongIndex; 
+	private boolean isShuffled; 
 	private boolean master; 
 	public MediaPlayer mediaPlayer; 
 	private HashSet<Client> clientSet;
@@ -174,6 +175,22 @@ public class Jam {
 			currentSongIndex++; 
 		}
 		currentSong = songList.get(currentSongIndex); 
+	}
+	
+	public void shuffle() {
+		if (isShuffled()) {
+			g.db.shuffleJam(currentSongIndex, songList.size() - 1); 
+			// randomize the index of each song after the current index in the jam
+			// index of the current song and all before stays the same
+			// set in the DB shuffleIndex column, maintaining originals in jamIndex
+			// Add a helper to just reload song list from jam database. 
+		} else {
+			
+		}
+	}
+	
+	public boolean isShuffled() {
+		return isShuffled; 
 	}
 
 	public boolean containsSong(Song song) {

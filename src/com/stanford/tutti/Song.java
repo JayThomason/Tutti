@@ -12,10 +12,10 @@ public class Song {
 	private String title;
 	
 	/* A reference to the artist whose song this is. */
-	private String artist;
+	private String artist = ""; 
 	
 	/* A reference to the album the song is on. */
-	private String album;
+	private String album = ""; 
 	
 	/* The path on the disk/sdcard to the raw song data or file. */
 	private String path; 

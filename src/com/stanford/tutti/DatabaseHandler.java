@@ -2,9 +2,11 @@ package com.stanford.tutti;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -356,6 +358,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args = new ContentValues();
         args.put(KEY_JAM_INDEX, to);
         db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + -2 + "", null);
+    }
+    
+    public void shuffleJam(int currentIndex, int lastIndex) {
+    	ArrayList<Integer> indices = new ArrayList<Integer>(); 
+    	for (int i = currentIndex + 1; i <= lastIndex; i++) {
+    		indices.add(i); 
+    	}
+    	
+        SQLiteDatabase db = this.getWritableDatabase();
+    	ContentValues args; 
+    	Random generator = new Random(); 
+    	for (int i = currentIndex + 1; i <= lastIndex; i++) {
+            args = new ContentValues();
+            int rand = generator.nextInt(indices.size());
+            int index = indices.remove(rand); 
+            args.put(KEY_SHUFFLE_INDEX, index);
+            db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + i + "", null);
+    	}
+    	
+    	///
+    	///
+    	///
+    	///
+    	///
+    	///
     }
     
     public void removeSongFromJam(int index) {
