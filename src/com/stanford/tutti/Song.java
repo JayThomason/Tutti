@@ -155,6 +155,19 @@ public class Song {
 		return keyBuilder.toString().hashCode();
 	}
 	
+	public int createJamHashCode(int suffix) {
+		StringBuilder keyBuilder = new StringBuilder("");
+		String artist = getArtist();
+		if (artist != null)
+			keyBuilder.append(artist);
+		String album = getAlbum();
+		if (album != null) 
+			keyBuilder.append(album);
+		keyBuilder.append(getTitle());
+		keyBuilder.append("" + suffix); 
+		return keyBuilder.toString().hashCode();
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		Song s = (Song) o;
