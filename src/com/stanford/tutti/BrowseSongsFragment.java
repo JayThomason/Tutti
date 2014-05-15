@@ -160,7 +160,7 @@ public class BrowseSongsFragment extends Fragment {
 				}
 				else {
 					Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
-					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), new AsyncHttpResponseHandler() {
+					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), g.getTimestamp(), new AsyncHttpResponseHandler() {
 						@Override
 						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 							System.out.println("request to add song to master returned: " + statusCode);

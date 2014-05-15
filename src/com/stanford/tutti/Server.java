@@ -263,7 +263,7 @@ public class Server extends NanoHTTPD {
 		
 		g.jam.addSongWithTimestamp(song, timestamp);
 		
-		if (g.jam.hasCurrentSong()) {
+		if (!g.jam.hasCurrentSong()) {
 			g.jam.setCurrentSong(g.jam.getJamSize() - 1);
 			if (g.jam.checkMaster()) {
 				g.jam.playCurrentSong(); 

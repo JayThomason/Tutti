@@ -1,5 +1,8 @@
 package com.stanford.tutti;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -108,6 +111,16 @@ public class Globals extends Application {
 	public String getUsername() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		return preferences.getString("prefUsername", "anonymous"); 
+	}
+	
+	/*
+	 * Return the current system timestamp,
+	 * in a punctuationless format better suited for IDs than printing. 
+	 */
+	public String getTimestamp() {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyhmmssa");
+		return sdf.format(date);
 	}
 	
 	/*
