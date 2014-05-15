@@ -134,6 +134,11 @@ public class Jam {
 		return timestamp; 
 	}
 	
+	public void addSongWithTimestamp(Song song, String timestamp) {
+		g.db.addSongToJam(song, currSize, timestamp); 
+		currSize++; 
+	}
+	
 	public boolean hasCurrentSong() {
 		if (currIndex >= 0) {
 			return true; 

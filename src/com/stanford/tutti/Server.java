@@ -24,18 +24,17 @@ import com.stanford.tutti.NanoHTTPD.Response.Status;
  * be providing a complete documentation of the API endpoints yet.
  */
 public class Server extends NanoHTTPD {
-	//probably want to make this a better global later, maybe in @strings
 	/* These strings define the API endpoints for the tutti API. */
 	private static final String GET_JAM = "/getJam"; 
 	private static final String GET_SONG = "/song";
 	private static final String JOIN_JAM = "/joinJam";
 	private static final String ACCEPT_JOIN_JAM = "/acceptJoinJam"; 
 	private static final String REJECT_JOIN_JAM = "/rejectJoinJam"; 
-	private static final String UPDATE_JAM = "/jam"; 
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String UPDATE_LIBRARY = "/updateLibrary";
 	private static final String GET_ALBUM_ART = "/getAlbumArt"; 
 	private static final String UPDATE_ALBUM_ART = "/updateAlbumArt"; 
+	private static final String UPDATE_JAM = "/jam"; 
 	private static final String JAM_ADD_SONG = "/add"; 
 	private static final String JAM_SET_SONG = "/set"; 
 	private static final String JAM_MOVE_SONG = "/move"; 
@@ -195,7 +194,7 @@ public class Server extends NanoHTTPD {
      */
     private Response updateJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
     	if (path.startsWith(JAM_ADD_SONG)) {
-    		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy")); 
+    		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy"), parameters.get("timestamp")); 
     	} 
     	else if (path.startsWith(JAM_SET_SONG)) {
     		return jamSetSongResponse(otherIpAddr, path.substring(JAM_SET_SONG.length())); 
@@ -255,13 +254,15 @@ public class Server extends NanoHTTPD {
     /*
      * Adds the requested song to the jam.
      */
-	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy) {
+	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String timestamp) {
 		Song song = g.db.getSongByHash(songId);
 		if (song == null) 
 			return fileNotFoundResponse();
 		
 		song.setAddedBy(addedBy);
-		g.jam.addSong(song);
+		
+		// NEED TO SET THE SAME TIMESTAMP THAT HAS BEEN RECIVED HERE
+		g.jam.addSongWithTimestamp(song, timestamp);
 		
 		if (g.jam.hasCurrentSong()) {
 			g.jam.setCurrentSong(g.jam.getJamSize() - 1);
@@ -273,7 +274,7 @@ public class Server extends NanoHTTPD {
 			for (Client client : g.jam.getClientSet()) {
 				if (client.getIpAddress().equals(g.getIpAddr())) //|| client.getIpAddress().equals(otherIpAddr))
 					continue; 
-				client.requestAddSong(songId, addedBy, new AsyncHttpResponseHandler() {
+				client.requestAddSong(songId, addedBy, timestamp, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("request to add song to client returned: " + statusCode);
