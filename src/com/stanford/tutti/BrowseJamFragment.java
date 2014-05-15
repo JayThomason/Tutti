@@ -74,7 +74,6 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		@Override
 		public void remove(int index) {
 			System.out.println("REMOVED"); 
-			g.jam.removeSong(index); 
 		}
 	};
 
@@ -264,7 +263,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	 */
 	public void initializeJamList() {
 		listView.setDropListener(onDrop);
-		listView.setRemoveListener(onRemove);
+		//listView.setRemoveListener(onRemove);
 
 
 		DragSortController controller = new DragSortController(listView);

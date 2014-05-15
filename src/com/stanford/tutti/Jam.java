@@ -240,6 +240,9 @@ public class Jam {
 
 		if (getCurrentSong() != null) {
 			mediaPlayer.reset();
+		} else {
+			mediaPlayer.stop(); 
+			return false; 
 		}
 
 		try {
