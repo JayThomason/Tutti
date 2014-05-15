@@ -43,7 +43,7 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_START = "/start"; 
 	private static final String JAM_PAUSE = "/pause"; 
 	private static final String JAM_RESTART = "/restart"; 
-	private static final String REMOVE_USER_FROM_JAM = "/removeFromJam";
+	private static final String REMOVE_USER_FROM_JAM = "/removeAllFrom";
 	private static final String KEEP_ALIVE = "/keepAlive";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private Globals g = null;
@@ -449,7 +449,7 @@ public class Server extends NanoHTTPD {
     private Response removeUserFromJamResponse(Map<String, String> parameters) {
     	String ipAddr = parameters.get("ip");
     	g.db.deleteJamSongsFromIp(ipAddr);
-    	g.db.deleteSongsFromIp(ipAddr);
+    	System.out.println("Songs removed: " + g.db.deleteSongsFromIp(ipAddr));
     	g.sendUIMessage(0); 
 		return new NanoHTTPD.Response("OK");
 	}
