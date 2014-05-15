@@ -26,16 +26,17 @@ import com.stanford.tutti.NanoHTTPD.Response.Status;
  */
 public class Server extends NanoHTTPD {
 	/* These strings define the API endpoints for the tutti API. */
-	private static final String GET_JAM = "/getJam"; 
-	private static final String GET_SONG = "/song";
-	private static final String JOIN_JAM = "/joinJam";
-	private static final String ACCEPT_JOIN_JAM = "/acceptJoinJam"; 
-	private static final String REJECT_JOIN_JAM = "/rejectJoinJam"; 
 	private static final String GET_LOCAL_LIBRARY = "/getLocalLibrary";
 	private static final String UPDATE_LIBRARY = "/updateLibrary";
 	private static final String GET_ALBUM_ART = "/getAlbumArt"; 
 	private static final String UPDATE_ALBUM_ART = "/updateAlbumArt"; 
-	private static final String UPDATE_JAM = "/jam"; 
+	private static final String GET_SONG = "/song";
+	private static final String JOIN_JAM = "/joinJam";
+	private static final String ACCEPT_JOIN_JAM = "/acceptJoinJam"; 
+	private static final String REJECT_JOIN_JAM = "/rejectJoinJam"; 
+	private static final String GET_JAM = "/getJam"; 
+	private static final String UPDATE_JAM = "/updateJam"; 
+	private static final String EDIT_JAM = "/jam"; 
 	private static final String JAM_ADD_SONG = "/add"; 
 	private static final String JAM_SET_SONG = "/set"; 
 	private static final String JAM_MOVE_SONG = "/move"; 
@@ -127,8 +128,8 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(GET_SONG)) {
     		return getSong(uri.substring(GET_SONG.length()));  
     	} 
-    	else if (uri.startsWith(UPDATE_JAM)) {
-    		return updateJamResponse(headers.get(HTTP_CLIENT_IP), uri.substring(UPDATE_JAM.length()), parameters); 
+    	else if (uri.startsWith(EDIT_JAM)) {
+    		return editJamResponse(headers.get(HTTP_CLIENT_IP), uri.substring(EDIT_JAM.length()), parameters); 
     	}
     	else if (uri.startsWith(REMOVE_USER_FROM_JAM)) {
     		return removeUserFromJamResponse(parameters);
@@ -149,6 +150,9 @@ public class Server extends NanoHTTPD {
     	}
     	else if (uri.startsWith(UPDATE_ALBUM_ART)) {
     		return updateAlbumArtResponse(session); 
+    	} 
+    	else if (uri.startsWith(UPDATE_JAM)) {
+    		return updateJamResponse(session);
     	}
     	else {
     		return badRequestResponse();
@@ -193,7 +197,7 @@ public class Server extends NanoHTTPD {
      * Responds to a request to update the jam. 
      * Pause, play, skip song, set song, etc. 
      */
-    private Response updateJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
+    private Response editJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
     	if (path.startsWith(JAM_ADD_SONG)) {
     		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy"), parameters.get("jamSongId")); 
     	} 
@@ -250,6 +254,19 @@ public class Server extends NanoHTTPD {
 			return badRequestResponse();
 		} 
     	return new NanoHTTPD.Response("Updated album art");
+    }
+    
+    private Response updateJamResponse(IHTTPSession session) {
+    	Map<String, String> files = new HashMap<String, String>();
+    	try {
+			session.parseBody(files);
+  			JSONObject jsonJam = new JSONObject(files.get("postData")); 
+  			g.jam.loadJamFromJSON(jsonJam);; 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return badRequestResponse();
+		} 
+    	return new NanoHTTPD.Response("Updated jam");
     }
 
     /*
