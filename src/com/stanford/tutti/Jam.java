@@ -261,6 +261,27 @@ public class Jam {
 		}
 	}
 	
+	public void broadcastAddSong(String songCode, String username, String timestamp) {
+		if (master) {
+			for (Client client : clientSet) {
+				client.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+					}
+				});
+			}
+		} else {
+			Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
+			masterClient.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
+				@Override
+				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+				}
+			});
+		}
+	}
+	
 	public void broadcastSetSong(final String songJamID, final String title) {
 		if (master) {
 			for (Client client : clientSet) {

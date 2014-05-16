@@ -144,30 +144,15 @@ public class BrowseSongsFragment extends Fragment {
 					song.setAddedBy(g.getUsername());
 					String timestamp = g.jam.addSong(song); 
 					if (!g.jam.hasCurrentSong()) {
-						System.out.println("SETTING CURRENT SONG"); 
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}
-					// will fix to a higher-level abstraction, ie. sendMessageToAllClients(ip, port, path, etc.)
-					Set<Client> clientSet = g.jam.getClientSet();
-					for (Client client : clientSet) {
-						client.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), timestamp, new AsyncHttpResponseHandler() {
-							@Override
-							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-								System.out.println("request to add song to client returned: " + statusCode);
-							}
-						});
-					}
 				}
 				else {
-					Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
-					masterClient.requestAddSong(Integer.toString(song.hashCode()), g.getUsername(), g.getTimestamp(), new AsyncHttpResponseHandler() {
-						@Override
-						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							System.out.println("request to add song to master returned: " + statusCode);
-						}
-					});
+
 				}
+				
+				g.jam.broadcastAddSong(Integer.toString(song.hashCode()), g.getUsername(), g.getTimestamp()); 
 
 				g.sendUIMessage(0); 
 			}

@@ -287,6 +287,7 @@ public class Server extends NanoHTTPD {
 				g.jam.playCurrentSong(); 
 			}
 		}
+		
 		if (g.jam.checkMaster()) {
 			g.jam.broadcastJamUpdate(); 
 				/*
