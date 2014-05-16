@@ -372,13 +372,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return timestamp; 
 	}
 
-	public void setSongIndexInJam(String hashCode, int index) {
-		ContentValues args = new ContentValues();
-		args.put(KEY_JAM_INDEX, index);
-		SQLiteDatabase db = this.getWritableDatabase();
-		db.update(TABLE_JAM, args, KEY_HASH + " = '" + hashCode + "'", null);
-	}
-
 	public void changeSongIndexInJam(String jamSongId, int from, int to) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
