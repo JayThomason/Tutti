@@ -288,12 +288,7 @@ public class Server extends NanoHTTPD {
 			}
 		}
 		if (g.jam.checkMaster()) {
-			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr())) //|| client.getIpAddress().equals(otherIpAddr))
-					continue; 
-				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
-					
-				});
+			g.jam.broadcastJamUpdate(); 
 				/*
 				client.requestAddSong(songId, addedBy, jamSongId, new AsyncHttpResponseHandler() {
 					@Override
@@ -302,7 +297,6 @@ public class Server extends NanoHTTPD {
 					}
 				});
 				*/
-			}
 		}
 		
 		g.sendUIMessage(7); 
@@ -328,12 +322,7 @@ public class Server extends NanoHTTPD {
 		
 		if (g.jam.checkMaster()) {
 			g.jam.playCurrentSong(); 
-			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr()))  //|| client.getIpAddress().equals(otherIpAddr)) 
-					continue; 
-				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
-					
-				});
+			g.jam.broadcastJamUpdate(); 
 				/*
 				client.requestSetSong(jamSongId, new AsyncHttpResponseHandler() {
 					@Override
@@ -342,7 +331,6 @@ public class Server extends NanoHTTPD {
 					}
 				});
 				*/
-			}
 		}
 		return new NanoHTTPD.Response("Set new currently playing song");
 	}
@@ -354,12 +342,7 @@ public class Server extends NanoHTTPD {
 		g.sendUIMessage(7); 
 		
 		if (g.jam.checkMaster()) {
-			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr())) //|| client.getIpAddress().equals(otherIpAddr)) 
-					continue; 
-				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
-					
-				});
+			g.jam.broadcastJamUpdate(); 
 				/*
 				client.requestMoveSong(jamSongId, Integer.parseInt(from), Integer.parseInt(to), new AsyncHttpResponseHandler() {
 					@Override
@@ -368,7 +351,6 @@ public class Server extends NanoHTTPD {
 					}
 				});
 				*/
-			}
 		}
 		
 		return new NanoHTTPD.Response("Moved song index in Jam"); 

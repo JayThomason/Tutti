@@ -245,6 +245,14 @@ public class Jam {
 		
 		currSize--; 
 	}
+	
+	public void broadcastJamUpdate() {
+		for (Client client : clientSet) {
+			client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
+				
+			});
+		}
+	}
 
 
 	/*
