@@ -128,7 +128,6 @@ public class Jam {
 		String timestamp = g.getTimestamp(); 
 		g.db.addSongToJam(song, currSize, timestamp);
 		currSize++;
-		
 		return timestamp; 
 	}
 	

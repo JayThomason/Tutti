@@ -143,7 +143,8 @@ public class BrowseSongsFragment extends Fragment {
 				if (g.jam.checkMaster()) {
 					song.setAddedBy(g.getUsername());
 					String timestamp = g.jam.addSong(song); 
-					if (g.jam.hasCurrentSong()) {
+					if (!g.jam.hasCurrentSong()) {
+						System.out.println("SETTING CURRENT SONG"); 
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}

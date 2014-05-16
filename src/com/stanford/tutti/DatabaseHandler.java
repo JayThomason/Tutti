@@ -352,6 +352,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
+		
+		cursor.moveToFirst(); 
 
 		return cursor; 
 	}
