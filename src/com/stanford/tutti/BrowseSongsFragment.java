@@ -142,14 +142,15 @@ public class BrowseSongsFragment extends Fragment {
 				
 				if (g.jam.checkMaster()) {
 					song.setAddedBy(g.getUsername());
-					String timestamp = g.jam.addSong(song); 
+					String timestamp = 
+				    g.jam.addSong(song); 
 					if (!g.jam.hasCurrentSong()) {
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}
-					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), g.getUsername(), timestamp); 
+					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), timestamp); 
 				} else {
-					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), g.getUsername(), g.getTimestamp()); 
+					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), g.getTimestamp()); 
 				}
 				
 

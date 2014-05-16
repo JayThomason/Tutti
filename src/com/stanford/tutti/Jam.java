@@ -265,7 +265,7 @@ public class Jam {
 		}
 	}
 	
-	public void broadcastAddSong(String songCode, String username, String timestamp) {
+	public void broadcastAddSong(String songCode, final String title, String username, String timestamp) {
 		if (master) {
 			for (Client client : clientSet) {
 				client.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
@@ -280,7 +280,10 @@ public class Jam {
 			masterClient.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
+					Toast.makeText(
+							g, 
+							"Added to Jam: " + title, Toast.LENGTH_SHORT)
+							.show();
 				}
 			});
 		}
@@ -302,7 +305,6 @@ public class Jam {
 			masterClient.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-					//g.jam.setCurrentSong(songJamID);
 					Toast.makeText(
 							g, 
 							"Now playing: " + title, Toast.LENGTH_SHORT)
