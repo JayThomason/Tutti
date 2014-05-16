@@ -331,7 +331,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				final int index = position; 
 
 				if (g.jam.checkMaster()) {
-					g.jam.setCurrentSongIndex(index);
+					String songJamID = g.jam.setCurrentSongIndex(index);
 					g.jam.playCurrentSong(); 
 					Toast.makeText(
 							g, 
@@ -342,7 +342,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 					for (Client client : g.jam.getClientSet()) {
 						if (client.getIpAddress().equals(g.getIpAddr())) 
 							continue; 
-						client.requestSetSong(Integer.toString(index), new AsyncHttpResponseHandler() {
+						client.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 								System.out.println("request to set song on client returned: " + statusCode);
@@ -350,11 +350,12 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 						});
 					}
 				} else {
+					final String songJamID = g.jam.getSongIdByIndex(index); 
 					Client masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port); 
-					masterClient.requestSetSong(Integer.toString(index), new AsyncHttpResponseHandler() {
+					masterClient.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
 						@Override
 						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							g.jam.setCurrentSongIndex(index);
+							g.jam.setCurrentSong(songJamID);;
 							Toast.makeText(
 									g, 
 									"Now playing: " + title, Toast.LENGTH_SHORT)

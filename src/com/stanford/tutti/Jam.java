@@ -173,10 +173,12 @@ public class Jam {
 		cursor.close(); 
 	}
 
-	public void setCurrentSongIndex(int index) {
+	public String setCurrentSongIndex(int index) {
 		if (index < currSize) {
 			currIndex = index; 
 		}
+		
+		return getSongIdByIndex(index); 
 	}
 
 	public Song getSongByIndex(int index) {
