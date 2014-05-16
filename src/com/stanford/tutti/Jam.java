@@ -255,8 +255,9 @@ public class Jam {
 	
 	public void broadcastJamUpdate() {
 		if (master) {
+			JSONObject jsonJam = g.jam.toJSON(); 
 			for (Client client : clientSet) {
-				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
+				client.updateJam(jsonJam, new AsyncHttpResponseHandler() {
 					
 				});
 			}
@@ -442,6 +443,7 @@ public class Jam {
 			}
 
 			g.sendUIMessage(7); 
+			g.sendUIMessage(0); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
