@@ -329,6 +329,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 					g.jam.broadcastSetSong(songJamID, title); 
 				} else {
 					final String songJamID = g.jam.getSongIdByIndex(index); 
+					System.out.println("12xy SETTING SONG " + index + ", ID: " + songJamID); 
 					g.jam.broadcastSetSong(songJamID, title);
 				}
 				refreshJamList(); 

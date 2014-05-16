@@ -170,10 +170,14 @@ public class Jam {
 		if (isShuffled()) {
 			currIndex = cursor.getInt(cursor.getColumnIndex("shuffleIndex")); 
 		} else {
-			currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+			if (cursor.getColumnIndex("jamIndex") == -1) {
+				System.out.println("NO CURSOR FOUND!!"); 
+			} else {
+				currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
+			}
 		}
 		
-		cursor.close(); 
+		//cursor.close(); 
 	}
 
 	public String setCurrentSongIndex(int index) {
@@ -272,7 +276,7 @@ public class Jam {
 				});
 			}
 		} else {
-			Client masterClient = new Client(g, g.jam.getIPUsername(g.jam.getMasterIpAddr()), g.jam.getMasterIpAddr(), port); 
+			Client masterClient = new Client(g, getIPUsername(getMasterIpAddr()), getMasterIpAddr(), port); 
 			masterClient.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -298,7 +302,7 @@ public class Jam {
 			masterClient.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-					g.jam.setCurrentSong(songJamID);;
+					//g.jam.setCurrentSong(songJamID);
 					Toast.makeText(
 							g, 
 							"Now playing: " + title, Toast.LENGTH_SHORT)

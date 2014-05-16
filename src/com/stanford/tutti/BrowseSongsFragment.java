@@ -147,12 +147,11 @@ public class BrowseSongsFragment extends Fragment {
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}
-				}
-				else {
-
+					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), g.getUsername(), timestamp); 
+				} else {
+					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), g.getUsername(), g.getTimestamp()); 
 				}
 				
-				g.jam.broadcastAddSong(Integer.toString(song.hashCode()), g.getUsername(), g.getTimestamp()); 
 
 				g.sendUIMessage(0); 
 			}

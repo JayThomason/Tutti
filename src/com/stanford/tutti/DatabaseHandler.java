@@ -362,12 +362,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
 		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(query, null);
-
-		cursor.moveToFirst(); 
-
-		String timestamp = cursor.getString(COL_TIMESTAMP); 
 		
+		Cursor cursor = db.rawQuery(query, null);
+		cursor.moveToFirst(); 
+		String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP)); 
+				
 		cursor.close(); 
 
 		return timestamp; 
@@ -552,6 +551,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		song.setAlbum(cursor.getString(COL_ALBUM));
 		song.setIpAddr(cursor.getString(COL_IP));
 		song.setAlbumArt(cursor.getString(COL_ART));
+		
+		if (cursor.getColumnIndex(KEY_TIMESTAMP) != -1) {
+			song.setJamID(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP)));
+		}
+		
 		return song; 
 	}
 
