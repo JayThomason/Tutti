@@ -93,6 +93,10 @@ public class BrowseArtistsFragment extends Fragment {
 				TextView textView = (TextView) view.findViewById(R.id.browserText); 
 				String artist = textView.getText().toString();
 								
+				if (artist.equals("Unknown Artist")) {
+					artist = "</unknown>"; 
+				}
+				
 				g.currentArtistView = artist; 
 				
 				g.sendUIMessage(3); 
