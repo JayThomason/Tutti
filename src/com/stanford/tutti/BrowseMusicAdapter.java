@@ -182,7 +182,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	artView.setOnClickListener(new View.OnClickListener() {
     		@Override
     		public void onClick(View view) {
-    			g.jam.removeSong(songIndex);
+    			String songJamID = g.jam.getSongIdByIndex(songIndex); 
+    			g.jam.removeSong(songJamID);
     			/*
     			if (g.jam.isShuffled()) {
     				g.jam.unShuffle(); 
@@ -191,18 +192,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     			}
     			*/
     			g.sendUIMessage(0); 
-    			if (g.jam.checkMaster()) {
-    				for (Client client : g.jam.getClientSet()) {
-    					client.requestRemoveSong(Integer.toString(songIndex), new AsyncHttpResponseHandler() {
-    						
-    					}); 
-    				}
-    			} else {
-    				Client masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port); 
-    				masterClient.requestRemoveSong(Integer.toString(songIndex), new AsyncHttpResponseHandler() {
-    					
-    				});
-    			}
+    			g.jam.broadcastRemoveSong(songJamID);
     		}
     	});
     }

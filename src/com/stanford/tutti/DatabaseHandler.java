@@ -347,8 +347,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return song; 
 	}
 	
-	public Cursor getSongInJamByTimestamp(String timestamp) {
-		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_TIMESTAMP + " = '" + timestamp + "'";
+	public Cursor getSongInJamByID(String jamSongID) {
+		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_TIMESTAMP + " = '" + jamSongID + "'";
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
@@ -358,7 +358,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 	
-	public String getSongJamIDByIndex(int index) {
+	public String getJamSongIDByIndex(int index) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -441,13 +441,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 	}
 
-	public void removeSongFromJam(int index) {
+	public int removeSongFromJam(String jamSongID) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(TABLE_JAM, KEY_JAM_INDEX + "=" + index, null);
+		
+		Cursor cursor = getSongInJamByID(jamSongID); 
+		int removedIndex = cursor.getInt(cursor.getColumnIndex(KEY_JAM_INDEX)); 
+		cursor.close(); 
+		
+		db.delete(TABLE_JAM, KEY_TIMESTAMP + " = '" + jamSongID + "'", null);
 
 		String restructureQuery = "UPDATE " + TABLE_JAM + " SET " + KEY_JAM_INDEX + " = " + KEY_JAM_INDEX + "-1 WHERE " + KEY_JAM_INDEX + " > ?";
-		String[] updateArgs = new String[] {"" + index}; 
+		String[] updateArgs = new String[] {"" + removedIndex}; 
 		db.execSQL(restructureQuery, updateArgs);
+		
+		return removedIndex; 
 	}
 
 	public void clearJam() {

@@ -208,7 +208,7 @@ public class Server extends NanoHTTPD {
     		return jamMoveSongResponse(otherIpAddr, parameters.get("jamSongId"), parameters.get("from"), parameters.get("to")); 
     	}
     	else if (path.startsWith(JAM_REMOVE_SONG)) {
-    		return jamRemoveSongResponse(otherIpAddr, parameters.get("index")); 
+    		return jamRemoveSongResponse(otherIpAddr, parameters.get("jamSongId")); 
     	}
     	else if (path.startsWith(JAM_START)) {
     		return jamStartResponse(); 
@@ -309,7 +309,7 @@ public class Server extends NanoHTTPD {
      * Sets the requested song to be the currently playing song. 
      */
 	private Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
-		Cursor cursor = g.db.getSongInJamByTimestamp(jamSongId); 
+		Cursor cursor = g.db.getSongInJamByID(jamSongId); 
 		if (!cursor.moveToFirst()) {
 			cursor.close(); 
 			return fileNotFoundResponse();
@@ -358,22 +358,13 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-	private Response jamRemoveSongResponse(String otherIpAddr, String index) {
-		g.jam.removeSong(Integer.parseInt(index)); 
+	private Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
+		g.jam.removeSong(jamSongID); 
 		
 		g.sendUIMessage(7); 
 		
 		if (g.jam.checkMaster()) {
-			for (Client client : g.jam.getClientSet()) {
-				if (client.getIpAddress().equals(g.getIpAddr()) || client.getIpAddress().equals(otherIpAddr)) 
-					continue; 
-				client.requestRemoveSong(index, new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-						System.out.println("request to move song on client returned: " + statusCode);
-					}
-				});
-			}
+			g.jam.broadcastJamUpdate(); 
 		}
 		return new NanoHTTPD.Response("Removed song from Jam"); 
 	}

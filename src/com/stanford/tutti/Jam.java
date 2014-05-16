@@ -165,7 +165,7 @@ public class Jam {
 	}
 
 	public void setCurrentSong(String timestamp) {
-		Cursor cursor = g.db.getSongInJamByTimestamp(timestamp); 
+		Cursor cursor = g.db.getSongInJamByID(timestamp); 
 		
 		if (isShuffled()) {
 			currIndex = cursor.getInt(cursor.getColumnIndex("shuffleIndex")); 
@@ -193,7 +193,7 @@ public class Jam {
 	}
 	
 	public String getSongIdByIndex(int index) {
-		return g.db.getSongJamIDByIndex(index); 
+		return g.db.getJamSongIDByIndex(index); 
 	}
 
 	public void changeSongIndexInJam(String jamSongId, int from, int to) {
@@ -240,8 +240,8 @@ public class Jam {
 	}
 
 
-	public void removeSong(int index) {
-		g.db.removeSongFromJam(index); 
+	public void removeSong(String jamSongID) {
+		int index = g.db.removeSongFromJam(jamSongID); 
 
 		if (currIndex > index) {
 			currIndex--; 
@@ -290,10 +290,10 @@ public class Jam {
 		}
 	}
 	
-	public void broadcastSetSong(final String songJamID, final String title) {
+	public void broadcastSetSong(final String jamSongID, final String title) {
 		if (master) {
 			for (Client client : clientSet) {
-				client.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
+				client.requestSetSong(jamSongID, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
@@ -303,7 +303,7 @@ public class Jam {
 		} 
 		else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), port); 
-			masterClient.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
+			masterClient.requestSetSong(jamSongID, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 					Toast.makeText(
@@ -315,16 +315,31 @@ public class Jam {
 		}
 	}
 	
-	public void broadcastMoveSong(final String songJamID, int from, int to) {
+	public void broadcastMoveSong(final String jamSongID, int from, int to) {
 		if (master) {
 			for (Client client : clientSet) {
-				client.requestMoveSong(songJamID, from, to, new AsyncHttpResponseHandler() {
+				client.requestMoveSong(jamSongID, from, to, new AsyncHttpResponseHandler() {
 
 				});
 			}
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
-			masterClient.requestMoveSong(songJamID, from, to, new AsyncHttpResponseHandler() {
+			masterClient.requestMoveSong(jamSongID, from, to, new AsyncHttpResponseHandler() {
+				
+			});
+		}
+	}
+	
+	public void broadcastRemoveSong(final String jamSongID) {
+		if (master) {
+			for (Client client : clientSet) {
+				client.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {
+
+				});
+			}
+		} else {
+			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
+			masterClient.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {
 				
 			});
 		}
