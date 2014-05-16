@@ -250,10 +250,14 @@ public class Jam {
 	}
 	
 	public void broadcastJamUpdate() {
-		for (Client client : clientSet) {
-			client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
-				
-			});
+		if (master) {
+			for (Client client : clientSet) {
+				client.updateJam(g.jam.toJSON(), new AsyncHttpResponseHandler() {
+					
+				});
+			}
+		} else {
+			System.out.println("Error: Master maintains and broadcasts canonical Jam."); 
 		}
 	}
 	
@@ -263,7 +267,7 @@ public class Jam {
 				client.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-						System.out.println("request to set song on client returned: " + statusCode);
+
 					}
 				});
 			}
@@ -281,7 +285,21 @@ public class Jam {
 				}
 			}); 
 		}
-		
+	}
+	
+	public void broadcastMoveSong(final String songJamID, int from, int to) {
+		if (master) {
+			for (Client client : clientSet) {
+				client.requestMoveSong(songJamID, from, to, new AsyncHttpResponseHandler() {
+
+				});
+			}
+		} else {
+			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
+			masterClient.requestMoveSong(songJamID, from, to, new AsyncHttpResponseHandler() {
+				
+			});
+		}
 	}
 
 
