@@ -24,6 +24,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Message;
 import android.os.PowerManager;
+import android.widget.Toast;
 
 public class Jam {
 	private int currIndex; 
@@ -40,6 +41,8 @@ public class Jam {
 	private Thread serverKeepAliveThread;
 	private Thread masterKeepAliveThread;
 	private AtomicBoolean serverKeepAlive;
+	
+	private final int port = 1234; 
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -252,6 +255,33 @@ public class Jam {
 				
 			});
 		}
+	}
+	
+	public void broadcastSetSong(final String songJamID, final String title) {
+		if (master) {
+			for (Client client : clientSet) {
+				client.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+						System.out.println("request to set song on client returned: " + statusCode);
+					}
+				});
+			}
+		} 
+		else {
+			Client masterClient = new Client(g, "", getMasterIpAddr(), port); 
+			masterClient.requestSetSong(songJamID, new AsyncHttpResponseHandler() {
+				@Override
+				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+					g.jam.setCurrentSong(songJamID);;
+					Toast.makeText(
+							g, 
+							"Now playing: " + title, Toast.LENGTH_SHORT)
+							.show();
+				}
+			}); 
+		}
+		
 	}
 
 
