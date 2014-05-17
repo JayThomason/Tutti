@@ -1,6 +1,7 @@
 package com.stanford.tutti; 
 
 import org.apache.http.Header;
+import org.json.JSONObject;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -53,13 +54,20 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		{
 			if (from != to)
 			{
+				g.jamLock.lock(); 
+				
 				String timestamp = g.jam.getSongIdByIndex(from); 
 				g.jam.changeSongIndexInJam(timestamp, from, to); 
 				refreshJamList(); 
 				
 				if (g.jam.checkMaster()) {
-					g.jam.broadcastJamUpdate(); 
+					JSONObject jsonJam = g.jam.toJSON(); 
+					
+					g.jamLock.unlock(); 
+					
+					g.jam.broadcastJamUpdate(jsonJam); 
 				} else {
+					g.jamLock.unlock(); 
 					g.jam.requestMoveSong(timestamp, from, to);
 				}
 			}
@@ -323,16 +331,25 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				final int index = position; 
 
 				if (g.jam.checkMaster()) {
+					g.jamLock.lock(); 
+					
 					String songJamID = g.jam.setCurrentSongIndex(index);
+					
+					JSONObject jsonJam = g.jam.toJSON(); 
+					
+					g.jamLock.unlock(); 
+					
 					g.jam.playCurrentSong(); 
 					refreshJamList(); 
 					Toast.makeText(
 							g, 
 							"Now playing: " + title, Toast.LENGTH_SHORT)
 							.show();
-					g.jam.broadcastJamUpdate(); 
+					g.jam.broadcastJamUpdate(jsonJam); 
 				} else {
+					g.jamLock.lock(); 
 					final String songJamID = g.jam.getSongIdByIndex(index); 
+					g.jamLock.unlock(); 
 					g.jam.requestSetSong(songJamID, title);
 				}
 			}

@@ -265,7 +265,13 @@ public class Server extends NanoHTTPD {
 	    	try {
 				session.parseBody(files);
 	  			JSONObject jsonJam = new JSONObject(files.get("postData")); 
-	  			g.jam.loadJamFromJSON(jsonJam);; 
+	  			
+	  			
+	  			g.jamLock.lock(); 
+	  			g.jam.loadJamFromJSON(jsonJam);
+	  			g.jamLock.unlock(); 
+	  			
+	  			
 			} catch (Exception e) {
 				e.printStackTrace();
 				return badRequestResponse();
@@ -286,6 +292,8 @@ public class Server extends NanoHTTPD {
 			
 			song.setAddedBy(addedBy);
 			
+			g.jamLock.lock(); 
+			
 			g.jam.addSongWithTimestamp(song, jamSongId);
 			
 			if (!g.jam.hasCurrentSong()) {
@@ -294,7 +302,12 @@ public class Server extends NanoHTTPD {
 			}
 			
 			g.sendUIMessage(7); 
-			g.jam.broadcastJamUpdate(); 
+			
+			JSONObject jsonJam = g.jam.toJSON(); 
+			
+			g.jamLock.unlock(); 
+			
+			g.jam.broadcastJamUpdate(jsonJam); 
 			
 			return new NanoHTTPD.Response("Added song to jam");
 		}
@@ -309,11 +322,18 @@ public class Server extends NanoHTTPD {
 	private synchronized Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
 		if (g.jam.checkMaster()) {
 			
+			g.jamLock.lock(); 
+			
 			g.jam.setCurrentSong(jamSongId);
 			g.jam.playCurrentSong(); 
 			
 			g.sendUIMessage(7); 
-			g.jam.broadcastJamUpdate(); 
+			
+			JSONObject jsonJam = g.jam.toJSON(); 
+			
+			g.jamLock.unlock(); 
+			
+			g.jam.broadcastJamUpdate(jsonJam); 
 				
 			return new NanoHTTPD.Response("Set new currently playing song");
 		} 
@@ -326,10 +346,17 @@ public class Server extends NanoHTTPD {
 	private synchronized Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String from, String to) {
 		if (g.jam.checkMaster()) {
 		
+			g.jamLock.lock(); 
+			
 			g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(from), Integer.parseInt(to));
 			
 			g.sendUIMessage(7); 
-			g.jam.broadcastJamUpdate(); 
+			
+			JSONObject jsonJam = g.jam.toJSON(); 
+			
+			g.jamLock.unlock(); 
+			
+			g.jam.broadcastJamUpdate(jsonJam); 
 			
 			return new NanoHTTPD.Response("Moved song index in Jam"); 
 		}
@@ -342,10 +369,17 @@ public class Server extends NanoHTTPD {
 	private synchronized Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
 		if (g.jam.checkMaster()) {
 			
+			g.jamLock.lock(); 
+			
 			g.jam.removeSong(jamSongID); 
 			
-			g.sendUIMessage(7); 
-			g.jam.broadcastJamUpdate();
+			g.sendUIMessage(7);
+			
+			JSONObject jsonJam = g.jam.toJSON(); 
+			
+			g.jamLock.unlock(); 
+			
+			g.jam.broadcastJamUpdate(jsonJam);
 			
 			return new NanoHTTPD.Response("Removed song from Jam"); 
 		} 

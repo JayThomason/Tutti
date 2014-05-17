@@ -5,6 +5,7 @@ import java.util.Set;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.json.JSONObject;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -134,14 +135,20 @@ public class BrowseSongsFragment extends Fragment {
 				// OR GETSONGBY UNIQUE HASH
 				// AND NOT ASSUMING THAT THE SONG TITLE DOES NOT CONTAIN A COLON
 				final Song song = g.db.getSongByTitle(title); 
-               
 				song.setAddedBy(g.getUsername());
+				
+				g.jamLock.lock(); 
+				
 				String timestamp = 
 			    g.jam.addSong(song); 
 				
 				g.sendUIMessage(0);
 				
 				if (g.jam.checkMaster()) {
+					JSONObject jsonJam = g.jam.toJSON(); 
+					
+					g.jamLock.unlock(); 
+					
 					Toast.makeText(g,
 							song.getArtist()
 							+ ": " + song.getTitle()
@@ -150,8 +157,9 @@ public class BrowseSongsFragment extends Fragment {
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}
-					g.jam.broadcastJamUpdate(); 
+					g.jam.broadcastJamUpdate(jsonJam); 
 				} else {
+					g.jamLock.unlock(); 
 					g.jam.requestAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), timestamp); 
 				}
 			}

@@ -1,5 +1,7 @@
 package com.stanford.tutti;
 
+import org.json.JSONObject;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.content.Context;
@@ -182,6 +184,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	artView.setOnClickListener(new View.OnClickListener() {
     		@Override
     		public void onClick(View view) {
+    			g.jamLock.lock(); 
+    			
     			String songJamID = g.jam.getSongIdByIndex(songIndex); 
     			g.jam.removeSong(songJamID);
     			/*
@@ -193,8 +197,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     			*/
     			g.sendUIMessage(0); 
     			if (g.jam.checkMaster()) {
-    				g.jam.broadcastJamUpdate(); 
+    				JSONObject jsonJam = g.jam.toJSON(); 
+    				g.jamLock.unlock(); 
+    				g.jam.broadcastJamUpdate(jsonJam); 
     			} else {
+    				g.jamLock.unlock(); 
     				g.jam.requestRemoveSong(songJamID); 
     			}
     		}

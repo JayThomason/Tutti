@@ -2,6 +2,8 @@ package com.stanford.tutti;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.app.Application;
 import android.content.Context;
@@ -37,6 +39,8 @@ public class Globals extends Application {
 	public OnPreparedListener playerListener; 
 	
 	public MusicLibraryLoaderThread localLoaderThread; 
+	
+	public Lock jamLock = new ReentrantLock(); 
 
 	DatabaseHandler db; 
 

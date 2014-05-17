@@ -257,9 +257,8 @@ public class Jam {
 		currSize--; 
 	}
 	
-	public void broadcastJamUpdate() {
+	public void broadcastJamUpdate(JSONObject jsonJam) {
 		if (master) {
-			JSONObject jsonJam = g.jam.toJSON(); 
 			for (Client client : clientSet) {
 				client.updateJam(jsonJam, new AsyncHttpResponseHandler() {
 					
