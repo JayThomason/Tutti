@@ -53,7 +53,7 @@ public class Jam {
 		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				if (iterateCurrentSong()) 
+				if (hasCurrentSong() && iterateCurrentSong()) 
 					playCurrentSong();
 			}
 		});
@@ -109,6 +109,8 @@ public class Jam {
 	public void start() {
 		if (!master)
 			return; 
+		
+		System.out.println("START"); 
 
 		mediaPlayer.start(); 
 	}
@@ -117,6 +119,8 @@ public class Jam {
 		if (!master)
 			return; 
 
+		System.out.println("START"); 
+		
 		mediaPlayer.pause(); 
 	}
 
@@ -124,6 +128,8 @@ public class Jam {
 		if (!master)
 			return; 
 
+		System.out.println("START"); 
+		
 		mediaPlayer.seekTo(time); 
 	}
 	
@@ -335,6 +341,8 @@ public class Jam {
 		//if (!master)
 		//	return false; 
 
+		System.out.println("PLAYING CURRENT SONG"); 
+		
 		if (hasCurrentSong()) {
 			mediaPlayer.reset();
 		} else {
