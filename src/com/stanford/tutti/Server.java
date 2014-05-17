@@ -257,52 +257,50 @@ public class Server extends NanoHTTPD {
     }
     
     private Response updateJamResponse(IHTTPSession session) {
-    	Map<String, String> files = new HashMap<String, String>();
-    	try {
-			session.parseBody(files);
-  			JSONObject jsonJam = new JSONObject(files.get("postData")); 
-  			g.jam.loadJamFromJSON(jsonJam);; 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return badRequestResponse();
-		} 
-    	return new NanoHTTPD.Response("Updated jam");
+    	if (g.jam.checkMaster()) {
+    		return new NanoHTTPD.Response("Error: Master phone maintains canonical Jam"); 
+    	}
+    	else {
+	    	Map<String, String> files = new HashMap<String, String>();
+	    	try {
+				session.parseBody(files);
+	  			JSONObject jsonJam = new JSONObject(files.get("postData")); 
+	  			g.jam.loadJamFromJSON(jsonJam);; 
+			} catch (Exception e) {
+				e.printStackTrace();
+				return badRequestResponse();
+			} 
+	    	return new NanoHTTPD.Response("Updated jam");
+    	}
     }
 
     /*
      * Adds the requested song to the jam.
      */
 	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String jamSongId) {
-		Song song = g.db.getSongByHash(songId);
-		if (song == null) 
-			return fileNotFoundResponse();
-		
-		song.setAddedBy(addedBy);
-		
-		g.jam.addSongWithTimestamp(song, jamSongId);
-		
-		if (!g.jam.hasCurrentSong()) {
-			g.jam.setCurrentSong(jamSongId);
-			if (g.jam.checkMaster()) {
+		if (g.jam.checkMaster()) {
+
+			Song song = g.db.getSongByHash(songId);
+			if (song == null) 
+				return fileNotFoundResponse();
+			
+			song.setAddedBy(addedBy);
+			
+			g.jam.addSongWithTimestamp(song, jamSongId);
+			
+			if (!g.jam.hasCurrentSong()) {
+				g.jam.setCurrentSong(jamSongId);
 				g.jam.playCurrentSong(); 
 			}
-		}
-		
-		if (g.jam.checkMaster()) {
+			
+			g.sendUIMessage(7); 
 			g.jam.broadcastJamUpdate(); 
-				/*
-				client.requestAddSong(songId, addedBy, jamSongId, new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-						System.out.println("request to add song to client returned: " + statusCode);
-					}
-				});
-				*/
+			
+			return new NanoHTTPD.Response("Added song to jam");
 		}
-		
-		g.sendUIMessage(7); 
-		
-		return new NanoHTTPD.Response("Added song to jam");
+		else {
+			return new NanoHTTPD.Response("Error: Only Master phone should receive add song requests"); 
+		}
 	}
 	
     /*
@@ -319,49 +317,48 @@ public class Server extends NanoHTTPD {
 			}
 			
 			g.jam.setCurrentSong(jamSongId);
+			g.jam.playCurrentSong(); 
 			
 			g.sendUIMessage(7); 
-			
-			g.jam.playCurrentSong(); 
 			g.jam.broadcastJamUpdate(); 
 				
 			return new NanoHTTPD.Response("Set new currently playing song");
-		} else {
+		} 
+		else {
 			return new NanoHTTPD.Response("Error: Only Master phone should receive set song requests"); 
 		}
 	}
 	
 	
 	private Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String from, String to) {
-		g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(from), Integer.parseInt(to));
-		
-		g.sendUIMessage(7); 
-		
 		if (g.jam.checkMaster()) {
-			g.jam.broadcastJamUpdate(); 
-				/*
-				client.requestMoveSong(jamSongId, Integer.parseInt(from), Integer.parseInt(to), new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-						System.out.println("request to move song on client returned: " + statusCode);
-					}
-				});
-				*/
-		}
 		
-		return new NanoHTTPD.Response("Moved song index in Jam"); 
+			g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(from), Integer.parseInt(to));
+			
+			g.sendUIMessage(7); 
+			g.jam.broadcastJamUpdate(); 
+			
+			return new NanoHTTPD.Response("Moved song index in Jam"); 
+		}
+		else {
+			return new NanoHTTPD.Response("Error: Only Master phone should receive move song requests"); 
+		}
 	}
 	
 	
 	private Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
-		g.jam.removeSong(jamSongID); 
-		
-		g.sendUIMessage(7); 
-		
 		if (g.jam.checkMaster()) {
-			g.jam.broadcastJamUpdate(); 
+			
+			g.jam.removeSong(jamSongID); 
+			
+			g.sendUIMessage(7); 
+			g.jam.broadcastJamUpdate();
+			
+			return new NanoHTTPD.Response("Removed song from Jam"); 
+		} 
+		else {
+			return new NanoHTTPD.Response("Error: Only Master phone should receive remove song requests"); 
 		}
-		return new NanoHTTPD.Response("Removed song from Jam"); 
 	}
 	
 	
