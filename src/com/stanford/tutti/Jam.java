@@ -170,11 +170,7 @@ public class Jam {
 		if (isShuffled()) {
 			currIndex = cursor.getInt(cursor.getColumnIndex("shuffleIndex")); 
 		} else {
-			if (cursor.getColumnIndex("jamIndex") == -1) {
-				System.out.println("NO CURSOR FOUND!!"); 
-			} else {
-				currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
-			}
+			currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
 		}
 		
 		//cursor.close(); 

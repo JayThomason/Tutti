@@ -256,7 +256,7 @@ public class Server extends NanoHTTPD {
     	return new NanoHTTPD.Response("Updated album art");
     }
     
-    private Response updateJamResponse(IHTTPSession session) {
+    private synchronized Response updateJamResponse(IHTTPSession session) {
     	if (g.jam.checkMaster()) {
     		return new NanoHTTPD.Response("Error: Master phone maintains canonical Jam"); 
     	}
@@ -277,7 +277,7 @@ public class Server extends NanoHTTPD {
     /*
      * Adds the requested song to the jam.
      */
-	private Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String jamSongId) {
+	private synchronized Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String jamSongId) {
 		if (g.jam.checkMaster()) {
 
 			Song song = g.db.getSongByHash(songId);
@@ -306,7 +306,7 @@ public class Server extends NanoHTTPD {
     /*
      * Sets the requested song to be the currently playing song. 
      */
-	private Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
+	private synchronized Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
 		if (g.jam.checkMaster()) {
 			Cursor cursor = g.db.getSongInJamByID(jamSongId); 
 			if (!cursor.moveToFirst()) {
@@ -330,7 +330,7 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-	private Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String from, String to) {
+	private synchronized Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String from, String to) {
 		if (g.jam.checkMaster()) {
 		
 			g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(from), Integer.parseInt(to));
@@ -346,7 +346,7 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-	private Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
+	private synchronized Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
 		if (g.jam.checkMaster()) {
 			
 			g.jam.removeSong(jamSongID); 
