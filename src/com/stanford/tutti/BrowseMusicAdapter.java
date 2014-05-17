@@ -184,25 +184,30 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     	artView.setOnClickListener(new View.OnClickListener() {
     		@Override
     		public void onClick(View view) {
+    			String songJamId = ""; 
+    			JSONObject jsonJam = new JSONObject(); 
     			g.jamLock.lock(); 
-    			
-    			String songJamID = g.jam.getSongIdByIndex(songIndex); 
-    			g.jam.removeSong(songJamID);
-    			/*
-    			if (g.jam.isShuffled()) {
-    				g.jam.unShuffle(); 
-    			} else {
-        			g.jam.shuffle(); 
-    			}
-    			*/
-    			g.sendUIMessage(0); 
-    			if (g.jam.checkMaster()) {
-    				JSONObject jsonJam = g.jam.toJSON(); 
+    			try {
+    				songJamId = g.jam.getSongIdByIndex(songIndex); 
+        			g.jam.removeSong(songJamId);
+        			/*
+        			if (g.jam.isShuffled()) {
+        				g.jam.unShuffle(); 
+        			} else {
+            			g.jam.shuffle(); 
+        			}
+        			*/
+        			g.sendUIMessage(0); 
+    				jsonJam = g.jam.toJSON(); 
+    			} finally {
     				g.jamLock.unlock(); 
+    			}
+    			
+    			
+    			if (g.jam.checkMaster()) {
     				g.jam.broadcastJamUpdate(jsonJam); 
     			} else {
-    				g.jamLock.unlock(); 
-    				g.jam.requestRemoveSong(songJamID); 
+    				g.jam.requestRemoveSong(songJamId); 
     			}
     		}
     	});

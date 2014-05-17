@@ -137,30 +137,36 @@ public class BrowseSongsFragment extends Fragment {
 				final Song song = g.db.getSongByTitle(title); 
 				song.setAddedBy(g.getUsername());
 				
+				String songJamId = ""; 
+				JSONObject jsonJam = new JSONObject(); 
 				g.jamLock.lock(); 
-				
-				String timestamp = 
-			    g.jam.addSong(song); 
-				
-				g.sendUIMessage(0);
+				try {
+					songJamId = 
+				    g.jam.addSong(song); 
+					
+					g.sendUIMessage(0);
+					
+					if (g.jam.checkMaster()) {
+						jsonJam = g.jam.toJSON(); 
+												
+						Toast.makeText(g,
+								song.getArtist()
+								+ ": " + song.getTitle()
+								+ " added to Jam", Toast.LENGTH_SHORT).show(); 
+						
+						if (!g.jam.hasCurrentSong()) {
+							g.jam.setCurrentSong(songJamId);
+							g.jam.playCurrentSong();
+						}
+					} 
+				} finally {
+					g.jamLock.unlock(); 
+				}
 				
 				if (g.jam.checkMaster()) {
-					JSONObject jsonJam = g.jam.toJSON(); 
-					
-					g.jamLock.unlock(); 
-					
-					Toast.makeText(g,
-							song.getArtist()
-							+ ": " + song.getTitle()
-							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
-					if (!g.jam.hasCurrentSong()) {
-						g.jam.setCurrentSong(timestamp);
-						g.jam.playCurrentSong();
-					}
 					g.jam.broadcastJamUpdate(jsonJam); 
 				} else {
-					g.jamLock.unlock(); 
-					g.jam.requestAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), timestamp); 
+					g.jam.requestAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), songJamId); 
 				}
 			}
 		});
