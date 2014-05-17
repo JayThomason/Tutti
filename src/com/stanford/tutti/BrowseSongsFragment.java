@@ -141,12 +141,11 @@ public class BrowseSongsFragment extends Fragment {
 				
 				g.sendUIMessage(0);
 				
-				Toast.makeText(g,
-						song.getArtist()
-						+ ": " + song.getTitle()
-						+ " added to Jam", Toast.LENGTH_SHORT).show(); 
-				
 				if (g.jam.checkMaster()) {
+					Toast.makeText(g,
+							song.getArtist()
+							+ ": " + song.getTitle()
+							+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 					if (!g.jam.hasCurrentSong()) {
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
