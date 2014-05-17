@@ -126,6 +126,14 @@ public class Jam {
 
 		mediaPlayer.seekTo(time); 
 	}
+	
+	public Cursor getSongs() {
+		return g.db.getSongsInJam(); 
+	}
+	
+	public Cursor getShuffledSongs() {
+		return g.db.getShuffledSongsInJam(); 
+	}
 
 	public String addSong(Song song) {
 		String timestamp = g.getTimestamp(); 

@@ -275,7 +275,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		listView.setDragEnabled(true);
 
 
-		Cursor cursor = g.db.getSongsInJam(); 
+		Cursor cursor = g.jam.getSongs(); 
 
 		String[] columns = new String[] { "art", "artist", "title", "addedBy" };
 		int[] to = new int[] { R.id.browserArt, R.id.browserText, R.id.ownerText };
@@ -289,11 +289,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 
 	public void refreshJamList() {
 		if (g.jam.isShuffled()) {
-			Cursor newCursor = g.db.getShuffledSongsInJam(); 
+			Cursor newCursor = g.jam.getShuffledSongs(); 
 			Cursor oldCursor = adapter.swapCursor(newCursor);
 			oldCursor.close(); 
 		} else {
-			Cursor newCursor = g.db.getSongsInJam(); 
+			Cursor newCursor = g.jam.getSongs(); 
 			Cursor oldCursor = adapter.swapCursor(newCursor);
 			oldCursor.close(); 
 		}

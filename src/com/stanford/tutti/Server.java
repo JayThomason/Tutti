@@ -308,13 +308,6 @@ public class Server extends NanoHTTPD {
      */
 	private synchronized Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
 		if (g.jam.checkMaster()) {
-			Cursor cursor = g.db.getSongInJamByID(jamSongId); 
-			if (!cursor.moveToFirst()) {
-				cursor.close(); 
-				return fileNotFoundResponse();
-			} else {
-				cursor.close(); 
-			}
 			
 			g.jam.setCurrentSong(jamSongId);
 			g.jam.playCurrentSong(); 
