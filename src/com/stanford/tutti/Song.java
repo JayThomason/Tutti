@@ -1,5 +1,7 @@
 package com.stanford.tutti;
 
+import java.util.Locale;
+
 import org.json.*; 
 
 /*
@@ -157,28 +159,26 @@ public class Song {
 	public int hashCode() {
 		StringBuilder keyBuilder = new StringBuilder("");
 		String artist = getArtist();
-		if (artist != null)
+		if (artist != null) {
+			artist = artist.toLowerCase(Locale.ENGLISH); 
+			artist = artist.replaceAll("[.'\"()]", ""); 
 			keyBuilder.append(artist);
+		}
 		String album = getAlbum();
-		if (album != null) 
+		if (album != null) {
+			album = album.toLowerCase(Locale.ENGLISH); 
+			album = album.replaceAll("[.'\"()]", ""); 
 			keyBuilder.append(album);
-		keyBuilder.append(getTitle());
+		}
+		String title = getTitle(); 
+		if (title != null) {
+			title = title.toLowerCase(Locale.ENGLISH); 
+			title = title.replaceAll("[.'\"()]", ""); 
+			keyBuilder.append(title);
+		}
 		return keyBuilder.toString().hashCode();
 	}
-	
-	public int createJamHashCode(int suffix) {
-		StringBuilder keyBuilder = new StringBuilder("");
-		String artist = getArtist();
-		if (artist != null)
-			keyBuilder.append(artist);
-		String album = getAlbum();
-		if (album != null) 
-			keyBuilder.append(album);
-		keyBuilder.append(getTitle());
-		keyBuilder.append("" + suffix); 
-		return keyBuilder.toString().hashCode();
-	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		Song s = (Song) o;
