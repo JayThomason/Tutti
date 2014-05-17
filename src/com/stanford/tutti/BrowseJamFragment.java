@@ -54,11 +54,14 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			if (from != to)
 			{
 				String timestamp = g.jam.getSongIdByIndex(from); 
-				
 				g.jam.changeSongIndexInJam(timestamp, from, to); 
-			
 				refreshJamList(); 
-				g.jam.broadcastMoveSong(timestamp, from, to);
+				
+				if (g.jam.checkMaster()) {
+					g.jam.broadcastJamUpdate(); 
+				} else {
+					g.jam.requestMoveSong(timestamp, from, to);
+				}
 			}
 		}
 	};
@@ -322,17 +325,16 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				if (g.jam.checkMaster()) {
 					String songJamID = g.jam.setCurrentSongIndex(index);
 					g.jam.playCurrentSong(); 
+					refreshJamList(); 
 					Toast.makeText(
 							g, 
 							"Now playing: " + title, Toast.LENGTH_SHORT)
 							.show();
-					g.jam.broadcastSetSong(songJamID, title); 
+					g.jam.broadcastJamUpdate(); 
 				} else {
 					final String songJamID = g.jam.getSongIdByIndex(index); 
-					System.out.println("12xy SETTING SONG " + index + ", ID: " + songJamID); 
-					g.jam.broadcastSetSong(songJamID, title);
+					g.jam.requestSetSong(songJamID, title);
 				}
-				refreshJamList(); 
 			}
 		});
 	}

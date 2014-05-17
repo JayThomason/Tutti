@@ -262,20 +262,13 @@ public class Jam {
 				});
 			}
 		} else {
-			System.out.println("Error: Master maintains and broadcasts canonical Jam."); 
+			System.out.println("Error: Master maintains and broadcasts canonical Jam"); 
 		}
 	}
 	
-	public void broadcastAddSong(String songCode, final String title, String username, String timestamp) {
+	public void requestAddSong(String songCode, final String title, String username, String timestamp) {
 		if (master) {
-			for (Client client : clientSet) {
-				client.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
-					}
-				});
-			}
+			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, getIPUsername(getMasterIpAddr()), getMasterIpAddr(), port); 
 			masterClient.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
@@ -290,18 +283,10 @@ public class Jam {
 		}
 	}
 	
-	public void broadcastSetSong(final String jamSongID, final String title) {
+	public void requestSetSong(final String jamSongID, final String title) {
 		if (master) {
-			for (Client client : clientSet) {
-				client.requestSetSong(jamSongID, new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
-					}
-				});
-			}
-		} 
-		else {
+			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
+		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), port); 
 			masterClient.requestSetSong(jamSongID, new AsyncHttpResponseHandler() {
 				@Override
@@ -315,13 +300,9 @@ public class Jam {
 		}
 	}
 	
-	public void broadcastMoveSong(final String jamSongID, int from, int to) {
+	public void requestMoveSong(final String jamSongID, int from, int to) {
 		if (master) {
-			for (Client client : clientSet) {
-				client.requestMoveSong(jamSongID, from, to, new AsyncHttpResponseHandler() {
-
-				});
-			}
+			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
 			masterClient.requestMoveSong(jamSongID, from, to, new AsyncHttpResponseHandler() {
@@ -330,13 +311,9 @@ public class Jam {
 		}
 	}
 	
-	public void broadcastRemoveSong(final String jamSongID) {
+	public void requestRemoveSong(final String jamSongID) {
 		if (master) {
-			for (Client client : clientSet) {
-				client.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {
-
-				});
-			}
+			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
 			masterClient.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {

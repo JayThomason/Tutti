@@ -192,7 +192,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     			}
     			*/
     			g.sendUIMessage(0); 
-    			g.jam.broadcastRemoveSong(songJamID);
+    			if (g.jam.checkMaster()) {
+    				g.jam.broadcastJamUpdate(); 
+    			} else {
+    				g.jam.requestRemoveSong(songJamID); 
+    			}
     		}
     	});
     }

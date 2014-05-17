@@ -135,26 +135,26 @@ public class BrowseSongsFragment extends Fragment {
 				// AND NOT ASSUMING THAT THE SONG TITLE DOES NOT CONTAIN A COLON
 				final Song song = g.db.getSongByTitle(title); 
                
+				song.setAddedBy(g.getUsername());
+				String timestamp = 
+			    g.jam.addSong(song); 
+				
+				g.sendUIMessage(0);
+				
 				Toast.makeText(g,
 						song.getArtist()
 						+ ": " + song.getTitle()
 						+ " added to Jam", Toast.LENGTH_SHORT).show(); 
 				
 				if (g.jam.checkMaster()) {
-					song.setAddedBy(g.getUsername());
-					String timestamp = 
-				    g.jam.addSong(song); 
 					if (!g.jam.hasCurrentSong()) {
 						g.jam.setCurrentSong(timestamp);
 						g.jam.playCurrentSong();
 					}
-					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), timestamp); 
+					g.jam.broadcastJamUpdate(); 
 				} else {
-					g.jam.broadcastAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), g.getTimestamp()); 
+					g.jam.requestAddSong(Integer.toString(song.hashCode()), song.getTitle(), g.getUsername(), timestamp); 
 				}
-				
-
-				g.sendUIMessage(0); 
 			}
 		});
 	}
