@@ -341,11 +341,12 @@ public class Jam {
 
 		try {
 			int port = 1234;
-			Uri myUri = Uri.parse(getCurrentSong().getPath());
-			boolean local = getCurrentSong().isLocal();
-			String ipAddr = getCurrentSong().getIpAddr();
+			Song currentSong = getCurrentSong(); 
+			Uri myUri = Uri.parse(currentSong.getPath());
+			boolean local = currentSong.isLocal();
+			String ipAddr = currentSong.getIpAddr();
 			if (!local)
-				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + getCurrentSong().getPath());
+				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + currentSong.getPath());
 
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource((Globals) Globals.getAppContext(), myUri);

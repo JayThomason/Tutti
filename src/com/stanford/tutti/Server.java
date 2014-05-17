@@ -309,31 +309,26 @@ public class Server extends NanoHTTPD {
      * Sets the requested song to be the currently playing song. 
      */
 	private Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
-		Cursor cursor = g.db.getSongInJamByID(jamSongId); 
-		if (!cursor.moveToFirst()) {
-			cursor.close(); 
-			return fileNotFoundResponse();
-		} else {
-			cursor.close(); 
-		}
-		
-		g.jam.setCurrentSong(jamSongId);
-		
-		g.sendUIMessage(7); 
-		
 		if (g.jam.checkMaster()) {
+			Cursor cursor = g.db.getSongInJamByID(jamSongId); 
+			if (!cursor.moveToFirst()) {
+				cursor.close(); 
+				return fileNotFoundResponse();
+			} else {
+				cursor.close(); 
+			}
+			
+			g.jam.setCurrentSong(jamSongId);
+			
+			g.sendUIMessage(7); 
+			
 			g.jam.playCurrentSong(); 
 			g.jam.broadcastJamUpdate(); 
-				/*
-				client.requestSetSong(jamSongId, new AsyncHttpResponseHandler() {
-					@Override
-					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-						System.out.println("request to add song to client returned: " + statusCode);
-					}
-				});
-				*/
+				
+			return new NanoHTTPD.Response("Set new currently playing song");
+		} else {
+			return new NanoHTTPD.Response("Error: Only Master phone should receive set song requests"); 
 		}
-		return new NanoHTTPD.Response("Set new currently playing song");
 	}
 	
 	
