@@ -49,7 +49,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Jam table-exclusive column names
 	private static final String KEY_JAM_INDEX = "jamIndex"; 
 	private static final String KEY_ADDED_BY = "addedBy"; 
-	private static final String KEY_SHUFFLE_INDEX = "shuffleIndex"; 
 	private static final String KEY_TIMESTAMP = "timestamp"; 
 
 	// Song table columns indices
@@ -67,12 +66,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Jam table-exclusive column indices
 	private static final int COL_JAM_INDEX = 9; 
 	private static final int COL_ADDED_BY = 10; 
-	private static final int COL_SHUFFLE_INDEX = 11; 
-	private static final int COL_TIMESTAMP = 12; 
+	private static final int COL_TIMESTAMP = 11; 
 
 
 	private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_TRACK_NUM};
-	private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_SHUFFLE_INDEX, KEY_TIMESTAMP};
+	private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
 
 	private Globals g; 
 
@@ -114,7 +112,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ KEY_IP + " TEXT,"
 				+ KEY_JAM_INDEX + " INTEGER,"
 				+ KEY_ADDED_BY + " TEXT," 
-				+ KEY_SHUFFLE_INDEX + " INTEGER,"
 				+ KEY_TIMESTAMP + " TEXT)";
 		db.execSQL(CREATE_JAM_TABLE); 
 	}
@@ -177,9 +174,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_HASH, Integer.toString(song.hashCode())); 
 		values.put(KEY_IP, song.getIpAddr());
 		values.put(KEY_JAM_INDEX, index); 
-		values.put(KEY_ADDED_BY, song.getAddedBy());
-		
-		values.put(KEY_SHUFFLE_INDEX, -1);
+		values.put(KEY_ADDED_BY, song.getAddedBy());		
 		values.put(KEY_TIMESTAMP, timestamp); 
 		
 		int local = 0; 
@@ -340,15 +335,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
-	public Cursor getShuffledSongsInJam() {
-		String query = "SELECT * FROM " + TABLE_JAM + " ORDER BY " + KEY_SHUFFLE_INDEX + " ASC";
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(query, null);
-
-		return cursor; 
-	}
-
 	public Song getSongInJamByIndex(int index) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
@@ -436,20 +422,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	public void shuffleJam(int currentIndex, int lastIndex) {
-		ArrayList<Integer> indices = new ArrayList<Integer>(); 
+		ArrayList<String> ids = new ArrayList<String>(); 
 		for (int i = currentIndex + 1; i <= lastIndex; i++) {
-			indices.add(i); 
+			ids.add(getJamSongIDByIndex(i)); 
 		}
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues args; 
 		Random generator = new Random(); 
+		
 		for (int i = currentIndex + 1; i <= lastIndex; i++) {
 			args = new ContentValues();
-			int rand = generator.nextInt(indices.size());
-			int index = indices.remove(rand); 
-			System.out.println("SHUFFLING " + i + " TO " + index); 
-			args.put(KEY_SHUFFLE_INDEX, index);
+			int rand = generator.nextInt(ids.size());
+			String jamSongID = ids.remove(rand); 
+			args.put(KEY_TIMESTAMP, jamSongID);
 			db.update(TABLE_JAM, args, KEY_JAM_INDEX + " = " + i + "", null);
 		}
 

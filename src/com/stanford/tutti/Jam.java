@@ -138,10 +138,6 @@ public class Jam {
 		return g.db.getSongsInJam(); 
 	}
 	
-	public Cursor getShuffledSongs() {
-		return g.db.getShuffledSongsInJam(); 
-	}
-
 	public String addSong(Song song) {
 		String timestamp = g.getTimestamp(); 
 		g.db.addSongToJam(song, currSize, timestamp);

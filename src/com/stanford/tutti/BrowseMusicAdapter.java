@@ -179,6 +179,29 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         
     	String addedBy = cursor.getString(cursor.getColumnIndex("addedBy")); 
     	ownerView.setText(addedBy);
+    	
+        ImageView artView = (ImageView) view.findViewById(R.id.browserArt);
+    	artView.setOnClickListener(new View.OnClickListener() {
+    		@Override
+    		public void onClick(View view) {
+    			JSONObject jsonJam = new JSONObject(); 
+    			g.jamLock.lock(); 
+    			try {
+    				g.jam.shuffle(); 
+        			g.sendUIMessage(0); 
+    				jsonJam = g.jam.toJSON(); 
+    			} finally {
+    				g.jamLock.unlock(); 
+    			}
+    			
+    			
+    			if (g.jam.checkMaster()) {
+    				g.jam.broadcastJamUpdate(jsonJam); 
+    			} else {
+    				//g.jam.requestShuffleJam(); 
+    			}
+    		}
+    	});
     }
     
 
