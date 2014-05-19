@@ -271,16 +271,17 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	 */
 	public void initializeJamList() {
 		listView.setDropListener(onDrop);
-		//listView.setRemoveListener(onRemove);
+		listView.setRemoveListener(onRemove);
 
 
 		DragSortController controller = new DragSortController(listView);
 		controller.setDragHandleId(R.id.browserText);
-		//controller.setClickRemoveId(R.id.);
-		//controller.setRemoveEnabled(false);
-		controller.setSortEnabled(true);
 		controller.setDragInitMode(2);
-		//controller.setRemoveMode(removeMode);
+		controller.setFlingHandleId(R.id.browserText);
+		controller.setRemoveMode(1);
+
+		controller.setRemoveEnabled(true);
+		controller.setSortEnabled(true);
 
 		listView.setFloatViewManager(controller);
 		listView.setOnTouchListener(controller);
