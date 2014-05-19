@@ -13,7 +13,6 @@
 	    android:id="@+id/jamListView"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:layout_margin="10dp"
 	    android:dividerHeight="5dp"
 	    android:paddingBottom="0dp"
 	    android:paddingLeft="0dp"
@@ -34,7 +33,7 @@
 	    dslv:use_default_controller="true" />
 	
 	
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/player_progress"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -47,24 +46,31 @@
         <TextView
     	    android:id="@+id/progress_time" 
     	    android:layout_height="wrap_content" 
-    	    android:layout_width="wrap_content" />
+    	    android:layout_width="wrap_content" 
+    	    android:paddingLeft="15dp"
+    	    android:layout_below="@+id/progress_bar" 
+    	    android:layout_alignParentLeft="true" />
       
         <SeekBar 
             android:id="@+id/progress_bar" 
             android:layout_height="wrap_content" 
-            android:layout_width="300dp" 
-            android:maxHeight="3dp"
+            android:layout_width="400dp" 
+            android:maxHeight="5dp"
             android:paddingRight="15dp"
             android:paddingLeft="15dp"
+            android:layout_alignParentTop="true"
             android:progressDrawable="@drawable/custom_progress_bar"
             android:thumb="@drawable/custom_thumb" /> 
              
     	<TextView
     	    android:id="@+id/progress_time_end" 
     	    android:layout_height="wrap_content" 
-    	    android:layout_width="wrap_content" />  
+    	    android:layout_width="wrap_content" 
+    	    android:paddingRight="15dp"
+    	    android:layout_below="@+id/progress_bar"
+    	    android:layout_alignParentRight="true"/>  
         
-    </LinearLayout>
+    </RelativeLayout>
     
     <LinearLayout
         android:id="@+id/player_buttons"
