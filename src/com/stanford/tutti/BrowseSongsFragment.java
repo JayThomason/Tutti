@@ -116,6 +116,7 @@ public class BrowseSongsFragment extends Fragment {
 					return; 
 				}
 				
+				// unacceptably janky
 				String[] tokens = textView.getText().toString().split(":");
 				String title = ""; 
 				if (tokens[0].equals("Now playing")) {
@@ -123,7 +124,7 @@ public class BrowseSongsFragment extends Fragment {
 				} else if (tokens.length > 1){
 					title = tokens[1].substring(1); 
 				} else {
-					if (Character.isDigit(tokens[0].charAt(0))) {
+					if (Character.isDigit(tokens[0].charAt(0)) && tokens[0].indexOf(".") != -1 && tokens[0].indexOf(".") < 3) {
 						title = tokens[0].substring(tokens[0].indexOf(" ") + 1);
 					} else {
 						title = tokens[0]; 

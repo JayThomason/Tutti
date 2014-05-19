@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -422,15 +423,26 @@ public class Jam {
 			clearSongs(); 
 			JSONArray songs = jam.getJSONArray("songs");
 			currIndex = jam.getInt("current"); 
+			HashMap<String, String> artMap = new HashMap<String, String>(); 
 			for (int i = 0; i < songs.length(); i++) {
 				JSONObject jsonSong = songs.getJSONObject(i); 
 				String songTitle = (String)jsonSong.get("title"); 
 				String songPath = (String)jsonSong.get("path");
 				Song song = new Song(songTitle, songPath, false);
-				song.setArtist((String)jsonSong.get("artist")); 
-				song.setAlbum((String)jsonSong.get("album")); 
+				song.setArtist((String)jsonSong.get("artist"));
+				
+				String album = (String)jsonSong.get("album"); 
+				song.setAlbum(album); 
 				song.setIpAddr((String)jsonSong.get("ip"));
 				song.setAddedBy((String)jsonSong.get("addedBy")); 
+				
+				if (artMap.containsKey(album)) {
+					song.setAlbumArt(artMap.get(album));
+				} else {
+					String artPath = g.db.getAlbumArtByHash(Integer.toString(song.hashCode())); 
+					song.setAlbumArt(artPath);
+					artMap.put(album, artPath); 
+				}
 
 				String timestampID = (String)jsonSong.getString("jamID"); 
 				song.setJamID(timestampID);

@@ -266,6 +266,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		return song;  	
 	}
+	
+	public String getAlbumArtByHash(String hash) {
+		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = '" + hash + "'";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+
+		if (cursor.moveToFirst()) {
+			String artPath = cursor.getString(COL_ART); 
+			cursor.close(); 
+			return artPath;  
+		} else {
+			cursor.close(); 
+			return ""; 
+		}
+	}
 
 	public Cursor getAllAlbums() {
 		String query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ALBUM; 
