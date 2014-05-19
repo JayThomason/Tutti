@@ -358,6 +358,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 	
+	public int getIndexInJamByID(String jamSongID) {
+		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_TIMESTAMP + " = '" + jamSongID + "'";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+		
+		if (cursor.moveToFirst()) {
+			return cursor.getInt(COL_JAM_INDEX); 
+		} else {
+			return -1; 
+		}
+	}
+	
 	public String getJamSongIDByIndex(int index) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
@@ -372,9 +385,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return timestamp; 
 	}
 
-	public void changeSongIndexInJam(String jamSongId, int from, int to) {
+	public int changeSongIndexInJam(String jamSongId, int to) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
+		int from = getIndexInJamByID(jamSongId); 
+		
 		// Overwrite the song that is moving with a temp placeholder index
 		ContentValues args = new ContentValues();
 		args.put(KEY_JAM_INDEX, -2);
@@ -400,6 +415,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		args = new ContentValues();
 		args.put(KEY_JAM_INDEX, to);
 		db.update(TABLE_JAM, args, KEY_TIMESTAMP + " = '" + jamSongId + "'", null);
+		
+		return from; 
 	}
 
 	public void shuffleJam(int currentIndex, int lastIndex) {

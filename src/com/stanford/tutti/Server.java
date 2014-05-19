@@ -205,7 +205,7 @@ public class Server extends NanoHTTPD {
     		return jamSetSongResponse(otherIpAddr, parameters.get("jamSongId")); 
     	} 
     	else if (path.startsWith(JAM_MOVE_SONG)) {
-    		return jamMoveSongResponse(otherIpAddr, parameters.get("jamSongId"), parameters.get("from"), parameters.get("to")); 
+    		return jamMoveSongResponse(otherIpAddr, parameters.get("jamSongId"), parameters.get("to")); 
     	}
     	else if (path.startsWith(JAM_REMOVE_SONG)) {
     		return jamRemoveSongResponse(otherIpAddr, parameters.get("jamSongId")); 
@@ -347,13 +347,13 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-	private synchronized Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String from, String to) {
+	private synchronized Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String to) {
 		if (g.jam.checkMaster()) {
 		
 			JSONObject jsonJam = new JSONObject(); 
 			g.jamLock.lock(); 
 			try {
-				g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(from), Integer.parseInt(to));
+				g.jam.changeSongIndexInJam(jamSongId, Integer.parseInt(to));
 				
 				g.sendUIMessage(7); 
 				

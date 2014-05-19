@@ -206,9 +206,9 @@ public class Jam {
 		return g.db.getJamSongIDByIndex(index); 
 	}
 
-	public void changeSongIndexInJam(String jamSongId, int from, int to) {
-		g.db.changeSongIndexInJam(jamSongId, from, to);
-		
+	public void changeSongIndexInJam(String jamSongId, int to) {
+		int from = g.db.changeSongIndexInJam(jamSongId, to);
+
 		if (currIndex == from) {
 			currIndex = to;
 		} else if (from < to && currIndex > from && currIndex <= to) {
@@ -309,12 +309,12 @@ public class Jam {
 		}
 	}
 	
-	public void requestMoveSong(final String jamSongID, int from, int to) {
+	public void requestMoveSong(final String jamSongID, int to) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
-			masterClient.requestMoveSong(jamSongID, from, to, new AsyncHttpResponseHandler() {
+			masterClient.requestMoveSong(jamSongID, to, new AsyncHttpResponseHandler() {
 				
 			});
 		}

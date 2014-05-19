@@ -59,7 +59,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				g.jamLock.lock(); 
 				try {
 					timestamp = g.jam.getSongIdByIndex(from); 
-					g.jam.changeSongIndexInJam(timestamp, from, to); 
+					g.jam.changeSongIndexInJam(timestamp, to); 
 					refreshJamList(); 
 					
 					if (g.jam.checkMaster()) {
@@ -72,7 +72,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				if (g.jam.checkMaster()) {
 					g.jam.broadcastJamUpdate(jsonJam); 
 				} else {
-					g.jam.requestMoveSong(timestamp, from, to);
+					g.jam.requestMoveSong(timestamp, to);
 				}
 			}
 		}

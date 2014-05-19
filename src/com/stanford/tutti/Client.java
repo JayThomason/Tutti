@@ -61,8 +61,8 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
-	public void requestMoveSong(String jamSongId, int from, int to, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/jam/move/", "?jamSongId=" + jamSongId + "&from=" + from + "&to=" + to); 
+	public void requestMoveSong(String jamSongId, int to, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/move/", "?jamSongId=" + jamSongId + "&to=" + to); 
 		client.get(url, null, responseHandler); 
 	}
 	
