@@ -81,7 +81,31 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener() {
 		@Override
 		public void remove(int index) {
-			System.out.println("REMOVED"); 
+			String songJamId = ""; 
+			JSONObject jsonJam = new JSONObject(); 
+			g.jamLock.lock(); 
+			try {
+				songJamId = g.jam.getSongIdByIndex(index); 
+    			g.jam.removeSong(songJamId);
+    			/*
+    			if (g.jam.isShuffled()) {
+    				g.jam.unShuffle(); 
+    			} else {
+        			g.jam.shuffle(); 
+    			}
+    			*/
+    			g.sendUIMessage(0); 
+				jsonJam = g.jam.toJSON(); 
+			} finally {
+				g.jamLock.unlock(); 
+			}
+			
+			
+			if (g.jam.checkMaster()) {
+				g.jam.broadcastJamUpdate(jsonJam); 
+			} else {
+				g.jam.requestRemoveSong(songJamId); 
+			}
 		}
 	};
 
