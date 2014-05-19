@@ -13,7 +13,7 @@ public class SettingsMenuActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        getActionBar().hide(); 
+        //getActionBar().hide(); 
  
         addPreferencesFromResource(R.xml.settings);
         
