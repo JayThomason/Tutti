@@ -80,13 +80,14 @@ public class JoinJamActivity extends Activity {
 					String jamListStr = new String(responseBody);
 					if (jamListStr.length() <= 1)
 						return;
-					// each name/ip pair is delimited by a \n and the names/ips are divided by a space
+					// the server returns a list of triples delimited by newlines
+					// each triple is consists of a name, port number, and ip address, delimited by spaces
 					final ArrayList<String> nameList = new ArrayList<String>();
 					String nameIpPairList[] = jamListStr.split("\n");
 					for (String str : nameIpPairList) {
 						String nameIpPair[] = str.split(" ");
 						nameList.add(nameIpPair[0]);
-						ipMap.put(nameIpPair[0],  nameIpPair[1]);
+						ipMap.put(nameIpPair[0],  nameIpPair[2] + ":" + nameIpPair[1]);
 					}
 					ListView jamListView = (ListView) findViewById(R.id.jamListView);
 					ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
