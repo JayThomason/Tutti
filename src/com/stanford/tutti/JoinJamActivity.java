@@ -108,19 +108,21 @@ public class JoinJamActivity extends Activity {
 				
 				Globals g = (Globals) getApplication();
 				String jamName = ((TextView) arg1).getText().toString();
-				final String ip = ipMap.get(jamName);
+				final String ipPortString = ipMap.get(jamName);
 				
-				if (requestedMap.containsKey(ip)) { 
+				if (requestedMap.containsKey(ipPortString)) { 
 					Toast.makeText(g, "Already sent request to join " + jamName, Toast.LENGTH_SHORT).show(); 
 					return; 
 				} else {
-					requestedMap.put(ip, "true"); 
+					requestedMap.put(ipPortString, "true"); 
 					Toast.makeText(g, "Requested to join " + jamName, Toast.LENGTH_SHORT).show(); 
 				}
 				
+				String split[] = ipPortString.split(":");
+				String ip = split[0];
+				String port = split[1];
 				
-				
-				final Client masterClient = new Client(g, "", ip, PORT); 
+				final Client masterClient = new Client(g, "", ip, Integer.parseInt(port)); 
 				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
