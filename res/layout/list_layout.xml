@@ -16,7 +16,7 @@
    
      <TextView
         android:id="@+id/browserText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="60dp"
         android:layout_weight="0.54"
         android:paddingBottom="5dp"
