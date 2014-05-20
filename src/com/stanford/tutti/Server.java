@@ -285,13 +285,11 @@ public class Server extends NanoHTTPD {
      */
 	private synchronized Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String jamSongId) {
 		if (g.jam.checkMaster()) {
-
 			Song song = g.db.getSongByHash(songId);
 			if (song == null) 
 				return fileNotFoundResponse();
 			
 			song.setAddedBy(addedBy);
-			
 			JSONObject jsonJam = new JSONObject(); 
 			g.jamLock.lock(); 			
 			try {
@@ -301,16 +299,12 @@ public class Server extends NanoHTTPD {
 					g.jam.setCurrentSong(jamSongId);
 					g.jam.playCurrentSong(); 
 				}
-				
 				g.sendUIMessage(7); 
-				
 				jsonJam = g.jam.toJSON(); 
 			} finally {
 				g.jamLock.unlock(); 
 			}
-						
 			g.jam.broadcastJamUpdate(jsonJam); 
-			
 			return new NanoHTTPD.Response("Added song to jam");
 		}
 		else {
@@ -336,9 +330,7 @@ public class Server extends NanoHTTPD {
 			} finally {
 				g.jamLock.unlock(); 
 			}
-			
 			g.jam.broadcastJamUpdate(jsonJam); 
-				
 			return new NanoHTTPD.Response("Set new currently playing song");
 		} 
 		else {
@@ -349,7 +341,6 @@ public class Server extends NanoHTTPD {
 	
 	private synchronized Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String to) {
 		if (g.jam.checkMaster()) {
-		
 			JSONObject jsonJam = new JSONObject(); 
 			g.jamLock.lock(); 
 			try {
@@ -361,9 +352,7 @@ public class Server extends NanoHTTPD {
 			} finally {
 				g.jamLock.unlock(); 	
 			}
-						
 			g.jam.broadcastJamUpdate(jsonJam); 
-			
 			return new NanoHTTPD.Response("Moved song index in Jam"); 
 		}
 		else {
@@ -374,21 +363,16 @@ public class Server extends NanoHTTPD {
 	
 	private synchronized Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
 		if (g.jam.checkMaster()) {
-			
 			JSONObject jsonJam = new JSONObject(); 
 			g.jamLock.lock(); 
 			try {
 				g.jam.removeSong(jamSongID); 
-				
 				g.sendUIMessage(7);
-				
 				jsonJam = g.jam.toJSON(); 
 			} finally {	
 				g.jamLock.unlock(); 
 			}
-			
 			g.jam.broadcastJamUpdate(jsonJam);
-			
 			return new NanoHTTPD.Response("Removed song from Jam"); 
 		} 
 		else {
