@@ -47,10 +47,11 @@ public class Server extends NanoHTTPD {
 	private static final String REMOVE_USER_FROM_JAM = "/removeAllFrom";
 	private static final String PING = "/ping";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
+	private static final int PORT = 0; // should force an unused port number
 	private Globals g = null;
 	
-	public Server(int port, Globals g) {
-		super(port);
+	public Server(Globals g) {
+		super(PORT);
 		this.g = g;
 		System.out.println("Server booting...");
 	}
@@ -108,10 +109,10 @@ public class Server extends NanoHTTPD {
     	Map<String, String> headers = session.getHeaders();
     	Map<String, String> parameters = session.getParms();
     	if (uri.startsWith(JOIN_JAM)) {
-    		return joinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("username"));
+    		return joinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("port"), parameters.get("username"));
     	}
     	else if (uri.startsWith(ACCEPT_JOIN_JAM)) {
-    		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("jamName")); 
+    		return acceptJoinJamResponse(headers.get(HTTP_CLIENT_IP), parameters.get("port"), parameters.get("jamName")); 
     	}
     	else if (uri.startsWith(REJECT_JOIN_JAM)) {
     		return rejectJoinJamResponse(headers.get(HTTP_CLIENT_IP)); 
@@ -162,12 +163,12 @@ public class Server extends NanoHTTPD {
     /*
      * Responds to a request to join the jam. 
      */
-    private Response joinJamResponse(String otherIpAddr, String username) {
+    private Response joinJamResponse(String otherIpAddr, String otherPort, String username) {
     	if (username == null) {
     		return badRequestResponse();
     	}
 		if (g.jam.checkMaster()) {
-			g.sendUIMessage(otherIpAddr + "//" + username); 
+			g.sendUIMessage(otherIpAddr + "//" + username + "//" + otherPort); 
 		}
 		else {
 			System.out.println("Server: Attempt to join jam on client device -- error");
@@ -175,10 +176,10 @@ public class Server extends NanoHTTPD {
 		return new NanoHTTPD.Response("Requesting master user permission to join");
 	}
     
-    private Response acceptJoinJamResponse(String otherIpAddr, String jamName) {
+    private Response acceptJoinJamResponse(String otherIpAddr, String portNumber, String jamName) {
 		if (g.joinJamHandler != null) {
 			Message msg = g.joinJamHandler.obtainMessage();
-			msg.obj = "ACCEPTED//" + otherIpAddr + "//" + jamName; 
+			msg.obj = "ACCEPTED//" + otherIpAddr + "//" + portNumber + "//" + jamName; 
 			g.joinJamHandler.sendMessage(msg);
 		}
 		return new NanoHTTPD.Response("Joining jam");

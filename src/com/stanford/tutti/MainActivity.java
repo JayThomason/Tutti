@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private Globals g;
-	private final int port = 1234;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -146,23 +145,35 @@ public class MainActivity extends Activity {
 		});
 	}
 
-	private void startJam(String jamName, final AlertDialog nameDialog) {
+	// return true if jam created in db, false if definite failure
+	private boolean startJam(String jamName, final AlertDialog nameDialog) {
+		int port = 0;
 		try {
-			(new Server(1234, g)).start();
+			Server s = new Server(g);
+			s.start();
+			port = s.getListeningPort();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		createJamInDatabase(jamName.isEmpty() ? null : jamName, nameDialog);
+		if (port != 0) {
+			createJamInDatabase(jamName.isEmpty() ? null : jamName, nameDialog, port);
+			return true;
+		}
+		else {
+			Toast.makeText(this, "Unable to create jam in database -- bad port number!", Toast.LENGTH_SHORT).show();
+			return false;
+		}
 	}
 
-	private void createJamInDatabase(String name, final AlertDialog nameDialog) {
+	private void createJamInDatabase(String name, final AlertDialog nameDialog, int port) {
 		final String serverHostname = getString(R.string.ec2_server);
 		Uri.Builder builder = Uri.parse("http://" + serverHostname).buildUpon();
 		builder.path("/createJam");
 		builder.appendQueryParameter("private",  g.getIpAddr());
 		builder.appendQueryParameter("ssid",  g.getWifiSSID());
 		builder.appendQueryParameter("gateway", g.getGatewayIpAddr());
+		builder.appendQueryParameter("port", String.valueOf(port));
 
 		if (name != null) {
 			builder.appendQueryParameter("name", name);

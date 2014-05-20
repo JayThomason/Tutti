@@ -32,13 +32,13 @@ import android.net.Uri.Builder;
 
 public class JoinJamActivity extends Activity {
 	private ListView jamListView;
-	private static final int PORT = 1234;
 	private Server server;
 	private Globals g;
 	private Handler h;
 	private final String path = "/discoverJams";
 	private Map<String, String> ipMap;
 	private Map<String, String> requestedMap; 
+	private int serverPort = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,11 @@ public class JoinJamActivity extends Activity {
 		ipMap = new HashMap<String, String>();
 		requestedMap = new HashMap<String, String>(); 
 
-		server = new Server(PORT, g);
+		server = new Server(g);
+		
 		try {
 			server.start();
+			serverPort = server.getListeningPort();
 		} catch (IOException e) {
 			// unable to start server
 			// should display a message to the user or back out to main menu
