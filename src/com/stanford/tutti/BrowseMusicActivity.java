@@ -42,7 +42,6 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     private BrowseJamFragment jamFragment; 
         
     private Globals g; 
-    private int PORT = 1234; 
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,6 +299,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	public void displayJoinJamRequest(String message) {
 		final String ipAddr = message.split("//")[0]; 
 		final String username = message.split("//")[1]; 
+		final int port = Integer.parseInt(message.split("//")[2]);
 		
 		View currView = viewPager.getFocusedChild(); 
 		
@@ -309,19 +309,19 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int whichButton) {
 	        	// Accept join jam request and request new client's music library. 
-	        	Client newClient = new Client(g, username, ipAddr, 1234);
+	        	Client newClient = new Client(g, username, ipAddr, port);
 				g.jam.addClient(newClient);
 				g.jam.setIPUsername(ipAddr, username);
 				newClient.acceptJoinJam(g.jam.getJamName(), new AsyncHttpResponseHandler() { 
 					
 				}); 
-		    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+		    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, port);
 		    	getLibraryThread.start();
 	        }
 	    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int whichButton) {
 	            // Reject join jam request. 
-	        	Client newClient = new Client(g, username, ipAddr, 1234); 
+	        	Client newClient = new Client(g, username, ipAddr, port); 
 	        	newClient.rejectJoinJam(new AsyncHttpResponseHandler() { 
 	        		
 	        	}); 

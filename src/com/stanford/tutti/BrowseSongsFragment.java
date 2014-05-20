@@ -36,8 +36,6 @@ public class BrowseSongsFragment extends Fragment {
 	private int views[]; 
 	public BrowseMusicAdapter adapter; 
 	
-	private final int port = 1234;
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

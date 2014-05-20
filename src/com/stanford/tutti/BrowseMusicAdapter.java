@@ -27,9 +27,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     
     private Globals g; 
     private int noArtImgID;
-    
-    private int port = 1234; 
-        
+            
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
         this.layout=layout;

@@ -31,7 +31,7 @@ class RequestLibraryThread extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
-		final Client client = new Client(g, "", ip, port); 
+		final Client client = new Client(g, "", ip, port);
 		client.requestRemoteLibrary(new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

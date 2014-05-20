@@ -146,15 +146,17 @@ public class JoinJamActivity extends Activity {
 					final String ipAddr = tokens[1]; 
 					if (tokens[0].equals("ACCEPTED")) {
 						final String username = tokens[1]; 
-						final String jamName = tokens[2]; 
+						final int masterPort = Integer.parseInt(tokens[2]);
+						final String jamName = tokens[3]; 						
 	
 						g.jam.setJamName(jamName);
 						
 						g.jam.setMaster(false); 
 						g.jam.setMasterIp(ipAddr);
 						g.jam.setIPUsername(ipAddr, username);
+						g.jam.setMasterPort(masterPort);
 	
-						Client masterClient = new Client(g, username, ipAddr, PORT);
+						Client masterClient = new Client(g, username, ipAddr, masterPort);
 						g.jam.addClient(masterClient);
 	
 						try {
@@ -163,13 +165,14 @@ public class JoinJamActivity extends Activity {
 							e.printStackTrace();
 						}
 						
-						Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, PORT);
+						Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, masterPort);
 						getLibraryThread.start();
 	
 						Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);
 						startActivity(intent);
 						finish();
-					} else if (tokens[0].equals("REJECTED")) {
+					} 
+					else if (tokens[0].equals("REJECTED")) {
 						requestedMap.remove(ipAddr); 
 					}
 				}

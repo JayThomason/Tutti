@@ -33,8 +33,6 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	//private ListView listView;
 	private DragSortListView listView; 
 
-	private final int port = 1234;
-
 	private View rootView; 
 	private Globals g; 
 
@@ -127,7 +125,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		g.playerListener = this; 
 		g.jam.mediaPlayer.setOnPreparedListener(this); 
 
-		masterClient = new Client(g, "", g.jam.getMasterIpAddr(), port); 
+		masterClient = new Client(g, "", g.jam.getMasterIpAddr(), g.jam.getMasterPort()); 
 
 		if (g.jam.checkMaster()) {
 			initializeSeekBar(); 
