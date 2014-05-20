@@ -38,12 +38,12 @@ public class Jam {
 	private HashMap<String, String> usernameMap; 
 	private String name; 
 	private String masterIpAddr;
+	private int masterPort;
 	private Globals g;
 	private Thread serverKeepAliveThread;
 	private Thread masterKeepAliveThread;
 	private AtomicBoolean serverKeepAlive;
 	
-	private final int port = 1234; 
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -67,9 +67,17 @@ public class Jam {
 	public String getMasterIpAddr() {
 		return masterIpAddr;
 	}
+	
+	public int getMasterPort() {
+		return masterPort;
+	}
 
 	public void setMasterIp(String masterIpAddr) {
 		this.masterIpAddr = masterIpAddr;
+	}
+	
+	public void setMasterPort(int port) {
+		this.masterPort = port;
 	}
 
 	public HashSet<Client> getClientSet() {
@@ -276,7 +284,7 @@ public class Jam {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
-			Client masterClient = new Client(g, getIPUsername(getMasterIpAddr()), getMasterIpAddr(), port); 
+			Client masterClient = new Client(g, getIPUsername(getMasterIpAddr()), getMasterIpAddr(), masterPort); 
 			masterClient.requestAddSong(songCode, username, timestamp, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -293,7 +301,7 @@ public class Jam {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
-			Client masterClient = new Client(g, "", getMasterIpAddr(), port); 
+			Client masterClient = new Client(g, "", getMasterIpAddr(), masterPort); 
 			masterClient.requestSetSong(jamSongID, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -310,7 +318,7 @@ public class Jam {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
-			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
+			Client masterClient = new Client(g, "", getMasterIpAddr(), masterPort);
 			masterClient.requestMoveSong(jamSongID, to, new AsyncHttpResponseHandler() {
 				
 			});
@@ -321,7 +329,7 @@ public class Jam {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
-			Client masterClient = new Client(g, "", getMasterIpAddr(), port);
+			Client masterClient = new Client(g, "", getMasterIpAddr(), masterPort);
 			masterClient.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {
 				
 			});
@@ -348,13 +356,12 @@ public class Jam {
 		}
 
 		try {
-			int port = 1234;
 			Song currentSong = getCurrentSong(); 
 			Uri myUri = Uri.parse(currentSong.getPath());
 			boolean local = currentSong.isLocal();
 			String ipAddr = currentSong.getIpAddr();
 			if (!local)
-				myUri = Uri.parse("http://" + ipAddr + ":" + port + "/song" + currentSong.getPath());
+				myUri = Uri.parse("http://" + ipAddr + ":" + masterPort + "/song" + currentSong.getPath());
 
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setDataSource((Globals) Globals.getAppContext(), myUri);
