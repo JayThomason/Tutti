@@ -147,16 +147,16 @@ public class MainActivity extends Activity {
 
 	// return true if jam created in db, false if definite failure
 	private boolean startJam(String jamName, final AlertDialog nameDialog) {
-		int port = 0;
 		try {
 			Server s = new Server(g);
 			s.start();
-			port = s.getListeningPort();
+			g.db.updatePortForLocalSongs();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (port != 0) {
+		int port = g.getServerPort();
+		if (port > 0) {
 			createJamInDatabase(jamName.isEmpty() ? null : jamName, nameDialog, port);
 			return true;
 		}
@@ -173,7 +173,7 @@ public class MainActivity extends Activity {
 		builder.appendQueryParameter("private",  g.getIpAddr());
 		builder.appendQueryParameter("ssid",  g.getWifiSSID());
 		builder.appendQueryParameter("gateway", g.getGatewayIpAddr());
-		builder.appendQueryParameter("port", String.valueOf(port));
+		builder.appendQueryParameter("port", String.valueOf(g.getServerPort()));
 
 		if (name != null) {
 			builder.appendQueryParameter("name", name);
@@ -210,6 +210,7 @@ public class MainActivity extends Activity {
 					startActivity(intent);
 				}
 				else {
+					nameDialog.dismiss();
 					System.out.println("Failed to create jam on server.");
 					System.out.println("Response body: " + new String(responseBody));
 					Toast.makeText(MainActivity.this,

@@ -25,7 +25,7 @@ import android.util.Base64;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-	private static final int DATABASE_VERSION = 18;
+	private static final int DATABASE_VERSION = 20;
 
 	// Database Name
 	private static final String DATABASE_NAME = "library";
@@ -44,6 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_ART = "art";
 	private static final String KEY_HASH = "hash";
 	private static final String KEY_IP = "_ip";
+	private static final String KEY_PORT = "port";
 	private static final String KEY_TRACK_NUM = "trackNum"; 
 
 	// Jam table-exclusive column names
@@ -61,16 +62,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final int COL_ART = 6; 
 	private static final int COL_HASH = 7; 
 	private static final int COL_IP = 8;
-	private static final int COL_TRACK_NUM = 9; 
+	private static final int COL_PORT = 9;
+	private static final int COL_TRACK_NUM = 10; 
 
 	// Jam table-exclusive column indices
-	private static final int COL_JAM_INDEX = 9; 
-	private static final int COL_ADDED_BY = 10; 
-	private static final int COL_TIMESTAMP = 11; 
+	private static final int COL_JAM_INDEX = 11; 
+	private static final int COL_ADDED_BY = 12; 
+	private static final int COL_TIMESTAMP = 13; 
 
 
-	private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_TRACK_NUM};
-	private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
+	private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_TRACK_NUM};
+	private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
 
 	private Globals g; 
 
@@ -92,6 +94,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ KEY_ART + " TEXT,"
 				+ KEY_HASH + " TEXT," 
 				+ KEY_IP + " TEXT,"
+				+ KEY_PORT + " INTEGER,"
 				+ KEY_TRACK_NUM + " INTEGER,"
 				+ " UNIQUE (" 
 				+ KEY_TITLE + ", " 
@@ -110,6 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ KEY_ART + " TEXT,"
 				+ KEY_HASH + " TEXT," 
 				+ KEY_IP + " TEXT,"
+				+ KEY_PORT + " INTEGER,"
 				+ KEY_JAM_INDEX + " INTEGER,"
 				+ KEY_ADDED_BY + " TEXT," 
 				+ KEY_TIMESTAMP + " TEXT)";
@@ -146,6 +150,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_ART, song.getAlbumArt());
 		values.put(KEY_HASH, Integer.toString(song.hashCode())); 
 		values.put(KEY_IP, song.getIpAddr());
+		values.put(KEY_PORT, song.getPort());
 		values.put(KEY_TRACK_NUM, song.getTrackNum()); 
 
 		int local = 0; 
@@ -173,6 +178,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_ART, song.getAlbumArt());
 		values.put(KEY_HASH, Integer.toString(song.hashCode())); 
 		values.put(KEY_IP, song.getIpAddr());
+		values.put(KEY_PORT, song.getPort());
 		values.put(KEY_JAM_INDEX, index); 
 		values.put(KEY_ADDED_BY, song.getAddedBy());		
 		values.put(KEY_TIMESTAMP, timestamp); 
@@ -569,6 +575,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		song.setArtist(cursor.getString(COL_ARTIST));
 		song.setAlbum(cursor.getString(COL_ALBUM));
 		song.setIpAddr(cursor.getString(COL_IP));
+		song.setPort(cursor.getInt(COL_PORT));
 		song.setAlbumArt(cursor.getString(COL_ART));
 		
 		if (cursor.getColumnIndex(KEY_TIMESTAMP) != -1) {
@@ -657,12 +664,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				String title = songCursor.getString(COL_TITLE);
 				String path = songCursor.getString(COL_PATH);
 				String ip = songCursor.getString(COL_IP); 
+				int port = songCursor.getInt(COL_PORT);
 				int trackNum = songCursor.getInt(COL_TRACK_NUM); 
 
 				try {
 					song.put("title", title);
 					song.put("path", path);
 					song.put("ip", ip); 	
+					song.put("port", port);
 					song.put("num", trackNum); 
 					songArray.put(song); 
 				} catch (JSONException e) {
@@ -736,11 +745,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						String songTitle = (String)jsonSong.get("title"); 
 						String songPath = (String)jsonSong.get("path");
 						String songIp = (String)jsonSong.get("ip"); 
+						int port = jsonSong.getInt("port");
 						int trackNum = jsonSong.getInt("num"); 
 						Song song = new Song(songTitle, songPath, false);
 						song.setArtist(artistName); 
 						song.setAlbum(albumTitle); 
 						song.setIpAddr(songIp);
+						song.setPort(port);
 						song.setAlbumArt("");
 						song.setTrackNum(trackNum);
 
@@ -820,5 +831,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public int deleteSongsFromIp(String ipAddr) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		return db.delete(TABLE_SONGS, KEY_IP + "='" + ipAddr + "'", null);
+	}
+	
+	/*
+	 * Updates the port number for all local songs based on the server port.
+	 * 
+	 * Returns the number of rows updated.
+	 */
+	public int updatePortForLocalSongs() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues args = new ContentValues();
+		args.put(KEY_PORT,  g.getServerPort());
+		int updated = db.update(TABLE_SONGS,  args,  KEY_LOCAL + "='" + 1 + "'", null);
+		updated += db.update(TABLE_JAM,  args,  KEY_LOCAL + "='" + 1 + "'", null);
+		return updated;
 	}
 }

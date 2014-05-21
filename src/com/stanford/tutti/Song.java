@@ -31,6 +31,9 @@ public class Song {
 	/* IP address for the phone containing the song. */
 	private String ipAddr = "";
 	
+	/* Port for the phone's server which has the song. */
+	private int port = 0;
+	
 	/* Username that added this song to the Jam */
 	private String addedBy = ""; 
 	
@@ -127,8 +130,16 @@ public class Song {
 		this.ipAddr = ipAddr;
 	}
 	
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
 	public String getIpAddr() {
 		return ipAddr;
+	}
+	
+	public int getPort() {
+		return port;
 	}
 	
 	public String getAddedBy() {
@@ -195,13 +206,14 @@ public class Song {
 	
 	public JSONObject toJSON() {
 		JSONObject song = new JSONObject(); 
-		
+		System.out.println("FUCK YOU");
 		try {
 			song.put("title", title); 
 			song.put("artist", artist);
 			song.put("album", album); 
 			song.put("path", path); 
 			song.put("ip", ipAddr); 
+			song.put("port", port);
 			song.put("addedBy", addedBy);
 			song.put("jamID", jamID); 
 		} catch (JSONException e) {

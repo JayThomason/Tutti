@@ -54,7 +54,7 @@ public class JoinJamActivity extends Activity {
 		
 		try {
 			server.start();
-			serverPort = server.getListeningPort();
+			g.db.updatePortForLocalSongs();
 		} catch (IOException e) {
 			// unable to start server
 			// should display a message to the user or back out to main menu
@@ -97,6 +97,10 @@ public class JoinJamActivity extends Activity {
 							nameList);
 					jamListView.setAdapter(arrayAdapter);
 				}
+				else {
+					System.out.println("Unable to connect to server.");
+					System.out.println("Response: " + responseBody);
+				}
 			}
 		});
 	}
@@ -125,7 +129,7 @@ public class JoinJamActivity extends Activity {
 				String port = split[1];
 				
 				final Client masterClient = new Client(g, "", ip, Integer.parseInt(port)); 
-				masterClient.requestJoinJam(g.getUsername(), new AsyncHttpResponseHandler() {
+				masterClient.requestJoinJam(g.getUsername(), g.getServerPort(), new AsyncHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 						System.out.println("response for join jam: " + statusCode);
@@ -145,6 +149,8 @@ public class JoinJamActivity extends Activity {
 					String[] tokens = message.split("//"); 
 					final String ipAddr = tokens[1]; 
 					if (tokens[0].equals("ACCEPTED")) {
+						System.out.println("tokens: ");
+						for (String str : tokens) System.out.println(str);
 						final String username = tokens[1]; 
 						final int masterPort = Integer.parseInt(tokens[2]);
 						final String jamName = tokens[3]; 						

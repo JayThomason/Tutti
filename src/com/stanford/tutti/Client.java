@@ -25,14 +25,14 @@ public class Client {
 		this.port = port; 
 	} 
 	
-	public void requestJoinJam(String username, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/joinJam/", "?username=" + username);
+	public void requestJoinJam(String username, int port, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/joinJam", "?username=" + username + "&port=" + String.valueOf(port));
 		System.out.println("url: " + url);
 		client.get(url, null, responseHandler); 
 	}
 	
-	public void acceptJoinJam(String jamName, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/acceptJoinJam", "?jamName=" + jamName); 
+	public void acceptJoinJam(String jamName, int port, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/acceptJoinJam", "?jamName=" + jamName + "&port=" + String.valueOf(port)); 
 		client.get(url, null, responseHandler); 
 	}
 	

@@ -312,9 +312,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	        	Client newClient = new Client(g, username, ipAddr, port);
 				g.jam.addClient(newClient);
 				g.jam.setIPUsername(ipAddr, username);
-				newClient.acceptJoinJam(g.jam.getJamName(), new AsyncHttpResponseHandler() { 
-					
-				}); 
+				newClient.acceptJoinJam(g.jam.getJamName(), g.getServerPort(), new AsyncHttpResponseHandler() {}); 
 		    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, port);
 		    	getLibraryThread.start();
 	        }

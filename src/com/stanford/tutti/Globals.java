@@ -31,6 +31,8 @@ import android.widget.FilterQueryProvider;
 public class Globals extends Application {
 	public Jam jam = new Jam(this); 
 
+	private int serverPort;
+	
 	public String currentArtistView = ""; 
 	public Handler uiUpdateHandler; 
 	public Handler joinJamHandler; 
@@ -147,5 +149,13 @@ public class Globals extends Application {
 			msg.what = message; 
 			uiUpdateHandler.sendMessage(msg);
 		}
+	}
+	
+	public int getServerPort() {
+		return serverPort;
+	}
+	
+	public void setServerPort(int port) {
+		this.serverPort = port;
 	}
 }

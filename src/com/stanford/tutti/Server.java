@@ -3,6 +3,7 @@ package com.stanford.tutti;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +54,13 @@ public class Server extends NanoHTTPD {
 	public Server(Globals g) {
 		super(PORT);
 		this.g = g;
-		System.out.println("Server booting...");
+	}
+	
+	public void start() throws IOException {
+		super.start();
+		int port = this.getListeningPort();
+		g.setServerPort(port);
+		System.out.println("Server booting on port..." + port);
 	}
 	
 	/*
@@ -431,10 +438,11 @@ public class Server extends NanoHTTPD {
 		try {
 			jsonLibrary.put("username", g.getUsername()); 
 			jsonLibrary.put("ip", g.getIpAddr()); 
+			jsonLibrary.put("port", g.getServerPort());
 			jsonLibrary.put("jam", g.jam.toJSON()); 
 		} catch (JSONException e) {
 			e.printStackTrace();
-		} 
+		}
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(jsonLibrary.toString().getBytes());
 		Response response = new Response(Status.OK, "application/json", is);
