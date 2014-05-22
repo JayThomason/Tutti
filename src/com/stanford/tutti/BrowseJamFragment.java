@@ -281,8 +281,31 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		nextButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				g.jam.iterateCurrentSong();
-				g.jam.playCurrentSong();
+				int index = g.jam.getCurrentSongIndex();
+				index++;
+				String songTimestampId = g.jam.getSongIdByIndex(index);
+				if (!g.jam.checkMaster()) { // client
+					masterClient.requestSetSong(songTimestampId, new AsyncHttpResponseHandler() {
+						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+							System.out.println("Requested next song on master, returned code: " + statusCode);
+						}
+					});
+				}
+				else { // master
+					JSONObject jsonJam;
+					g.jamLock.lock(); 
+					try {
+						g.jam.setCurrentSong(songTimestampId);
+						g.jam.playCurrentSong(); 
+						
+						g.sendUIMessage(7); 
+						
+						jsonJam = g.jam.toJSON(); 
+					} finally {
+						g.jamLock.unlock(); 
+					}
+					g.jam.broadcastJamUpdate(jsonJam); 
+				}
 			}
 		});
 	}
