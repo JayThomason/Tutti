@@ -63,12 +63,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final int COL_HASH = 7; 
 	private static final int COL_IP = 8;
 	private static final int COL_PORT = 9;
+	
+	// Song table exclusive indices
 	private static final int COL_TRACK_NUM = 10; 
 
 	// Jam table-exclusive column indices
-	private static final int COL_JAM_INDEX = 11; 
-	private static final int COL_ADDED_BY = 12; 
-	private static final int COL_TIMESTAMP = 13; 
+	private static final int COL_JAM_INDEX = 10; 
+	private static final int COL_ADDED_BY = 11; 
+	private static final int COL_TIMESTAMP = 12; 
 
 
 	private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_TRACK_NUM};

@@ -206,7 +206,6 @@ public class Song {
 	
 	public JSONObject toJSON() {
 		JSONObject song = new JSONObject(); 
-		System.out.println("FUCK YOU");
 		try {
 			song.put("title", title); 
 			song.put("artist", artist);
