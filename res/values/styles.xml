@@ -1,5 +1,7 @@
 <resources>
-
+	<style name="ActionBarTabStyle" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_stylingactionbar</item>
+    </style>
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -18,5 +20,10 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowAnimationStyle">@null</item>
     </style>
-
+    
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+     
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle</item>
+    </style>
+	
 </resources>
