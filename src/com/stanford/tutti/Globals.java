@@ -42,6 +42,8 @@ public class Globals extends Application {
 	public MusicLibraryLoaderThread localLoaderThread; 
 	
 	public Lock jamLock = new ReentrantLock(); 
+	
+	public DiscoveryManager discoveryManager;
 
 	DatabaseHandler db; 
 	
@@ -53,6 +55,7 @@ public class Globals extends Application {
 		Globals.context = getApplicationContext(); 
 		db = new DatabaseHandler(this);
 		jam.setIPUsername(getIpAddr(), getUsername());
+		discoveryManager = new DiscoveryManager(this);
 	}
 
 	public static Context getAppContext() {
