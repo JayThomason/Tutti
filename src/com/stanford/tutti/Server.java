@@ -47,6 +47,7 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_RESTART = "/restart"; 
 	private static final String REMOVE_USER_FROM_JAM = "/removeAllFrom";
 	private static final String PING = "/ping";
+	private static final String JAM_ACTIVE = "/jamActive";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private static final int PORT = 0; // should force an unused port number
 	private Globals g = null;
@@ -144,6 +145,9 @@ public class Server extends NanoHTTPD {
     	}
     	else if (uri.startsWith(PING)) {
     		return pingResponse(headers.get(HTTP_CLIENT_IP));
+    	}
+    	else if (uri.startsWith(JAM_ACTIVE)) {
+    		return jamActiveResponse();
     	}
     	else {
     		return badRequestResponse();
@@ -491,6 +495,19 @@ public class Server extends NanoHTTPD {
      */
     private Response pingResponse(String masterIpAddr) {
     	if (g.jam.getMasterIpAddr().equals(masterIpAddr)) {
+    		return new NanoHTTPD.Response("OK");
+    	}
+    	else {
+    		return badRequestResponse();
+    	}
+    }
+    
+    /*
+     * Returns an OK Http response if the phone is the master. Returns a bad request response
+     * otherwise. Intended to be used during discovery to see if a jam is active or stale.
+     */
+    private Response jamActiveResponse() {
+    	if (g.jam.checkMaster()) {
     		return new NanoHTTPD.Response("OK");
     	}
     	else {
