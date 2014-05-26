@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.widget.FilterQueryProvider;
 
 /* 
  * Stores any state which must be globally accessible, eg. variables which cannot
@@ -45,7 +44,7 @@ public class Globals extends Application {
 	public Lock jamLock = new ReentrantLock(); 
 
 	DatabaseHandler db; 
-
+	
 	private static Context context; 
 
 	@Override

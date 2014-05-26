@@ -17,20 +17,17 @@ import org.json.JSONObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
-import android.os.Message;
-import android.os.PowerManager;
 import android.widget.Toast;
 
 public class Jam {
 	private int currIndex; 
 	private int currSize; 
-	
+
 	private boolean isShuffled; 
 	private boolean master; 
 	public MediaPlayer mediaPlayer; 
@@ -43,7 +40,9 @@ public class Jam {
 	private Thread serverKeepAliveThread;
 	private Thread masterKeepAliveThread;
 	private AtomicBoolean serverKeepAlive;
-	
+	private AtomicBoolean shouldBroadcast;
+	private Thread broadcastJamThread;
+
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -67,7 +66,7 @@ public class Jam {
 	public String getMasterIpAddr() {
 		return masterIpAddr;
 	}
-	
+
 	public int getMasterPort() {
 		return masterPort;
 	}
@@ -75,7 +74,7 @@ public class Jam {
 	public void setMasterIp(String masterIpAddr) {
 		this.masterIpAddr = masterIpAddr;
 	}
-	
+
 	public void setMasterPort(int port) {
 		this.masterPort = port;
 	}
@@ -118,7 +117,7 @@ public class Jam {
 	public void start() {
 		if (!master)
 			return; 
-		
+
 		System.out.println("START"); 
 
 		mediaPlayer.start(); 
@@ -129,7 +128,7 @@ public class Jam {
 			return; 
 
 		System.out.println("START"); 
-		
+
 		mediaPlayer.pause(); 
 	}
 
@@ -138,26 +137,26 @@ public class Jam {
 			return; 
 
 		System.out.println("START"); 
-		
+
 		mediaPlayer.seekTo(time); 
 	}
-	
+
 	public Cursor getSongs() {
 		return g.db.getSongsInJam(); 
 	}
-	
+
 	public String addSong(Song song) {
 		String timestamp = g.getTimestamp(); 
 		g.db.addSongToJam(song, currSize, timestamp);
 		currSize++;
 		return timestamp; 
 	}
-	
+
 	public void addSongWithTimestamp(Song song, String timestamp) {
 		g.db.addSongToJam(song, currSize, timestamp); 
 		currSize++; 
 	}
-	
+
 	public boolean hasCurrentSong() {
 		if (currIndex >= 0) {
 			return true; 
@@ -165,7 +164,7 @@ public class Jam {
 			return false; 
 		}
 	}
-	
+
 	public Song getCurrentSong() {
 		return g.db.getSongInJamByIndex(currIndex); 
 	}
@@ -185,13 +184,13 @@ public class Jam {
 
 	public void setCurrentSong(String timestamp) {
 		Cursor cursor = g.db.getSongInJamByID(timestamp); 
-		
+
 		if (isShuffled()) {
 			currIndex = cursor.getInt(cursor.getColumnIndex("shuffleIndex")); 
 		} else {
 			currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
 		}
-		
+
 		//cursor.close(); 
 	}
 
@@ -199,14 +198,14 @@ public class Jam {
 		if (index < currSize) {
 			currIndex = index; 
 		}
-		
+
 		return getSongIdByIndex(index); 
 	}
 
 	public Song getSongByIndex(int index) {
 		return g.db.getSongInJamByIndex(index);  
 	}
-	
+
 	public String getSongIdByIndex(int index) {
 		return g.db.getJamSongIDByIndex(index); 
 	}
@@ -264,22 +263,22 @@ public class Jam {
 			currIndex = -1; 
 			playCurrentSong(); 
 		}
-		
+
 		currSize--; 
 	}
-	
+
 	public void broadcastJamUpdate(JSONObject jsonJam) {
 		if (master) {
 			for (Client client : clientSet) {
 				client.updateJam(jsonJam, new AsyncHttpResponseHandler() {
-					
+
 				});
 			}
 		} else {
 			System.out.println("Error: Master maintains and broadcasts canonical Jam"); 
 		}
 	}
-	
+
 	public void requestAddSong(String songCode, final String title, String username, String timestamp) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
@@ -296,7 +295,7 @@ public class Jam {
 			});
 		}
 	}
-	
+
 	public void requestSetSong(final String jamSongID, final String title) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
@@ -313,25 +312,25 @@ public class Jam {
 			}); 
 		}
 	}
-	
+
 	public void requestMoveSong(final String jamSongID, int to) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), masterPort);
 			masterClient.requestMoveSong(jamSongID, to, new AsyncHttpResponseHandler() {
-				
+
 			});
 		}
 	}
-	
+
 	public void requestRemoveSong(final String jamSongID) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), masterPort);
 			masterClient.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {
-				
+
 			});
 		}
 	}
@@ -347,7 +346,7 @@ public class Jam {
 		//	return false; 
 
 		System.out.println("PLAYING CURRENT SONG"); 
-		
+
 		if (hasCurrentSong()) {
 			mediaPlayer.reset();
 		} else {
@@ -434,13 +433,13 @@ public class Jam {
 				String songPath = (String)jsonSong.get("path");
 				Song song = new Song(songTitle, songPath, false);
 				song.setArtist((String)jsonSong.get("artist"));
-				
+
 				String album = (String)jsonSong.get("album"); 
 				song.setAlbum(album); 
 				song.setIpAddr((String)jsonSong.get("ip"));
 				song.setPort(jsonSong.getInt("port"));
 				song.setAddedBy((String)jsonSong.get("addedBy")); 
-				
+
 				if (artMap.containsKey(album)) {
 					song.setAlbumArt(artMap.get(album));
 				} else {
@@ -451,10 +450,10 @@ public class Jam {
 
 				String timestampID = (String)jsonSong.getString("jamID"); 
 				song.setJamID(timestampID);
-				
+
 				addSongWithTimestamp(song, timestampID);
 			}
-			
+
 			JSONArray ipArray = jam.getJSONArray("ips"); 
 			JSONArray usernameArray = jam.getJSONArray("usernames"); 
 			for (int i = 0; i < ipArray.length(); i++) {
@@ -584,4 +583,5 @@ public class Jam {
 			}
 		}
 	}
+
 }

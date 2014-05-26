@@ -1,6 +1,10 @@
 package com.stanford.tutti;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.http.Header;
 
@@ -9,9 +13,22 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.DnsSdServiceResponseListener;
+import android.net.wifi.p2p.WifiP2pManager.DnsSdTxtRecordListener;
+import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,13 +60,13 @@ public class MainActivity extends Activity {
 		g.jam.endServerKeepAlive();
 	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -157,7 +174,8 @@ public class MainActivity extends Activity {
 		}
 		int port = g.getServerPort();
 		if (port > 0) {
-			createJamInDatabase(jamName.isEmpty() ? null : jamName, nameDialog, port);
+			startJamBroadcast(jamName);
+			//createJamInDatabase(jamName.isEmpty() ? null : jamName, nameDialog, port);
 			return true;
 		}
 		else {
@@ -182,7 +200,7 @@ public class MainActivity extends Activity {
 		AsyncHttpClient client = new AsyncHttpClient();
 		getCreateJam(name, client, builder.build().toString(), serverHostname, nameDialog);
 	}
-	
+
 	private void getCreateJam(final String jamName, AsyncHttpClient client, String url,
 			final String serverHostname, final AlertDialog nameDialog) {
 		client.get(url, new AsyncHttpResponseHandler() {
@@ -199,13 +217,13 @@ public class MainActivity extends Activity {
 						g.jam.setJamName("Jam-" + g.getIpAddr());
 					}
 					nameDialog.dismiss();
-					
+
 					try {
 						g.localLoaderThread.join();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
-					
+
 					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
 					startActivity(intent);
 				}
@@ -224,5 +242,204 @@ public class MainActivity extends Activity {
 				System.out.println("Failed to create jam on server.");
 			}
 		});
+	}
+
+	// starts broadcasting the jam by making 
+	private void startJamBroadcast(String jamName) {
+		g.jam.startMasterClientPingThread();
+		g.jam.setMaster(true);
+		if (jamName != null && !jamName.equals("")) {
+			g.jam.setJamName(jamName);
+		} else {
+			g.jam.setJamName("Jam-" + g.getIpAddr());
+		}
+		startRegistration();
+		//Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
+		//startActivity(intent);
+	}
+
+	private void startRegistration() {
+		final WifiP2pManager mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+		final Channel mChannel = mManager.initialize(this, getMainLooper(), null);	
+
+		//  Create a string map containing information about your service.
+		Map<String, String> record = new HashMap<String, String>();
+		record.put("listenport", String.valueOf(1234));
+		record.put("buddyname", "John Doe" + (int) (Math.random() * 1000));
+		record.put("available", "visible");
+
+		// Service information.  Pass it an instance name, service type
+		// _protocol._transportlayer , and the map containing
+		// information other devices will want once they connect to this one.
+		WifiP2pDnsSdServiceInfo serviceInfo =
+				WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record);
+
+		// Add the local service, sending the service info, network channel,
+		// and listener that will be used to indicate success or failure of
+		// the request.
+		mManager.addLocalService(mChannel, serviceInfo, new ActionListener() {
+			@Override
+			public void onSuccess() {
+				// Command successful! Code isn't necessarily needed here,
+				// Unless you want to update the UI or add logging statements.
+				System.out.println("created local service!");
+			}
+
+			@Override
+			public void onFailure(int arg0) {
+				// Command failed.  Check for P2P_UNSUPPORTED, ERROR, or BUSY
+				System.out.println("failed to create local service :(((");
+			}
+		});
+
+
+		final HashMap<String, String> buddies = new HashMap<String, String>();
+
+		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
+
+			@Override
+			public void onDnsSdTxtRecordAvailable(String arg0,
+					Map<String, String> arg1, WifiP2pDevice arg2) {
+				System.out.println("DnsSdTxtRecord available -" + arg1.toString());
+				buddies.put(arg2.deviceAddress, arg1.get("buddyname"));				
+			}
+		};
+		
+		DnsSdServiceResponseListener servListener = new DnsSdServiceResponseListener() {
+	        @Override
+	        public void onDnsSdServiceAvailable(String instanceName, String registrationType,
+	                WifiP2pDevice resourceType) {
+
+	                // Update the device name with the human-friendly version from
+	                // the DnsTxtRecord, assuming one arrived.
+	                resourceType.deviceName = buddies
+	                        .containsKey(resourceType.deviceAddress) ? buddies
+	                        .get(resourceType.deviceAddress) : resourceType.deviceName;
+
+	                // Add to the custom adapter defined specifically for showing
+	                // wifi devices.
+
+	                        
+	                System.out.println("onBonjourServiceAvailable " + instanceName);
+	        }
+	    };
+
+	    mManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
+		
+		WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+        mManager.addServiceRequest(mChannel,
+                serviceRequest,
+                new ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        // Success!
+                    	System.out.println("added service request for discovery");
+                    }
+
+                    @Override
+                    public void onFailure(int code) {
+                        // Command failed.  Check for P2P_UNSUPPORTED, ERROR, or BUSY
+                    	System.out.println("failed to add service request for discovery :(");
+                    }
+                });
+        
+        mManager.discoverServices(mChannel, new ActionListener() {
+
+            @Override
+            public void onSuccess() {
+            	System.out.println("success discover services...");
+            }
+
+            @Override
+            public void onFailure(int code) {
+            	System.out.println("failed to discover services... :(((");
+            }
+        });
+
+	}
+
+	private void startBroadcast() {
+		IntentFilter intentFilter = new IntentFilter();
+
+		//  Indicates a change in the Wi-Fi P2P status.
+		intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+
+		// Indicates a change in the list of available peers.
+		intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+
+		// Indicates the state of Wi-Fi P2P connectivity has changed.
+		intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+
+		// Indicates this device's details have changed.
+		intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+		final WifiP2pManager mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+		final Channel mChannel = mManager.initialize(this, getMainLooper(), null);	
+
+		final List peers = new ArrayList();
+
+		final PeerListListener peerListListener = new PeerListListener() {
+			@Override
+			public void onPeersAvailable(WifiP2pDeviceList peerList) {
+
+				// Out with the old, in with the new.
+				peers.clear();
+				peers.addAll(peerList.getDeviceList());
+
+				// If an AdapterView is backed by this data, notify it
+				// of the change.  For instance, if you have a ListView of available
+				// peers, trigger an update.
+				System.out.println("peers: " + peers);
+			}
+		};
+
+		BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				String action = intent.getAction();
+				if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
+
+					// The peer list has changed!  We should probably do something about
+					// that.
+					System.out.println("peer list changed...");
+
+					mManager.requestPeers(mChannel, peerListListener);
+
+
+				} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
+
+					// Connection state changed!  We should probably do something about
+					// that.
+
+					System.out.println("connnection state changed...");
+				}
+			}
+		};
+
+		registerReceiver(broadcastReceiver, intentFilter);
+
+		mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+
+			@Override
+			public void onSuccess() {
+				// Code for when the discovery initiation is successful goes here.
+				// No services have actually been discovered yet, so this method
+				// can often be left blank.  Code for peer discovery goes in the
+				// onReceive method, detailed below.
+				System.out.println("successfully called discover peers");
+
+				final List peers = new ArrayList();
+
+			}
+
+			@Override
+			public void onFailure(int reasonCode) {
+				// Code for when the discovery initiation fails goes here.
+				// Alert the user that something went wrong.
+				System.out.println("FAILURE in discover peers");
+			}
+		});        
+
+
 	}
 }
