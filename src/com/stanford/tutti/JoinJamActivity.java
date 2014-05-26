@@ -58,9 +58,10 @@ public class JoinJamActivity extends Activity {
 
 		setupHandler(); 
 		configureJamListView(); 
-		requestLocalJams();
+		g.discoveryManager.startJamDiscovery();
 	}
-
+	
+	/*
 	private void requestLocalJams() {
 		String serverHostname = getString(R.string.ec2_server);
 		Builder builder = Uri.parse("http://" + serverHostname).buildUpon();
@@ -99,6 +100,7 @@ public class JoinJamActivity extends Activity {
 			}
 		});
 	}
+	*/
 
 	private void configureJamListView() {
 		jamListView = (ListView) this.findViewById(R.id.jamListView);

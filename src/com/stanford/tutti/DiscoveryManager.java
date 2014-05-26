@@ -35,14 +35,14 @@ public class DiscoveryManager {
 		int port = g.getServerPort();
 		record.put("port", String.valueOf(port));
 		record.put("ipAddr", g.getIpAddr());
-		record.put("TuttiJam", "true");
+		//record.put("TuttiJam", "true");
 		record.put("name", jamName);
 
 		// Service information.  Pass it an instance name, service type
 		// _protocol._transportlayer , and the map containing
 		// information other devices will want once they connect to this one.
 		WifiP2pDnsSdServiceInfo serviceInfo =
-				WifiP2pDnsSdServiceInfo.newInstance("_tutti_jam", "_presence._tcp", record);
+				WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record);
 
 		// Add the local service, sending the service info, network channel,
 		// and listener that will be used to indicate success or failure of
@@ -79,7 +79,8 @@ public class DiscoveryManager {
 
 	public void startJamDiscovery() {
 
-		final HashMap<String, String> buddies = new HashMap<String, String>();
+		// map from name to ip:port
+		final HashMap<String, String> jams = new HashMap<String, String>();
 
 		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
 
@@ -87,7 +88,8 @@ public class DiscoveryManager {
 			public void onDnsSdTxtRecordAvailable(String arg0,
 					Map<String, String> arg1, WifiP2pDevice arg2) {
 				System.out.println("DnsSdTxtRecord available -" + arg1.toString());
-				buddies.put(arg2.deviceAddress, arg1.get("buddyname"));				
+				// should ping /exists endpoint here before adding to list
+				jams.put(arg1.get("name"), arg1.get("ipAddr") + arg1.get("port"));				
 			}
 		};
 
@@ -95,18 +97,7 @@ public class DiscoveryManager {
 			@Override
 			public void onDnsSdServiceAvailable(String instanceName, String registrationType,
 					WifiP2pDevice resourceType) {
-
-				// Update the device name with the human-friendly version from
-				// the DnsTxtRecord, assuming one arrived.
-				resourceType.deviceName = buddies
-						.containsKey(resourceType.deviceAddress) ? buddies
-								.get(resourceType.deviceAddress) : resourceType.deviceName;
-
-								// Add to the custom adapter defined specifically for showing
-								// wifi devices.
-
-
-								System.out.println("onBonjourServiceAvailable " + instanceName);
+				System.out.println("device: " + resourceType);
 			}
 		};
 
@@ -145,6 +136,18 @@ public class DiscoveryManager {
 	}
 
 	public boolean stopJamDiscovery() {
+		// not sure if this works or not
+		mManager.clearServiceRequests(mChannel, new ActionListener() {
+			@Override
+			public void onSuccess() {
+				System.out.println("clearing discovery service requests");
+			}
+
+			@Override
+			public void onFailure(int code) {
+				System.out.println("could not clear discovery service requests");
+			}
+		});
 
 		return true;
 	}
