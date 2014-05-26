@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 	protected void onRestart() {
 		super.onRestart();
 		System.out.println("Main Activity Restarted.");
-		g.jam.endServerKeepAlive();
+		g.discoveryManager.stopJamDiscoverable();
 	}
 
 	@Override

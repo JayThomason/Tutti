@@ -2,6 +2,7 @@ package com.stanford.tutti;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.Header;
 
@@ -24,6 +25,7 @@ public class DiscoveryManager {
 	private Globals g;
 	private final WifiP2pManager mManager;
 	private final Channel mChannel;
+	private AtomicBoolean shouldBroadcastJam;
 	
 	private static final String DNS_SERVICE_NAME = "_tutti_jam";
 	private static final String DNS_PROTOCOL_NAME = "_presence";
@@ -34,13 +36,13 @@ public class DiscoveryManager {
 	private static final String IP_PORT_KEY = "ip_port";
 	private static final String JAM_NAME_KEY = "jam_name";
 
-
 	public DiscoveryManager(Globals g) {
 		this.g = g;
 
 		final Context appContext = g.getApplicationContext();
 		mManager = (WifiP2pManager) g.getSystemService(Context.WIFI_P2P_SERVICE);
-		mChannel = mManager.initialize(appContext, appContext.getMainLooper(), null);	
+		mChannel = mManager.initialize(appContext, appContext.getMainLooper(), null);
+		shouldBroadcastJam = new AtomicBoolean(false);
 	}
 
 	/*
@@ -113,17 +115,37 @@ public class DiscoveryManager {
 			}
 		});
 
-		mManager.discoverServices(mChannel, new ActionListener() {
-			@Override
-			public void onSuccess() {
-				System.out.println("success discover services...");
+		shouldBroadcastJam.set(true);
+		
+		(new Thread() {
+			public void run() {
+				while (true) {
+					if (shouldBroadcastJam.get()) {
+						mManager.discoverServices(mChannel, new ActionListener() {
+							@Override
+							public void onSuccess() {
+								System.out.println("success discover services...");
+							}
+		
+							@Override
+							public void onFailure(int code) {
+								System.out.println("failed to discover services... :(((");
+							}
+						});
+						
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							System.out.println("unable to sleep in discovery broadcast thread...\n");
+							break;
+						}
+					}
+					else {
+						break;
+					}
+				}
 			}
-
-			@Override
-			public void onFailure(int code) {
-				System.out.println("failed to discover services... :(((");
-			}
-		});		
+		}).start();
 	}
 
 	public void stopJamDiscoverable() {
@@ -139,6 +161,8 @@ public class DiscoveryManager {
 				// shouldn't be a real problem -- closing the app will cause the service to be undiscoverable in a couple minutes
 			}
 		});
+		
+		shouldBroadcastJam.set(false);
 	}
 
 	public void startJamDiscovery () {
