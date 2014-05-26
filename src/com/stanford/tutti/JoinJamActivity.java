@@ -10,14 +10,11 @@ import org.apache.http.Header;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,11 +31,9 @@ public class JoinJamActivity extends Activity {
 	private ListView jamListView;
 	private Server server;
 	private Globals g;
-	private Handler h;
 	private final String path = "/discoverJams";
 	private Map<String, String> ipMap;
 	private Map<String, String> requestedMap; 
-	private int serverPort = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
