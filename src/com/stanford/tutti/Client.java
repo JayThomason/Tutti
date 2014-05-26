@@ -152,6 +152,14 @@ public class Client {
 		client.get(url,  responseHandler);
 	}
 	
+	/*
+	 * Sengs a jamActive message to the client to check if it is hosting a jam.
+	 */
+	public void isMaster(AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/isMaster", "");
+		client.get(url, responseHandler);
+	}
+	
 	private String getUrl(String path, String query) {
 	    return "http://" + ipAddress + ":" + port + path + query; 
 	}

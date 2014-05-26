@@ -47,7 +47,7 @@ public class Server extends NanoHTTPD {
 	private static final String JAM_RESTART = "/restart"; 
 	private static final String REMOVE_USER_FROM_JAM = "/removeAllFrom";
 	private static final String PING = "/ping";
-	private static final String JAM_ACTIVE = "/jamActive";
+	private static final String IS_MASTER = "/isMaster";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
 	private static final int PORT = 0; // should force an unused port number
 	private Globals g = null;
@@ -146,8 +146,8 @@ public class Server extends NanoHTTPD {
     	else if (uri.startsWith(PING)) {
     		return pingResponse(headers.get(HTTP_CLIENT_IP));
     	}
-    	else if (uri.startsWith(JAM_ACTIVE)) {
-    		return jamActiveResponse();
+    	else if (uri.startsWith(IS_MASTER)) {
+    		return isMasterResponse();
     	}
     	else {
     		return badRequestResponse();
@@ -189,7 +189,7 @@ public class Server extends NanoHTTPD {
     
     private Response acceptJoinJamResponse(String otherIpAddr, String portNumber, String jamName) {
 		if (g.joinJamHandler != null) {
-			Message msg = g.joinJamHandler.obtainMessage();
+			Message msg = g.joinJamHandler.obtainMessage(0);
 			msg.obj = "ACCEPTED//" + otherIpAddr + "//" + portNumber + "//" + jamName; 
 			g.joinJamHandler.sendMessage(msg);
 		}
@@ -198,7 +198,7 @@ public class Server extends NanoHTTPD {
     
     private Response rejectJoinJamResponse(String otherIpAddr) {
     	if (g.joinJamHandler != null) {
-    		Message msg = g.joinJamHandler.obtainMessage(); 
+    		Message msg = g.joinJamHandler.obtainMessage(0); 
     		msg.obj = "REJECTED//" + otherIpAddr; 
     		g.joinJamHandler.sendMessage(msg); 
     	}
@@ -506,7 +506,7 @@ public class Server extends NanoHTTPD {
      * Returns an OK Http response if the phone is the master. Returns a bad request response
      * otherwise. Intended to be used during discovery to see if a jam is active or stale.
      */
-    private Response jamActiveResponse() {
+    private Response isMasterResponse() {
     	if (g.jam.checkMaster()) {
     		return new NanoHTTPD.Response("OK");
     	}

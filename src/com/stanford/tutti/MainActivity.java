@@ -167,66 +167,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void createJamInDatabase(String name, final AlertDialog nameDialog, int port) {
-		final String serverHostname = getString(R.string.ec2_server);
-		Uri.Builder builder = Uri.parse("http://" + serverHostname).buildUpon();
-		builder.path("/createJam");
-		builder.appendQueryParameter("private",  g.getIpAddr());
-		builder.appendQueryParameter("ssid",  g.getWifiSSID());
-		builder.appendQueryParameter("gateway", g.getGatewayIpAddr());
-		builder.appendQueryParameter("port", String.valueOf(g.getServerPort()));
-
-		if (name != null) {
-			builder.appendQueryParameter("name", name);
-		}
-
-		AsyncHttpClient client = new AsyncHttpClient();
-		getCreateJam(name, client, builder.build().toString(), serverHostname, nameDialog);
-	}
-
-	private void getCreateJam(final String jamName, AsyncHttpClient client, String url,
-			final String serverHostname, final AlertDialog nameDialog) {
-		client.get(url, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-				if (statusCode == 200) {
-					System.out.println("Successfully created jam on server.");
-					g.jam.startServerKeepAlive(serverHostname);
-					g.jam.startMasterClientPingThread();
-					g.jam.setMaster(true);
-					if (jamName != null && !jamName.equals("")) {
-						g.jam.setJamName(jamName);
-					} else {
-						g.jam.setJamName("Jam-" + g.getIpAddr());
-					}
-					nameDialog.dismiss();
-
-					try {
-						g.localLoaderThread.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} 
-
-					Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
-					startActivity(intent);
-				}
-				else {
-					nameDialog.dismiss();
-					System.out.println("Failed to create jam on server.");
-					System.out.println("Response body: " + new String(responseBody));
-					Toast.makeText(MainActivity.this,
-							"Unable to create jam on server." , Toast.LENGTH_SHORT)
-							.show();				
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-				System.out.println("Failed to create jam on server.");
-			}
-		});
-	}
-
 	// starts broadcasting the jam by making 
 	private void startJamBroadcast(String jamName) {
 		g.jam.startMasterClientPingThread();
@@ -237,8 +177,8 @@ public class MainActivity extends Activity {
 			g.jam.setJamName(g.getUsername() + "'s Jam");
 		}
 		g.discoveryManager.makeJamDiscoverable();
-		//Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
-		//startActivity(intent);
+		Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
+		startActivity(intent);
 	}
 
 }
