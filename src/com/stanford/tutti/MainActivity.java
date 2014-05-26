@@ -234,9 +234,9 @@ public class MainActivity extends Activity {
 		if (jamName != null && !jamName.equals("")) {
 			g.jam.setJamName(jamName);
 		} else {
-			g.jam.setJamName("Jam-" + g.getIpAddr());
+			g.jam.setJamName(g.getUsername() + "'s Jam");
 		}
-		g.discoveryManager.makeJamDiscoverable(jamName);
+		g.discoveryManager.makeJamDiscoverable();
 		//Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
 		//startActivity(intent);
 	}

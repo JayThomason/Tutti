@@ -30,19 +30,20 @@ public class DiscoveryManager {
 	/*
 	 * Makes the current jam discoverable by broadcasting a local DnsSd service over Wifi P2P.
 	 */
-	public void makeJamDiscoverable(String jamName) {
+	public void makeJamDiscoverable() {
 		Map<String, String> record = new HashMap<String, String>();
 		int port = g.getServerPort();
-		record.put("port", String.valueOf(port));
-		record.put("ipAddr", g.getIpAddr());
-		//record.put("TuttiJam", "true");
-		record.put("name", jamName);
+		record.put("ipPort", g.getIpAddr() + ":" + String.valueOf(port));
+		record.put("TuttiJam", "true");
+		record.put("JamName",  g.jam.getJamName());
+
+
 
 		// Service information.  Pass it an instance name, service type
 		// _protocol._transportlayer , and the map containing
 		// information other devices will want once they connect to this one.
 		WifiP2pDnsSdServiceInfo serviceInfo =
-				WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record);
+				WifiP2pDnsSdServiceInfo.newInstance("_tutti_jam", "_presence._tcp", record);
 
 		// Add the local service, sending the service info, network channel,
 		// and listener that will be used to indicate success or failure of
@@ -60,6 +61,57 @@ public class DiscoveryManager {
 				// What to do if we can't broadcast? -- display message to user saying unable to host jam...
 			}
 		});
+		
+		
+		// not sure why we need this code, but discovery doesn't seem to work without it.
+		// essentially the same code as in startJamDiscovery
+		
+		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
+			@Override
+			public void onDnsSdTxtRecordAvailable(String arg0,
+					Map<String, String> arg1, WifiP2pDevice arg2) {
+				System.out.println("DnsSdTxtRecord available -" + arg1.toString());
+			}
+		};
+
+		DnsSdServiceResponseListener servListener = new DnsSdServiceResponseListener() {
+			@Override
+			public void onDnsSdServiceAvailable(String instanceName, String registrationType,
+					WifiP2pDevice resourceType) {
+				System.out.println("device: " + resourceType);
+			}
+		};
+
+		mManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
+
+		WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+
+		mManager.addServiceRequest(mChannel,
+				serviceRequest,
+				new ActionListener() {
+			@Override
+			public void onSuccess() {
+				System.out.println("added service request for discovery");
+			}
+
+			@Override
+			public void onFailure(int code) {
+				System.out.println("failed to add service request for discovery :(");
+			}
+		});
+
+		mManager.discoverServices(mChannel, new ActionListener() {
+
+			@Override
+			public void onSuccess() {
+				System.out.println("success discover services...");
+			}
+
+			@Override
+			public void onFailure(int code) {
+				System.out.println("failed to discover services... :(((");
+			}
+		});		
 	}
 
 	public void stopJamDiscoverable() {
