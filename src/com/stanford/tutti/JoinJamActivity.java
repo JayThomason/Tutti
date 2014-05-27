@@ -44,8 +44,12 @@ public class JoinJamActivity extends Activity {
 		ipMap = new HashMap<String, String>();
 		requestedMap = new HashMap<String, String>(); 
 
-		server = new Server(g);
-
+		if (g.server != null) {
+			server = g.server;
+		}
+		else {
+			server = new Server(g);
+		}
 		try {
 			server.start();
 			g.db.updatePortForLocalSongs();

@@ -150,6 +150,7 @@ public class MainActivity extends Activity {
 		try {
 			Server s = new Server(g);
 			s.start();
+			g.server = s;
 			g.db.updatePortForLocalSongs();
 		}
 		catch (IOException e) {

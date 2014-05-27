@@ -44,6 +44,8 @@ public class Globals extends Application {
 	public Lock jamLock = new ReentrantLock(); 
 	
 	public DiscoveryManager discoveryManager;
+	
+	public Server server;
 
 	DatabaseHandler db; 
 	
