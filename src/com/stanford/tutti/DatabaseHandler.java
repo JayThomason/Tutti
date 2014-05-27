@@ -80,15 +80,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final int COL_TIMESTAMP = 12; 
 	
 	// Log table exclusive column indices
-	private static final int COL_START_TIME = 0;
-	private static final int COL_LATEST_TIME = 1;
-	private static final int COL_NUM_SONGS = 2;
-	private static final int COL_NUM_USERS = 3;
+	private static final int COL_START_TIME = 1;
+	private static final int COL_LATEST_TIME = 2;
+	private static final int COL_NUM_SONGS = 3;
+	private static final int COL_NUM_USERS = 4;
 
 
 	private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_TRACK_NUM};
 	private static final String[] JAM_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
-	private static final String[] LOG_COLUMNS = {KEY_START_TIME, KEY_LATEST_TIME, KEY_NUM_SONGS, KEY_NUM_USERS};
+	private static final String[] LOG_COLUMNS = {KEY_ID, KEY_START_TIME, KEY_LATEST_TIME, KEY_NUM_SONGS, KEY_NUM_USERS};
 	
 	private Globals g; 
 
