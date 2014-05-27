@@ -79,6 +79,7 @@ public class Jam {
 			clientSet.add(client);
 		}
 		usernameMap.put(client.getIpAddress(), client.getUsername());
+		g.logger.updateUsers(client.getIpAddress());
 	}
 
 	public boolean checkMaster() {

@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /*
  * Logs information about the jam such as elapsed time spent in jam, number 
  * of unique users in jam, and the max number of songs in the jam to a local
@@ -28,17 +31,23 @@ public class Logger {
 	 * Creates a new jam in the log database and creates a thread to update its latest
 	 * timestamp once every 10 seconds.
 	 */
-	public void startNewJam() {
-		
+	public void startNewJam() {		
 		if (!g.jam.checkMaster() && currentJamId >= 0) {
 			return;
 		}
+		
 		currentJamId = g.db.createJamInLog();
 		shouldUpdateTimestamp.set(true);
 
 		(new Thread() {
 			public void run() {
 				while (true) {
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						System.out.println("unable to sleep in log jam update timestamp thread");
+						break;
+					}
 					if (shouldUpdateTimestamp.get()) {
 						System.out.println("Updating timestamp for jam in logger");
 						int rowsUpdated = g.db.updateJamTimestamp(currentJamId);
@@ -46,11 +55,14 @@ public class Logger {
 							System.out.println("updating timestamp for jam failed -- id: " + currentJamId);
 							break;
 						}
+
+						// testing code!
+						JSONObject jsonJamLog = g.db.getLogDataAsJson();
 						try {
-							Thread.sleep(10000);
-						} catch (InterruptedException e) {
-							System.out.println("unable to sleep in log jam update timestamp thread");
-							break;
+							if (jsonJamLog != null)
+								System.out.println(jsonJamLog.toString(2));
+						} catch (JSONException e) {
+							e.printStackTrace();
 						}
 					}
 					else {
@@ -62,6 +74,8 @@ public class Logger {
 		}).start();
 
 		System.out.println("Created jam in log table: " + currentJamId);
+		
+		updateNumberSongs();
 	}
 
 	/*
@@ -80,6 +94,9 @@ public class Logger {
 			int numRowsUpdated = g.db.updateNumSongs(currentJamId);
 			if (numRowsUpdated != 1) {
 				System.out.println("Error updating number of songs in the jam log table.");
+			}
+			else {
+				System.out.println("Updated number of songs in jam logger");
 			}
 		}
 	}

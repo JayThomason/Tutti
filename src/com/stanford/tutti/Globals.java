@@ -46,11 +46,13 @@ public class Globals extends Application {
 	public DiscoveryManager discoveryManager;
 	
 	public Server server;
+	
+	public Logger logger;
 
 	DatabaseHandler db; 
 	
 	private static Context context; 
-
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -58,6 +60,7 @@ public class Globals extends Application {
 		db = new DatabaseHandler(this);
 		jam.setIPUsername(getIpAddr(), getUsername());
 		discoveryManager = new DiscoveryManager(this);
+		logger = new Logger(this);
 	}
 
 	public static Context getAppContext() {
@@ -162,4 +165,5 @@ public class Globals extends Application {
 	public void setServerPort(int port) {
 		this.serverPort = port;
 	}
+
 }

@@ -41,6 +41,7 @@ public class MainActivity extends Activity {
 		super.onRestart();
 		System.out.println("Main Activity Restarted.");
 		g.discoveryManager.stopJamDiscoverable();
+		g.logger.endCurrentJam();
 	}
 
 	@Override
@@ -178,6 +179,7 @@ public class MainActivity extends Activity {
 			g.jam.setJamName(g.getUsername() + "'s Jam");
 		}
 		g.discoveryManager.makeJamDiscoverable();
+		g.logger.startNewJam();
 		Intent intent = new Intent(MainActivity.this, BrowseMusicActivity.class);
 		startActivity(intent);
 	}

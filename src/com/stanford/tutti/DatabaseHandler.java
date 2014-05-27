@@ -22,7 +22,7 @@ import android.util.Base64;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-	private static final int DATABASE_VERSION = 21;
+	private static final int DATABASE_VERSION = 23;
 
 	// Database Name
 	private static final String DATABASE_NAME = "library";
@@ -136,7 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ KEY_ID + " INTEGER PRIMARY KEY," 
 				+ KEY_START_TIME + " INTEGER,"
 				+ KEY_LATEST_TIME + " INTEGER," 
-				+ KEY_NUM_SONGS + " INTEGER,"
+				+ KEY_NUM_SONGS + " INTEGER DEFAULT 0,"
 				+ KEY_NUM_USERS + " INTEGER)";
 		db.execSQL(CREATE_LOG_TABLE);
 	}
@@ -877,12 +877,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 */
 	public long createJamInLog() {
 		SQLiteDatabase db = this.getWritableDatabase();
+
 		ContentValues values = new ContentValues();
 		int timestamp = (int) (System.currentTimeMillis() / 1000L);
 		values.put(KEY_NUM_USERS, 1);
 		values.put(KEY_START_TIME, timestamp);
 		values.put(KEY_LATEST_TIME, timestamp);
-		return db.insert(TABLE_LOG, null, values); 
+		return db.insert(TABLE_LOG, null, values);
 	}
 	
 	/*
@@ -894,7 +895,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_LATEST_TIME, (int) (System.currentTimeMillis() / 1000L));
-		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId), null);
+		return db.update(TABLE_LOG, values, KEY_ID + "='" + String.valueOf(jamId)+ "'", null);
 	}
 	
 	/*
@@ -923,9 +924,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		ContentValues values = new ContentValues();
 		values.put(KEY_NUM_SONGS, numSongs);
-		
+		String where = KEY_ID + "=? AND " + KEY_NUM_SONGS + "<?";
+		String whereArgs[] = new String[] {String.valueOf(jamId), String.valueOf(numSongs)};
+				
 		// only update the number of songs if it is greater than the previous number of songs.
-		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId) + " AND " + KEY_NUM_SONGS + " < " + numSongs, null);	
+		return db.update(TABLE_LOG, values, where, whereArgs);	
 	}
 	
 	/*
@@ -939,7 +942,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		int timestamp = (int) (System.currentTimeMillis() / 1000L);
 		
-		String query = "SELECT * FROM " + TABLE_LOG + " WHERE " + KEY_LATEST_TIME + " < " + (timestamp - 15) + "'";
+		String query = "SELECT * FROM " + TABLE_LOG + " WHERE " + KEY_LATEST_TIME + " < " + (timestamp - 15);
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
@@ -953,6 +956,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					jsonJamData.put("length", cursor.getInt(COL_LATEST_TIME) - startTime);
 					jsonJamData.put("num_users", cursor.getInt(COL_NUM_USERS));
 					jsonJamData.put("num_songs", cursor.getInt(COL_NUM_SONGS));
+					jsonJamData.put("id", cursor.getInt(COL_ID));
+					jsonJamData.put("latest_time", cursor.getInt(COL_LATEST_TIME));
 					jsonJamLogArray.put(jsonJamData);
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -967,6 +972,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			return null;
 		}
 		
+		cursor.close();
+		
 		try {
 			jsonJamLog.put("jam_list",  jsonJamLogArray);
 		} catch (JSONException e) {
@@ -976,4 +983,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		return jsonJamLog;
 	}
+	
 }

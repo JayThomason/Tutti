@@ -51,6 +51,7 @@ class RequestLibraryThread extends Thread {
 					JSONObject jam = jsonLibrary.getJSONObject("jam"); 
 					
 					g.db.loadMusicFromJSON(artists);
+					g.logger.updateNumberSongs();
 					
 					if (!g.jam.checkMaster()) {
 						g.jam.loadJamFromJSON(jam); 
