@@ -146,10 +146,14 @@ public class JoinJamActivity extends Activity {
 					String jamName = split[0];
 					String ipAddr = split[1];
 					String port = split[2];
+					
+					if (!ipMap.containsKey(jamName)) {
+						nameList.add(jamName);
+					}
+					
 					ipMap.put(jamName,  ipAddr + ":" + port);
 
 					// update list
-					nameList.add(jamName);
 					ListView jamListView = (ListView) findViewById(R.id.jamListView);
 					ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
 							JoinJamActivity.this, android.R.layout.simple_list_item_1,
