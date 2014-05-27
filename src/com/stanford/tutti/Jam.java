@@ -1,11 +1,7 @@
 package com.stanford.tutti;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,12 +33,7 @@ public class Jam {
 	private String masterIpAddr;
 	private int masterPort;
 	private Globals g;
-	private Thread serverKeepAliveThread;
 	private Thread masterKeepAliveThread;
-	private AtomicBoolean serverKeepAlive;
-	private AtomicBoolean shouldBroadcast;
-	private Thread broadcastJamThread;
-
 
 	public Jam(Globals g) {
 		this.g = g; 
@@ -467,53 +458,6 @@ public class Jam {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
-	}
-
-	/*
-	 * Starts the keepAliveThread that sends keep alive requests to the server to ensure
-	 * that the jam is not deleted. One request is sent every minute.
-	 */
-	public void startServerKeepAlive(String serverHostname) {
-		serverKeepAlive = new AtomicBoolean(true);
-		final String url = "http://" + serverHostname + "/keepAlive?private=" + g.getIpAddr();
-		serverKeepAliveThread = new Thread() {
-			public void run() {
-				while (true) {
-					try {
-						AsyncHttpClient client = new AsyncHttpClient();
-						Thread.sleep(60 * 1000);
-						if (serverKeepAlive.get()) {
-							client.get(url, new AsyncHttpResponseHandler() {
-								@Override
-								public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-									System.out.println("successful keepAlive to server...");
-								}
-
-								@Override
-								public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-									System.out.println("failed keepAlive to server...");
-								}
-							});
-						}
-						else {
-							return;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		serverKeepAliveThread.start();
-	}
-
-	/*
-	 * Stops the jam from sending keep alive messages to the server.
-	 */
-	public void endServerKeepAlive() {
-		if (serverKeepAliveThread != null && serverKeepAlive != null) {
-			serverKeepAlive.set(false);
-		}
 	}
 
 	/*
