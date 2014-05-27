@@ -870,4 +870,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		updated += db.update(TABLE_JAM,  args,  KEY_LOCAL + "='" + 1 + "'", null);
 		return updated;
 	}
+	
+	/*
+	 * Creates a jam in the log database.
+	 * Sets the start_time and latest_time timestamps to the current system time.
+	 * 
+	 * Returns the id of the jam as a long.
+	 */
+	public long createJamInLog() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		int timestamp = (int) (System.currentTimeMillis() / 1000L);
+		values.put(KEY_NUM_USERS, 1);
+		values.put(KEY_START_TIME, timestamp);
+		values.put(KEY_LATEST_TIME, timestamp);
+		return db.insert(TABLE_LOG, null, values); 
+	}
+	
+	/*
+	 * Updates the latest_time timestamp for the provided jamId.
+	 * 
+	 * Returns the number of rows updated, which should always just be 1.
+	 */
+	public int updateJamTimestamp(long jamId) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(KEY_LATEST_TIME, (int) (System.currentTimeMillis() / 1000L));
+		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId), null);
+	}
+	
+	/*
+	 * Increments the number of users in the jam specified by the provided id.
+	 */
+	public void incrementJamNumUsers(long jamId) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("UPDATE " + TABLE_LOG + " SET "
+                + KEY_NUM_USERS + " = " + KEY_NUM_USERS + " +1 WHERE "
+                + KEY_ID + "='" + String.valueOf(jamId) + "'");
+	}
+	
+	/*
+	 * Updates the number of songs in the jam log specified by the provided id.
+	 * 
+	 * Returns the number of rows updated, which should always be 1.
+	 */
+	public int updateNumSongs(long jamId, int numSongs) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(KEY_NUM_SONGS, numSongs);
+		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId), null);	
+	}
 }
