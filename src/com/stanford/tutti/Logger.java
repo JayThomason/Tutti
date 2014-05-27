@@ -9,32 +9,38 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * of unique users in jam, and the max number of songs in the jam to a local
  * database. Once per day the database is serialized as JSON and sent to a
  * centralized server.
+ * 
+ * Data should only be logged when the phone is the master.
  */
 public class Logger {
 	private long currentJamId;
 	private Globals g;
 	private AtomicBoolean shouldUpdateTimestamp;
 	private Set<String> ipAddrSet;
-	
+
 	public Logger(Globals g) {
 		this.g = g;
 		shouldUpdateTimestamp = new AtomicBoolean(false);
 		ipAddrSet = new HashSet<String>();
 	}
-	
+
 	/*
 	 * Creates a new jam in the log database and creates a thread to update its latest
 	 * timestamp once every 10 seconds.
 	 */
 	public void startNewJam() {
+		
+		if (!g.jam.checkMaster() && currentJamId >= 0) {
+			return;
+		}
 		currentJamId = g.db.createJamInLog();
 		shouldUpdateTimestamp.set(true);
-		// thread updates the latest_timestamp field for the current jam in the log table
-		// once every ten seconds
+
 		(new Thread() {
 			public void run() {
 				while (true) {
 					if (shouldUpdateTimestamp.get()) {
+						System.out.println("Updating timestamp for jam in logger");
 						int rowsUpdated = g.db.updateJamTimestamp(currentJamId);
 						if (rowsUpdated != 1) {
 							System.out.println("updating timestamp for jam failed -- id: " + currentJamId);
@@ -54,36 +60,48 @@ public class Logger {
 				}
 			}
 		}).start();
-		
+
 		System.out.println("Created jam in log table: " + currentJamId);
 	}
-	
+
 	/*
 	 * Stops updating the timestamp for the current jam.
 	 */
 	public void endCurrentJam() {
 		shouldUpdateTimestamp.set(false);
+		currentJamId = -1;
 	}
-	
+
 	/*
 	 * Updates the number of songs associated with the current jam in the log database.
 	 */
 	public void updateNumberSongs() {
-		int numRowsUpdated = g.db.updateNumSongs(currentJamId);
-		if (numRowsUpdated != 1) {
-			System.out.println("Error updating number of songs in the jam log table.");
+		if (g.jam.checkMaster() && currentJamId >= 0) {
+			int numRowsUpdated = g.db.updateNumSongs(currentJamId);
+			if (numRowsUpdated != 1) {
+				System.out.println("Error updating number of songs in the jam log table.");
+			}
 		}
 	}
-	
+
 	/*
 	 * Updates the number of users in the jam if the user's ip address has not been
 	 * seen before.
 	 */
 	public void updateUsers(String ipAddr) {
-		if (!ipAddrSet.contains(ipAddr)) {
-			ipAddrSet.add(ipAddr);
-			g.db.incrementJamNumUsers(currentJamId);
+		if (g.jam.checkMaster() && currentJamId >= 0) {
+			if (!ipAddrSet.contains(ipAddr)) {
+				ipAddrSet.add(ipAddr);
+				g.db.incrementJamNumUsers(currentJamId);
+			}
 		}
+	}
+
+	/*
+	 * Sets a recurring system alarm that will force the 
+	 */
+	private void setRecurringAlarm() {
+		// TODO: implement this
 	}
 
 }
