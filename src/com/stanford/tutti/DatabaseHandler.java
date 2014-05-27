@@ -3,9 +3,6 @@ package com.stanford.tutti;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -20,7 +17,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Message;
 import android.util.Base64;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -136,7 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ KEY_TIMESTAMP + " TEXT)";
 		db.execSQL(CREATE_JAM_TABLE); 
 		
-		String CREATE_LOG_TABLE = "CREATE TABLE " + TABLE_LOG + "("
+		String CREATE_LOG_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_LOG + "("
 				+ KEY_ID + " INTEGER PRIMARY KEY," 
 				+ KEY_START_TIME + " INTEGER,"
 				+ KEY_LATEST_TIME + " INTEGER," 
@@ -151,7 +147,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Drop older tables if existed
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_SONGS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_JAM);
-
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOG);
+		
 		// Create tables again
 		onCreate(db);
 	}
@@ -929,5 +926,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		// only update the number of songs if it is greater than the previous number of songs.
 		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId) + " AND " + KEY_NUM_SONGS + " < " + numSongs, null);	
+	}
+	
+	/*
+	 * Returns all jam logs which have not been updated in the last 15 seconds as a JSONObject.
+	 * The object has one record: jam_list, which is a list of json jams. Each json jam has
+	 * four fields: start_time, length,  
+	 */
+	public JSONObject getLogDataAsJson() {
+		JSONObject jsonJamLog = new JSONObject();
+		JSONArray jsonJamLogArray = new JSONArray();
+		
+		int timestamp = (int) (System.currentTimeMillis() / 1000L);
+		
+		String query = "SELECT * FROM " + TABLE_LOG + " WHERE " + KEY_LATEST_TIME + " < " + (timestamp - 15) + "'";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(query, null);
+		
+		if (cursor.moveToFirst()) {
+			while (cursor.moveToNext()) {
+				JSONObject jsonJamData = new JSONObject();
+				try {
+					int startTime = cursor.getInt(COL_START_TIME);
+					jsonJamData.put("start_time", startTime);
+					jsonJamData.put("length", cursor.getInt(COL_LATEST_TIME) - startTime);
+					jsonJamData.put("num_users", cursor.getInt(COL_NUM_USERS));
+					jsonJamData.put("num_songs", cursor.getInt(COL_NUM_SONGS));
+					jsonJamLogArray.put(jsonJamData);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					db.delete(TABLE_LOG, null, null); // if there is an error processing the json
+					// it was entered into the table and logging is impossible
+					// just delete all entries in the table the return null
+					return null;
+				}
+			}
+		} 
+		else {
+			return null;
+		}
+		
+		try {
+			jsonJamLog.put("jam_list",  jsonJamLogArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return jsonJamLog;
 	}
 }
