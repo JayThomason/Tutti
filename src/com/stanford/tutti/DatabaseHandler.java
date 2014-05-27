@@ -926,6 +926,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		ContentValues values = new ContentValues();
 		values.put(KEY_NUM_SONGS, numSongs);
-		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId), null);	
+		
+		// only update the number of songs if it is greater than the previous number of songs.
+		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId) + " AND " + KEY_NUM_SONGS + " < " + numSongs, null);	
 	}
 }
