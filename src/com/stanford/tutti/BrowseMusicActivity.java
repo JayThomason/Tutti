@@ -313,7 +313,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				g.jam.addClient(newClient);
 				g.jam.setIPUsername(ipAddr, username);
 				newClient.acceptJoinJam(g.jam.getJamName(), g.getServerPort(), new AsyncHttpResponseHandler() {}); 
-		    	Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, port);
+		    	Thread getLibraryThread = new RequestLibraryThread(g, newClient);
 		    	getLibraryThread.start();
 	        }
 	    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

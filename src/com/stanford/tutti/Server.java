@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -126,7 +127,7 @@ public class Server extends NanoHTTPD {
     		return rejectJoinJamResponse(headers.get(HTTP_CLIENT_IP)); 
     	}
     	else if (uri.startsWith(GET_LOCAL_LIBRARY)) { 
-    		return getLocalLibraryResponse();
+    		return getLocalLibraryResponse(headers.get(HTTP_CLIENT_IP));
     	} 
     	else if (uri.startsWith(GET_ALBUM_ART)) {
     		return getAlbumArtResponse(); 
@@ -436,7 +437,16 @@ public class Server extends NanoHTTPD {
      * Returns an OK HTTP response with a JSON body containing the local
      * phone's library as JSON.
      */
-	private Response getLocalLibraryResponse() {
+	private Response getLocalLibraryResponse(String clientIpAddr) {
+		
+		// declare client as active now
+		Set<Client> clientSet = g.jam.getClientSet();
+		for (Client c : clientSet) {
+			if (c.getIpAddress().equals(clientIpAddr)) {
+				c.isActive();
+			}
+		}
+		
 		JSONObject jsonLibrary = g.db.getLibraryAsJSON();
 		
 		try {

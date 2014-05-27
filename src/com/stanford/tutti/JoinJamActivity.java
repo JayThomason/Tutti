@@ -131,7 +131,7 @@ public class JoinJamActivity extends Activity {
 								e.printStackTrace();
 							}
 
-							Thread getLibraryThread = new RequestLibraryThread(g, ipAddr, masterPort);
+							Thread getLibraryThread = new RequestLibraryThread(g, masterClient);
 							getLibraryThread.start();
 
 							Intent intent = new Intent(JoinJamActivity.this, BrowseMusicActivity.class);

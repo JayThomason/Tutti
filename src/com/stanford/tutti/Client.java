@@ -14,6 +14,7 @@ public class Client {
 	private String username; 
 	private String ipAddress; 
 	private int port; 
+	private boolean isActive;
 	
 	public AsyncHttpResponseHandler loadRemoteLibraryResponse; 
 	
@@ -22,7 +23,8 @@ public class Client {
 		this.g = g; 
 		this.username = username; 
 		this.ipAddress = ipAddress;
-		this.port = port; 
+		this.port = port;
+		this.isActive = false;
 	} 
 	
 	public void requestJoinJam(String username, int port, AsyncHttpResponseHandler responseHandler) {
@@ -66,8 +68,8 @@ public class Client {
 		client.get(url, null, responseHandler); 
 	}
 	
-	public void requestRemoveSong(String index, AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/jam/remove/", "?index=" + index); 
+	public void requestRemoveSong(String jamSongId, AsyncHttpResponseHandler responseHandler) {
+		String url = getUrl("/jam/remove/", "?jamSongId=" + jamSongId); 
 		client.get(url, null, responseHandler); 
 	}
 	
@@ -135,6 +137,10 @@ public class Client {
 		return username; 
 	}
 	
+	public void isActive() {
+		this.isActive = true;
+	}
+	
 	/*
 	 * Sends a message to the client telling it to remove clientToRemove from the jam.
 	 */
@@ -146,10 +152,16 @@ public class Client {
 	
 	/*
 	 * Sends a ping message to the client to check if it is still there.
+	 * 
+	 * The message is only sent if the client is 'active,' ie. we have already exchanged 
+	 * music with this client. This is to guarantee that the client has set its masterIp
+	 * variable.
 	 */
 	public void ping(AsyncHttpResponseHandler responseHandler) {
-		String url = getUrl("/ping", "");
-		client.get(url,  responseHandler);
+		if (isActive) {
+			String url = getUrl("/ping", "");
+			client.get(url,  responseHandler);
+		}
 	}
 	
 	/*

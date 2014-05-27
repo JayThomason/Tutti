@@ -247,7 +247,7 @@ public class Jam {
 
 
 	public void removeSong(String jamSongID) {
-		int index = g.db.removeSongFromJam(jamSongID); 
+		int index = g.db.removeSongFromJam(jamSongID);
 
 		if (currIndex > index) {
 			currIndex--; 
@@ -257,6 +257,7 @@ public class Jam {
 		}
 
 		currSize--; 
+		
 	}
 
 	public void broadcastJamUpdate(JSONObject jsonJam) {
@@ -321,9 +322,7 @@ public class Jam {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
 		} else {
 			Client masterClient = new Client(g, "", getMasterIpAddr(), masterPort);
-			masterClient.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {
-
-			});
+			masterClient.requestRemoveSong(jamSongID, new AsyncHttpResponseHandler() {});
 		}
 	}
 

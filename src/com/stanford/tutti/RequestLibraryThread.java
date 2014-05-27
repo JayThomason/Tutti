@@ -16,14 +16,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 
 class RequestLibraryThread extends Thread {
-	private String ip;
-	private int port;
-	private Globals g; 
+	private Globals g;
+	private Client client; 
 	
-	public RequestLibraryThread(Globals g, String ip, int port) {
+	public RequestLibraryThread(Globals g, Client client) {
 		this.g = g; 
-		this.ip = ip;
-		this.port = port;
+		this.client = client;
 	}
 
 	/*
@@ -31,7 +29,6 @@ class RequestLibraryThread extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
-		final Client client = new Client(g, "", ip, port);
 		client.requestRemoteLibrary(new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -45,7 +42,7 @@ class RequestLibraryThread extends Thread {
 					jsonLibrary = new JSONObject(remoteLibrary);
 
 					String username = jsonLibrary.getString("username"); 
-					g.jam.setIPUsername(ip, username); 
+					g.jam.setIPUsername(client.getIpAddress(), username); 
 
 					JSONArray artists = jsonLibrary.getJSONArray("artists");
 					JSONObject jam = jsonLibrary.getJSONObject("jam"); 
@@ -58,9 +55,9 @@ class RequestLibraryThread extends Thread {
 					}
 					
 					if (g.jam.checkMaster()) {
-						for (Client client : g.jam.getClientSet()) {
-							if (client.getIpAddress() != ip) {
-								client.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
+						for (Client c : g.jam.getClientSet()) {
+							if (c != client) {
+								c.updateLibrary(jsonLibrary, new AsyncHttpResponseHandler() {
 									
 								});
 							}
@@ -93,9 +90,9 @@ class RequestLibraryThread extends Thread {
 								g.db.loadAlbumArtFromJSON(jsonAlbumArt); 
 								
 								if (g.jam.checkMaster()) {
-									for (Client client : g.jam.getClientSet()) {
-										if (client.getIpAddress() != ip) {
-											client.updateAlbumArt(jsonAlbumArt, new AsyncHttpResponseHandler() {
+									for (Client c : g.jam.getClientSet()) {
+										if (c != client) {
+											c.updateAlbumArt(jsonAlbumArt, new AsyncHttpResponseHandler() {
 												
 											});
 										}
