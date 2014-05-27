@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -911,11 +912,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	
 	/*
 	 * Updates the number of songs in the jam log specified by the provided id.
+	 * The number of songs is set to the number of entries in the song table at
+	 * the time that the method is executed.
 	 * 
 	 * Returns the number of rows updated, which should always be 1.
 	 */
-	public int updateNumSongs(long jamId, int numSongs) {
+	public int updateNumSongs(long jamId) {
 		SQLiteDatabase db = this.getWritableDatabase();
+		
+		// number of songs should be equals to the number of entries in the 
+		// song table
+		long numSongs = DatabaseUtils.queryNumEntries(db, TABLE_SONGS);
+
 		ContentValues values = new ContentValues();
 		values.put(KEY_NUM_SONGS, numSongs);
 		return db.update(TABLE_LOG, values, KEY_ID + "=" + String.valueOf(jamId), null);	
