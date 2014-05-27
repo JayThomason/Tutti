@@ -25,7 +25,7 @@ import android.util.Base64;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-	private static final int DATABASE_VERSION = 20;
+	private static final int DATABASE_VERSION = 21;
 
 	// Database Name
 	private static final String DATABASE_NAME = "library";
@@ -33,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Table names
 	private static final String TABLE_SONGS = "songs";
 	private static final String TABLE_JAM = "jam"; 
+	private static final String TABLE_LOG = "log";
 
 	// Song table columns names
 	private static final String KEY_ID = "_id";
@@ -51,6 +52,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_JAM_INDEX = "jamIndex"; 
 	private static final String KEY_ADDED_BY = "addedBy"; 
 	private static final String KEY_TIMESTAMP = "timestamp"; 
+	
+	// Log table exclusive column names
+	private static final String KEY_START_TIME = "startTime";
+	private static final String KEY_LATEST_TIME = "latestTime";
+	private static final String KEY_NUM_SONGS = "numSongs";
+	private static final String KEY_NUM_USERS = "numUsers";
 
 	// Song table columns indices
 	private static final int COL_ID = 0; 
@@ -71,11 +78,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final int COL_JAM_INDEX = 10; 
 	private static final int COL_ADDED_BY = 11; 
 	private static final int COL_TIMESTAMP = 12; 
+	
+	// Log table exclusive column indices
+	private static final int COL_START_TIME = 0;
+	private static final int COL_LATEST_TIME = 1;
+	private static final int COL_NUM_SONGS = 2;
+	private static final int COL_NUM_USERS = 3;
 
 
 	private static final String[] SONG_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_TRACK_NUM};
-	private static final String[] JAM_COLUMNs = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
-
+	private static final String[] JAM_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
+	private static final String[] LOG_COLUMNS = {KEY_START_TIME, KEY_LATEST_TIME, KEY_NUM_SONGS, KEY_NUM_USERS};
+	
 	private Globals g; 
 
 	public DatabaseHandler(Context context) {
@@ -120,6 +134,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ KEY_ADDED_BY + " TEXT," 
 				+ KEY_TIMESTAMP + " TEXT)";
 		db.execSQL(CREATE_JAM_TABLE); 
+		
+		String CREATE_LOG_TABLE = "CREATE TABLE " + TABLE_LOG + "("
+				+ KEY_ID + " INTEGER PRIMARY KEY," 
+				+ KEY_START_TIME + " INTEGER,"
+				+ KEY_LATEST_TIME + " INTEGER," 
+				+ KEY_NUM_SONGS + " INTEGER,"
+				+ KEY_NUM_USERS + " INTEGER)";
+		db.execSQL(CREATE_LOG_TABLE);
 	}
 
 	// Upgrade database
