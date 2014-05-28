@@ -390,7 +390,7 @@ public class DragSortController extends SimpleFloatViewManager implements View.O
                 if (mDragInitMode == ON_DRAG && Math.abs(y2 - y1) > mTouchSlop && mSortEnabled) {
                     startDrag(mHitPos, deltaX, deltaY);
                 }
-                else if (mDragInitMode != ON_DOWN && Math.abs(x2 - x1) > mTouchSlop && mRemoveEnabled)
+                else if (mDragInitMode != ON_DOWN && (x1 - x2) > mTouchSlop && mRemoveEnabled)
                 {
                     mIsRemoving = true;
                     startDrag(mFlingHitPos, deltaX, deltaY);
