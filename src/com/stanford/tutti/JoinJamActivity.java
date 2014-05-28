@@ -11,6 +11,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +31,7 @@ public class JoinJamActivity extends Activity {
 	private Globals g;
 	private final String path = "/discoverJams";
 	private Map<String, String> ipMap;
-	private Map<String, String> requestedMap; 
+	private Map<String, Integer> requestedMap; 
 	private ArrayList<String> nameList = new ArrayList<String>();
 
 
@@ -42,7 +43,7 @@ public class JoinJamActivity extends Activity {
 		g = (Globals) getApplication();
 
 		ipMap = new HashMap<String, String>();
-		requestedMap = new HashMap<String, String>(); 
+		requestedMap = new HashMap<String, Integer>(); 
 
 		if (g.server != null) {
 			server = g.server;
@@ -79,8 +80,12 @@ public class JoinJamActivity extends Activity {
 					Toast.makeText(g, "Already sent request to join " + jamName, Toast.LENGTH_SHORT).show(); 
 					return; 
 				} else {
-					requestedMap.put(ipPortString, "true"); 
-					Toast.makeText(g, "Requested to join " + jamName, Toast.LENGTH_SHORT).show(); 
+					String ipAddr = ipPortString.split(":")[0]; 
+					requestedMap.put(ipAddr, arg2); 
+					Toast.makeText(g, "Requested to join " + jamName, Toast.LENGTH_SHORT).show();
+					arg1.setBackgroundColor(Color.parseColor("#555555"));
+					TextView textView = (TextView)arg1; 
+					textView.setText(textView.getText().toString() + " (Request Sent)");
 				}
 
 				String split[] = ipPortString.split(":");
@@ -139,6 +144,11 @@ public class JoinJamActivity extends Activity {
 							finish();
 						} 
 						else if (tokens[0].equals("REJECTED")) {
+							TextView itemView = (TextView) jamListView.getChildAt(requestedMap.get(ipAddr)); 
+							itemView.setBackgroundColor(Color.parseColor("#ff0927"));
+							String currText = itemView.getText().toString(); 
+							String removeText = " (Request Sent)"; 
+							itemView.setText(currText.substring(0, currText.length() - removeText.length()));
 							requestedMap.remove(ipAddr); 
 						}
 					}

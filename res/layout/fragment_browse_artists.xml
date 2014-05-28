@@ -9,7 +9,6 @@
         android:id="@+id/artistListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/allArtists"
         android:paddingBottom="25dp"
     	android:clipToPadding="false"/>
  
