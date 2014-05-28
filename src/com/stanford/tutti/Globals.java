@@ -63,7 +63,7 @@ public class Globals extends Application {
 		discoveryManager = new DiscoveryManager(this);
 		logger = new Logger(this);
 		loggerAlarm = new LoggerAlarmReceiver();
-		loggerAlarm.setAlarm(context);
+		loggerAlarm.setAlarm(context, false);
 	}
 
 	public static Context getAppContext() {

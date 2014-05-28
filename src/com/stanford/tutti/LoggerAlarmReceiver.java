@@ -14,9 +14,11 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
@@ -71,17 +73,17 @@ public class LoggerAlarmReceiver extends WakefulBroadcastReceiver {
 
 	}
 
-	public void setAlarm(Context context) {
+	public void setAlarm(Context context, boolean forceAlarmReset) {
 		System.out.println("set alarm called in logger alarm");
 		alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, LoggerAlarmReceiver.class);
 		alarmIntent = PendingIntent.getBroadcast(context, 1234, intent, 0);
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		preferences.edit().putBoolean(ALARM_SET_FLAG, false).apply();
 
-		// only set alarm if not already set!
-		// note: this call still returns not null even if the alarm has been canceled -- bad for testing
-		if (!preferences.getBoolean(ALARM_SET_FLAG,  false)) {
+
+		if (!preferences.getBoolean(ALARM_SET_FLAG,  false) || forceAlarmReset) {
 			Random random = new Random();
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(System.currentTimeMillis());
@@ -96,15 +98,15 @@ public class LoggerAlarmReceiver extends WakefulBroadcastReceiver {
 
 			preferences.edit().putBoolean(ALARM_SET_FLAG, true).apply();
 			
-			/*
-	        // Enable {@code SampleBootReceiver} to automatically restart the alarm when the
+			
+	        // Enable {@code BootReceiver} to automatically restart the alarm when the
 	        // device is rebooted.
-	        ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
+	        ComponentName receiver = new ComponentName(context, BootReceiver.class);
 	        PackageManager pm = context.getPackageManager();
 	        pm.setComponentEnabledSetting(receiver,
 	                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 	                PackageManager.DONT_KILL_APP);
-			 */
+			 
 		}
 		else {
 			alarmManager.cancel(alarmIntent);
