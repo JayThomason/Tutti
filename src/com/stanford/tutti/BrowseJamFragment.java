@@ -349,6 +349,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 
 		setJamListItemClickListener();
 	}
+	
 
 	public void refreshJamList() {
 		Cursor newCursor = g.jam.getSongs(); 
@@ -409,6 +410,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		});
 	}
 
+	
 	@Override  
 	public void onPrepared(MediaPlayer mp) { 
 		if (g.jam.checkMaster()) {

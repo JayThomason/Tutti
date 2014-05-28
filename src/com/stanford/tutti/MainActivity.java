@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		g = (Globals) getApplicationContext(); 
 
+		
 		loadLocalMusic(); 
 		initializeJam(); 
 		setWelcomeText();
