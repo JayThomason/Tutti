@@ -35,17 +35,25 @@ public class Jam {
 	private Globals g;
 	private Thread masterKeepAliveThread;
 
-	public Jam(Globals g) {
-		this.g = g; 
+	public Jam(Globals gl) {
+		this.g = gl; 
 		currIndex = -1; 
 		currSize = 0; 
 		isShuffled = false; 
 		mediaPlayer = new MediaPlayer(); 
-		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+		mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {			
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				if (hasCurrentSong() && iterateCurrentSong()) 
+				if (hasCurrentSong() && iterateCurrentSong()) {
 					playCurrentSong();
+				}
+				if (checkMaster()) {
+					g.jamLock.lock(); 
+					JSONObject jsonJam = toJSON(); 
+					g.jamLock.unlock(); 
+					
+					broadcastJamUpdate(jsonJam); 
+				}
 			}
 		});
 		master = false; 
