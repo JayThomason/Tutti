@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -115,9 +116,9 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 
 		rootView = inflater.inflate(R.layout.fragment_browse_jam, container, false);
 		listView = (DragSortListView) rootView.findViewById(R.id.jamListView);
-		seekBar = (SeekBar)rootView.findViewById(R.id.progress_bar);  
-		mediaTimeCurrent = (TextView)rootView.findViewById(R.id.progress_time); 
-		mediaTimeEnd = (TextView)rootView.findViewById(R.id.progress_time_end); 
+		seekBar = (SeekBar) rootView.findViewById(R.id.progress_bar);  
+		mediaTimeCurrent = (TextView) rootView.findViewById(R.id.progress_time); 
+		mediaTimeEnd = (TextView) rootView.findViewById(R.id.progress_time_end); 
 
 		g = (Globals) rootView.getContext().getApplicationContext(); 
 
@@ -130,7 +131,9 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		if (g.jam.checkMaster()) {
 			initializeSeekBar(); 
 		} else {
-			seekBar.setVisibility(View.GONE); 
+			RelativeLayout progressBar = (RelativeLayout) rootView.findViewById(R.id.player_progress); 
+			progressBar.setVisibility(View.GONE); 
+			listView.setPadding(0, 0, 0, 120);
 		}
 
 		assignButtons();

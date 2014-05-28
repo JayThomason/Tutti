@@ -14,7 +14,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:dividerHeight="5dp"
-	    android:paddingBottom="95dp"
+	    android:paddingBottom="65dp"
 	    android:paddingLeft="0dp"
 	    android:paddingTop="0dp"
 	    dslv:collapsed_height="2dp"
@@ -42,14 +42,6 @@
         style="@android:style/ButtonBar"
         android:background="#b2b2b2"
         android:gravity="center" >
-        
-        <TextView
-    	    android:id="@+id/progress_time" 
-    	    android:layout_height="wrap_content" 
-    	    android:layout_width="wrap_content" 
-    	    android:paddingLeft="15dp"
-    	    android:layout_below="@+id/progress_bar" 
-    	    android:layout_alignParentLeft="true" />
       
         <SeekBar 
             android:id="@+id/progress_bar" 
@@ -60,15 +52,7 @@
             android:paddingLeft="15dp"
             android:layout_alignParentTop="true"
             android:progressDrawable="@drawable/custom_progress_bar"
-            android:thumb="@drawable/custom_thumb" /> 
-             
-    	<TextView
-    	    android:id="@+id/progress_time_end" 
-    	    android:layout_height="wrap_content" 
-    	    android:layout_width="wrap_content" 
-    	    android:paddingRight="15dp"
-    	    android:layout_below="@+id/progress_bar"
-    	    android:layout_alignParentRight="true"/>  
+            android:thumb="@drawable/custom_thumb" />    
         
     </RelativeLayout>
     
@@ -81,42 +65,63 @@
         style="@android:style/ButtonBar"
         android:background="#b2b2b2"
         android:gravity="center" >
+    	
+        <TextView
+    	    android:id="@+id/progress_time" 
+    	    android:layout_height="wrap_content" 
+    	    android:layout_width="wrap_content" 
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="10dp"
+    	    android:paddingLeft="15dp" />
          
         <ImageButton
             android:id="@+id/song_media_player_back_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="7dp"
+            android:layout_marginBottom="3dp"
             android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_back_button_v2" />
 
         <ImageButton
             android:id="@+id/song_media_player_start_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="9dp"
             android:layout_marginRight="7dp"
+            android:layout_marginBottom="3dp"
             android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_play_button_v2" />
 
         <ImageButton
             android:id="@+id/song_media_player_pause_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="7dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="3dp"
             android:layout_marginRight="7dp"
+            android:layout_marginBottom="3dp"
             android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_pause_button_v2" />
 
         <ImageButton
             android:id="@+id/song_media_player_next_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="3dp"
             android:contentDescription="@string/imgdesc"
             android:background="@drawable/tutti_next_button_v2" />
+        
+        <TextView
+    	    android:id="@+id/progress_time_end" 
+    	    android:layout_height="wrap_content" 
+    	    android:layout_width="wrap_content" 
+    	    android:layout_marginLeft="30dp"
+            android:layout_marginBottom="10dp"
+    	    android:paddingRight="15dp" /> 
+    	    
     </LinearLayout>
 	 
 </RelativeLayout>
