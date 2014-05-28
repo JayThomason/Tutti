@@ -52,6 +52,7 @@ public class Globals extends Application {
 	DatabaseHandler db; 
 	
 	private static Context context; 
+	private LoggerAlarmReceiver loggerAlarm;
 	
 	@Override
 	public void onCreate() {
@@ -61,6 +62,8 @@ public class Globals extends Application {
 		jam.setIPUsername(getIpAddr(), getUsername());
 		discoveryManager = new DiscoveryManager(this);
 		logger = new Logger(this);
+		loggerAlarm = new LoggerAlarmReceiver();
+		loggerAlarm.setAlarm(context);
 	}
 
 	public static Context getAppContext() {

@@ -946,9 +946,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
+		int numEntries = 0;
 		
 		if (cursor.moveToFirst()) {
-			while (cursor.moveToNext()) {
+			do {
 				JSONObject jsonJamData = new JSONObject();
 				try {
 					int startTime = cursor.getInt(COL_START_TIME);
@@ -959,6 +960,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					jsonJamData.put("id", cursor.getInt(COL_ID));
 					jsonJamData.put("latest_time", cursor.getInt(COL_LATEST_TIME));
 					jsonJamLogArray.put(jsonJamData);
+					numEntries++;
 				} catch (JSONException e) {
 					e.printStackTrace();
 					db.delete(TABLE_LOG, null, null); // if there is an error processing the json
@@ -967,6 +969,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					return null;
 				}
 			}
+			while (cursor.moveToNext());
 		} 
 		else {
 			return null;
@@ -976,6 +979,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		try {
 			jsonJamLog.put("jam_list",  jsonJamLogArray);
+			jsonJamLog.put("numEntries", numEntries);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
@@ -984,4 +988,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return jsonJamLog;
 	}
 	
+	/*
+	 * Deletes all jam log data from the database with latest_time timestamps older than 15 seconds.
+	 * 
+	 * Returns the number of rows affected (removed).
+	 */
+	public int deleteLogData() {
+		int timestamp = (int) (System.currentTimeMillis() / 1000L);
+		
+		SQLiteDatabase db = this.getWritableDatabase();
+		
+		return db.delete(TABLE_LOG, KEY_LATEST_TIME + "<?", new String[]{String.valueOf(timestamp - 15)});
+	}
 }

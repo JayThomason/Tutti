@@ -38,6 +38,7 @@ public class MusicLibraryLoaderThread extends Thread {
     	Globals g = (Globals) activity.getApplication();
 		loadAllArtists(activity);
 		loadAllSongs(activity, g);
+		g.logger.updateNumberSongs();
 	}
 	
     /*
