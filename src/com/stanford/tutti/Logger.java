@@ -1,11 +1,15 @@
 package com.stanford.tutti;
 
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 
 /*
  * Logs information about the jam such as elapsed time spent in jam, number 
@@ -56,14 +60,6 @@ public class Logger {
 							break;
 						}
 
-						// testing code!
-						JSONObject jsonJamLog = g.db.getLogDataAsJson();
-						try {
-							if (jsonJamLog != null)
-								System.out.println(jsonJamLog.toString(2));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
 					}
 					else {
 						System.out.println("Stopping updating timestamp for jam log");
@@ -112,13 +108,6 @@ public class Logger {
 				g.db.incrementJamNumUsers(currentJamId);
 			}
 		}
-	}
-
-	/*
-	 * Sets a recurring system alarm that will force the 
-	 */
-	private void setRecurringAlarm() {
-		// TODO: implement this
 	}
 
 }
