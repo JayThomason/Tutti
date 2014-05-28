@@ -82,6 +82,8 @@ public class BrowseSongsFragment extends Fragment {
 
 		Cursor oldCursor = adapter.swapCursor(cursor); 
 		oldCursor.close(); 
+		
+		listView.setFastScrollEnabled(true);
 	}
 	
 	
