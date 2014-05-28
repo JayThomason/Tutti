@@ -178,6 +178,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         if (g.jam != null) {
         	if (songIndex == g.jam.getCurrentSongIndex()) {
         		text += "Now playing: "; 
+        		view.setBackgroundColor(Color.parseColor("#ff0927"));
         	} else if (songIndex < g.jam.getCurrentSongIndex()) {
         		view.setBackgroundColor(Color.rgb(0, 0, 0));
         	} else {
