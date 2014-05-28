@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,6 +73,8 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
             titleView.setText(artist + ": " + cursor.getString(cursor.getColumnIndex("album")));  
             
+            setTopMargin(view, 100); 
+            
             LayoutParams layoutParams = artView.getLayoutParams(); 
             layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_large);
             layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_large); 
@@ -79,10 +82,14 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             artView.requestLayout(); 
             return; 
         } else {
+        	
+        	setTopMargin(view, 0); 
+        	
             LayoutParams layoutParams = artView.getLayoutParams(); 
             layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_small);
             layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_small); 
             artView.setLayoutParams(layoutParams); 
+            
             artView.requestLayout(); 
         }
 
@@ -93,6 +100,11 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         } else {
         	bindJamView(view, cursor); 
         }
+    }
+    
+    private void setTopMargin(View view, int pixels) {
+    	ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.findViewById(R.id.browserArt).getLayoutParams();
+        mlp.setMargins(0, pixels, 0, 0);
     }
     
     
