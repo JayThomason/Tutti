@@ -12,8 +12,10 @@ public class SettingsMenuActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        //getActionBar().hide(); 
+                
+        getActionBar().setHomeButtonEnabled(false);
+        getActionBar().setDisplayShowHomeEnabled(false);              
+
  
         addPreferencesFromResource(R.xml.settings);
         

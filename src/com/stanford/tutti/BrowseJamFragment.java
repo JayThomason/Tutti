@@ -135,6 +135,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			progressBar.setVisibility(View.GONE); 
 			listView.setPadding(0, 0, 0, 120);
 		}
+		
+		listView.setFastScrollEnabled(true); 
 
 		assignButtons();
 		configureButtons();

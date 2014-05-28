@@ -13,7 +13,8 @@
         android:layout_below="@+id/songTitle"
         android:layout_marginTop="-35dp"
         android:paddingBottom="25dp"
-    	android:clipToPadding="false">
+    	android:clipToPadding="false"
+    	>
 
     </ListView>
  
