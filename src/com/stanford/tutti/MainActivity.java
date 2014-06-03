@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
 		setWelcomeText();
 		
 		g.discoveryManager.stopJamDiscoverable();
+		g.discoveryManager.stopJamDiscovery();
 		g.logger.endCurrentJam();
 	}
 
