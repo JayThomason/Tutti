@@ -32,7 +32,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		g = (Globals) getApplicationContext(); 
 
-		
 		loadLocalMusic(); 
 		initializeJam(); 
 		setWelcomeText();
@@ -42,6 +41,8 @@ public class MainActivity extends Activity {
 	protected void onRestart() {
 		super.onRestart();
 		System.out.println("Main Activity Restarted.");
+		setWelcomeText();
+		
 		g.discoveryManager.stopJamDiscoverable();
 		g.logger.endCurrentJam();
 	}
