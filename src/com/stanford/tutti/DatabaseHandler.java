@@ -87,7 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String[] JAM_COLUMNS = {KEY_ID, KEY_TITLE, KEY_ARTIST, KEY_ALBUM, KEY_PATH, KEY_LOCAL, KEY_ART, KEY_HASH, KEY_IP, KEY_PORT, KEY_JAM_INDEX, KEY_ADDED_BY, KEY_TIMESTAMP};
 	private static final String[] LOG_COLUMNS = {KEY_ID, KEY_START_TIME, KEY_LATEST_TIME, KEY_NUM_SONGS, KEY_NUM_USERS};
 	
-	private Globals g; 
+	private Globals g;
 
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -610,14 +610,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public JSONObject getLibraryAsJSON() {
 		JSONObject json = new JSONObject(); 
 
-		JSONArray artistArray = getArtistsAsJSON(); 
-
-		try {
-			json.put("artists", artistArray); 
-		} catch (JSONException e) {
-			e.printStackTrace(); 
+		synchronized (this) {
+	
+			JSONArray artistArray = getArtistsAsJSON(); 
+	
+			try {
+				json.put("artists", artistArray); 
+			} catch (JSONException e) {
+				e.printStackTrace(); 
+			}
 		}
-
 		return json; 
 
 	}
@@ -750,41 +752,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * Load new music into the database library by
 	 * parsing the JSON response from another phone. 
 	 */
-	public void loadMusicFromJSON(JSONArray artists) {    	
-		for (int i = 0; i < artists.length(); i++) {
-			try {
-				JSONObject jsonArtist = artists.getJSONObject(i); 
-				String artistName = (String)jsonArtist.get("name"); 
-				JSONArray albums = jsonArtist.getJSONArray("albums"); 
-
-				for (int j = 0; j < albums.length(); j++) {
-					JSONObject jsonAlbum = albums.getJSONObject(j); 
-					String albumTitle = (String)jsonAlbum.get("title");
-					JSONArray songs = jsonAlbum.getJSONArray("songs"); 
-
-					for (int k = 0; k < songs.length(); k++) {
-						JSONObject jsonSong = songs.getJSONObject(k); 
-						String songTitle = (String)jsonSong.get("title"); 
-						String songPath = (String)jsonSong.get("path");
-						String songIp = (String)jsonSong.get("ip"); 
-						int port = jsonSong.getInt("port");
-						int trackNum = jsonSong.getInt("num"); 
-						Song song = new Song(songTitle, songPath, false);
-						song.setArtist(artistName); 
-						song.setAlbum(albumTitle); 
-						song.setIpAddr(songIp);
-						song.setPort(port);
-						song.setAlbumArt("");
-						song.setTrackNum(trackNum);
-
-						addSongToLibrary(song); 
+	public void loadMusicFromJSON(JSONArray artists) { 
+		synchronized (this) {
+			for (int i = 0; i < artists.length(); i++) {
+				try {
+					JSONObject jsonArtist = artists.getJSONObject(i); 
+					String artistName = (String)jsonArtist.get("name"); 
+					JSONArray albums = jsonArtist.getJSONArray("albums"); 
+	
+					for (int j = 0; j < albums.length(); j++) {
+						JSONObject jsonAlbum = albums.getJSONObject(j); 
+						String albumTitle = (String)jsonAlbum.get("title");
+						JSONArray songs = jsonAlbum.getJSONArray("songs"); 
+	
+						for (int k = 0; k < songs.length(); k++) {
+							JSONObject jsonSong = songs.getJSONObject(k); 
+							String songTitle = (String)jsonSong.get("title"); 
+							String songPath = (String)jsonSong.get("path");
+							String songIp = (String)jsonSong.get("ip"); 
+							int port = jsonSong.getInt("port");
+							int trackNum = jsonSong.getInt("num"); 
+							Song song = new Song(songTitle, songPath, false);
+							song.setArtist(artistName); 
+							song.setAlbum(albumTitle); 
+							song.setIpAddr(songIp);
+							song.setPort(port);
+							song.setAlbumArt("");
+							song.setTrackNum(trackNum);
+	
+							addSongToLibrary(song); 
+						}
+	
+						g.sendUIMessage(0); 
 					}
-
-					g.sendUIMessage(0); 
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} 
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} 
+			}
 		}
 	}
 
