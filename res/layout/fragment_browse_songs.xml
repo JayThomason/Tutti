@@ -1,21 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:background="@drawable/background_tile" >
-     
-    
+    android:background="@drawable/background_tile"
+    android:orientation="vertical" >
+
     <ListView
         android:id="@+id/songListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/songTitle"
-        android:layout_marginTop="-35dp"
-        android:paddingBottom="25dp"
-    	android:clipToPadding="false"
-    	>
-
+        android:clipToPadding="false"
+        android:paddingBottom="25dp" >
     </ListView>
- 
+
 </RelativeLayout>

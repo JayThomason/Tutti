@@ -1,26 +1,18 @@
 package com.stanford.tutti; 
 
-import java.util.Set;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
-import org.apache.http.Header;
 import org.json.JSONObject;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Message;
+
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.text.Editable;
-import android.text.TextWatcher;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;

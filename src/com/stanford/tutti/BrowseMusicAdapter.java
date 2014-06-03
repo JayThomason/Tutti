@@ -2,8 +2,6 @@ package com.stanford.tutti;
 
 import org.json.JSONObject;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -13,10 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.AbsListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class BrowseMusicAdapter extends SimpleCursorAdapter {
@@ -73,7 +68,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
             titleView.setText(artist + ": " + cursor.getString(cursor.getColumnIndex("album")));  
             
-            setTopMargin(view, 100); 
+            //setTopMargin(view, 100); 
             
             LayoutParams layoutParams = artView.getLayoutParams(); 
             layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_large);
