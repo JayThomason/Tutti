@@ -67,14 +67,14 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         	
             TextView titleView = (TextView) view.findViewById(R.id.browserText); 
             titleView.setText(artist + ": " + cursor.getString(cursor.getColumnIndex("album")));  
-            
-            //setTopMargin(view, 100); 
-            
+                        
             LayoutParams layoutParams = artView.getLayoutParams(); 
             layoutParams.width = (int) g.getResources().getDimension(R.dimen.image_dimen_large);
             layoutParams.height = (int) g.getResources().getDimension(R.dimen.image_dimen_large); 
             artView.setLayoutParams(layoutParams); 
             artView.requestLayout(); 
+            TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
+            ownerView.setText("");
             return; 
         } else {
         	
