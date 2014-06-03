@@ -51,6 +51,7 @@ public class Jam {
 					g.jamLock.lock(); 
 					JSONObject jsonJam = toJSON(); 
 					g.jamLock.unlock(); 
+					g.uiUpdateHandler.sendEmptyMessage(0);
 					
 					broadcastJamUpdate(jsonJam); 
 				}
