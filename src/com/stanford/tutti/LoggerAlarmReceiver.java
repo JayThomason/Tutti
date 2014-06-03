@@ -80,8 +80,6 @@ public class LoggerAlarmReceiver extends WakefulBroadcastReceiver {
 		alarmIntent = PendingIntent.getBroadcast(context, 1234, intent, 0);
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		preferences.edit().putBoolean(ALARM_SET_FLAG, false).apply();
-
 
 		if (!preferences.getBoolean(ALARM_SET_FLAG,  false) || forceAlarmReset) {
 			Random random = new Random();
