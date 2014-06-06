@@ -19,6 +19,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+/**
+ * Singleton object that handles all interactions with the local database. 
+ */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version

@@ -7,6 +7,12 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.*;
 
+/**
+ * 
+ * Object that encapsulates the information for a remote phone: 
+ * ip address, username, port, and activity boolean. 
+ * 
+ */
 public class Client {
 	
 	private AsyncHttpClient client; 
