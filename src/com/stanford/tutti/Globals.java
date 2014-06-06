@@ -19,13 +19,9 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-/* 
+/**
  * Stores any state which must be globally accessible, eg. variables which cannot
  * be passed to activities using the intent. 
- * 
- * We are currently storing all of the music library metadata in-memory using this
- * class. It supports accessing and searching the library metadata as well as
- * checking and setting the current artist, album, and song.
  */
 public class Globals extends Application {
 	public Jam jam = new Jam(this); 
@@ -54,6 +50,11 @@ public class Globals extends Application {
 	private static Context context; 
 	private LoggerAlarmReceiver loggerAlarm;
 	
+	/**
+	 * Initializes the global variables for Tutti. 
+	 * 
+	 * @see android.app.Application#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -66,12 +67,18 @@ public class Globals extends Application {
 		loggerAlarm.setAlarm(context, false);
 	}
 
+	/**
+	 * Helper method to get the global context
+	 * from anywhere in the app. 
+	 */
 	public static Context getAppContext() {
 		return Globals.context;
 	}
 
-	/*
-	 * Return a string representation of the current device's IP address. 
+	/**
+	 * Returns a string representation of the current device's IP address. 
+	 * 
+	 * @return String ipAddress
 	 */
 	public String getIpAddr() {
 		WifiManager wifiManager = 
@@ -89,6 +96,11 @@ public class Globals extends Application {
 		return ipString;
 	}
 
+	/**
+	 * Returns a string representation of the current device's gateway IP address.
+	 * 
+	 * @return String gatewayIpAddress
+	 */
 	public String getGatewayIpAddr() {
 		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		DhcpInfo info = wifiManager.getDhcpInfo();
@@ -104,8 +116,10 @@ public class Globals extends Application {
 		return ipString;
 	}
 
-	/*
-	 * Returns the SSID of the wifi network.
+	/**
+	 * Returns the SSID of the current WiFi network.
+	 * 
+	 * @returns String wifiSSID
 	 */
 	public String getWifiSSID() {
 		String ssid = null;
@@ -121,17 +135,21 @@ public class Globals extends Application {
 		return ssid;
 	}
 
-	/*
-	 * Return the username from the user preferences. 
+	/**
+	 * Returns the username from the user preferences. 
+	 * 
+	 * @returns String username
 	 */
 	public String getUsername() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		return preferences.getString("prefUsername", "anonymous"); 
 	}
 	
-	/*
-	 * Return the current system timestamp,
+	/**
+	 * Returns the current system timestamp,
 	 * in a punctuationless format better suited for IDs than printing. 
+	 * 
+	 * @returns String timestamp
 	 */
 	public String getTimestamp() {
 		Date date = new Date();
@@ -139,8 +157,10 @@ public class Globals extends Application {
 		return sdf.format(date);
 	}
 	
-	/*
+	/**
 	 * Sends a String message to the global UI update handler.
+	 * 
+	 * @param String message
 	 */
 	public void sendUIMessage(String message) {
 		if (uiUpdateHandler != null) {
@@ -150,8 +170,10 @@ public class Globals extends Application {
 		}
 	}
 	
-	/*
+	/**
 	 * Sends an int message to the global UI update handler.
+	 * 
+	 * @param int message
 	 */
 	public void sendUIMessage(int message) {
 		if (uiUpdateHandler != null) {
@@ -161,10 +183,21 @@ public class Globals extends Application {
 		}
 	}
 	
+	
+	/**
+	 * Returns the server port. 
+	 * 
+	 * @return int servePort
+	 */
 	public int getServerPort() {
 		return serverPort;
 	}
 	
+	/**
+	 * Sets the server port. 
+	 * 
+	 * @param int port
+	 */
 	public void setServerPort(int port) {
 		this.serverPort = port;
 	}

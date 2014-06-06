@@ -8,17 +8,20 @@ import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-/*
+/**
  * Displays a small help page accessible from the main menu of the app.
  */
 public class HelpMenuActivity extends Activity {
 
+	/**
+	 * Loads the music from disk, resets the jam, sets the Welcome Text.
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help_menu);
-		// Show the Up button in the action bar.
-		//setupActionBar();
         getActionBar().hide(); 
 	}
 
