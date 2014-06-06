@@ -4,9 +4,8 @@ import java.util.Locale;
 
 import org.json.*; 
 
-/*
- * Stores all metadata associated with a given song. Also includes references
- * to the album which includes the song and the artist who plays the song. 
+/**
+ * Stores all metadata associated with a given song. 
  */
 public class Song {
 	
@@ -44,10 +43,11 @@ public class Song {
 	private String jamID = ""; 
 	
 	
-	/*
+	/**
 	 * Constructor
 	 * 
-	 * @param String title, String path
+	 * @param String title
+	 * @param String path
 	 */
 	public Song(String title, String path, boolean local) {
 		this.title = title;
@@ -55,61 +55,61 @@ public class Song {
 		this.local = local;
 	}
 	
-	/*
+	/**
 	 * Returns the title of the song.
 	 * 
-	 * @return String
+	 * @return String title
 	 */
 	public String getTitle() {
 		return title;
 	}
 	
-	/*
+	/**
 	 * Returns the artist of the song.
 	 * 
-	 * @return Artist
+	 * @return String artist
 	 */
 	public String getArtist() {
 		return artist;
 	}
 	
-	/*
+	/**
 	 * Returns the album the song is on.
 	 * 
-	 * @return Album
+	 * @return String album
 	 */
 	public String getAlbum() {
 		return album;
 	}
 	
-	/*
+	/**
 	 * Sets the artist for the song.
 	 * 
-	 * @param Artist artist
+	 * @param String artist
 	 */
 	public void setArtist(String artist) {
 		this.artist = artist;
 	}
 	
-	/*
+	/**
 	 * Sets the album for the song.
 	 * 
-	 * @param Album album
+	 * @param String album
 	 */
 	public void setAlbum(String album) {
 		this.album = album;
 	}
 	
-	/*
+	/**
 	 * Gets the path for the song data or file.
 	 * 
-	 * @return String
+	 * @return String path
 	 */
 	public String getPath() {
 		return path;
 	}
 
-	/*
+	/**
 	 * Gets whether the song is local to this phone. 
 	 * 
 	 * @return boolean local
@@ -118,54 +118,120 @@ public class Song {
 		return local; 
 	}
 	
+	/**
+	 * Sets the album art path for this song. 
+	 * 
+	 * @param String albumArtPath
+	 */
 	public void setAlbumArt(String path) {
 		albumArt = path; 
 	}
 	
+	/**
+	 * Gets the album art path for this song. 
+	 * 
+	 * @return String albumArtPath
+	 */
 	public String getAlbumArt() {
 		return albumArt; 
 	}
 	
+	/**
+	 * Sets the ip address for this song. 
+	 * 
+	 * @param String ipAddr
+	 */
 	public void setIpAddr(String ipAddr) {
 		this.ipAddr = ipAddr;
 	}
 	
+	/**
+	 * Sets the port number for this song. 
+	 * 
+	 * @param int port
+	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
 	
+	/**
+	 * Gets the ip address for this song. 
+	 * 
+	 * @return String ipAddr
+	 */
 	public String getIpAddr() {
 		return ipAddr;
 	}
 	
+	/**
+	 * Gets the port number for this song. 
+	 * 
+	 * @return int port
+	 */
 	public int getPort() {
 		return port;
 	}
 	
+	/**
+	 * Gets the user who added this song to the jam (if any). 
+	 * 
+	 * @return String addedBy
+	 */
 	public String getAddedBy() {
 		return addedBy; 
 	}
 	
+	/**
+	 * Sets the user who added this song to the jam (if any). 
+	 * 
+	 * @param String addedBy
+	 */
 	public void setAddedBy(String addedBy) {
 		this.addedBy = addedBy; 
 	}
 	
+	/**
+	 * Gets the track number for this song. 
+	 * 
+	 * @return int trackNum
+	 */
 	public int getTrackNum() {
 		return trackNum; 
 	}
 	
+	/**
+	 * Sets the track number for this song. 
+	 * 
+	 * @param int trackNum
+	 */
 	public void setTrackNum(int num) {
 		trackNum = num; 
 	}
 	
+	/**
+	 * Gets the jam ID for this song (if any). 
+	 * 
+	 * @return String jamID
+	 */
 	public String getJamID() {
 		return jamID; 
 	}
 	
+	/**
+	 * Sets the jam ID for this song. 
+	 * 
+	 * @param String jamID
+	 */
 	public void setJamID(String jamID) {
 		this.jamID = jamID; 
 	}
 	
+	/**
+	 * Returns an integer hashCode, formed by 
+	 * concatenating the artist, album, and title of the song. 
+	 * 
+	 * @return int hashCode
+	 */
 	@Override
 	public int hashCode() {
 		StringBuilder keyBuilder = new StringBuilder("");
@@ -190,6 +256,12 @@ public class Song {
 		return keyBuilder.toString().hashCode();
 	}
 
+	/**
+	 * Tests two songs for equality: 
+	 * i.e., same album, artist, and title. 
+	 * 
+	 * @return boolean isEqual
+	 */
 	@Override
 	public boolean equals(Object o) {
 		Song s = (Song) o;
@@ -204,6 +276,11 @@ public class Song {
 		return true;
 	}
 	
+	/**
+	 * Returns a JSON representation of this song. 
+	 * 
+	 * @return JSONObject jsonSong
+	 */
 	public JSONObject toJSON() {
 		JSONObject song = new JSONObject(); 
 		try {
