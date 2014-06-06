@@ -89,12 +89,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	
 	private Globals g;
 
+	
+	/**
+	 * Constructs a new DatabaseHandler object 
+	 * for performing database transactions. 
+	 * 
+	 * @param Context context
+	 */
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		this.g = (Globals) context.getApplicationContext(); 
 	}
 
-	// Create Tables
+	/**
+	 * Initializes three database tables: 
+	 * songs, jam, and log. 
+	 * 
+	 * @param SQLiteDatabase db
+	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		String CREATE_SONGS_TABLE = "CREATE TABLE " + TABLE_SONGS + "("
@@ -141,7 +153,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(CREATE_LOG_TABLE);
 	}
 
-	// Upgrade database
+	/**
+	 * Upgrades the database to a newer version. 
+	 * 
+	 * @param SQLiteDatabase db
+	 * @param int oldVersion
+	 * @param int newVersion
+	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// Drop older tables if existed
@@ -153,11 +171,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 	
+	/**
+	 * Drops the given table from the database. 
+	 * 
+	 * @param String table
+	 */
 	public void dropTable(String table) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(table, null, null); 
 	}
-
+	
+	/**
+	 * Adds a new song to the music library,
+	 * stored in the songs table. 
+	 * 
+	 * @param Song song
+	 */
 	public void addSongToLibrary(Song song){
 		// 1. get reference to writable DB
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -185,6 +214,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.insert(TABLE_SONGS, null, values); 
 	}
 
+	/**
+	 * Adds a new song to the Jam at the given 
+	 * index with the given timestamp as an ID. 
+	 * 
+	 * @param Song song
+	 * @param int index
+	 * @param String timestamp
+	 */
 	public void addSongToJam(Song song, int index, String timestamp) {
 		// 1. get reference to writable DB
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -215,36 +252,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.insert(TABLE_JAM, null, values); 
 	}
 
-	public Song getSongByID(int id){
-
-		// 1. get reference to readable DB
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		// 2. build query
-		Cursor cursor = 
-				db.query(TABLE_SONGS, // a. table
-						SONG_COLUMNS, // b. column names
-						" id = ?", // c. selections 
-						new String[] { String.valueOf(id) }, // d. selections args
-						null, // e. group by
-						null, // f. having
-						null, // g. order by
-						null); // h. limit
-
-		// 3. if we got results get the first one
-		if (cursor != null)
-			cursor.moveToFirst();
-
-		// 4. build Song object
-		Song song = rowToSong(cursor);
-
-		// 5. close cursor
-		//cursor.close(); 
-
-		// 6. return Song
-		return song; 
-	}
-	
+	/**
+	 * Returns a cursor grouped by artists from the songs table. 
+	 * 
+	 * @returns Cursor artistsCursor
+	 */
 	public Cursor getAllArtists() {
 		String query = "SELECT * FROM " + TABLE_SONGS + " "
 				+ "GROUP BY " + KEY_ARTIST; 
@@ -255,6 +267,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
+	/**
+	 * Returns a cursor containing all songs from the songs table. 
+	 * 
+	 * @returns Cursor songsCursor
+	 */
 	public Cursor getAllSongs() {  
 		String query = "SELECT * FROM " + TABLE_SONGS + " "
 				+ "ORDER BY " + KEY_ARTIST + " ASC, " 
@@ -267,6 +284,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 	
+	/**
+	 * Returns a cursor containing all songs by the given artist. 
+	 * 
+	 * @param String artist
+	 * @returns Cursor songsByArtistCursor
+	 */
 	public Cursor getSongsByArtist(String artist) {
 		String escapedArtist = artist.replace("'", "''");
 		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' ORDER BY " + KEY_ALBUM + " ASC, " + KEY_TRACK_NUM + " ASC";
@@ -277,19 +300,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 	
+	/**
+	 * Gets a Song object from the database by 
+	 * the song's unique hash code. 
+	 * 
+	 * @param String hash
+	 * @returns Song matchingSong, or null if song not found
+	 */
 	public Song getSongByHash(String hash) {
 		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = '" + hash + "'";
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
 
-		cursor.moveToFirst(); 
-
-		Song song = rowToSong(cursor); 
-
-		return song;  	
+		if (cursor.moveToFirst()) {
+			Song song = rowToSong(cursor); 
+			cursor.close(); 
+			return song; 
+		} else { 
+			cursor.close(); 
+			return null; 
+		}
 	}
 	
+	/**
+	 * Returns a string path to the album art 
+	 * for the song with the given hash code. 
+	 * 
+	 * @param String hash
+	 * @returns String albumArtPath
+	 */
 	public String getAlbumArtByHash(String hash) {
 		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = '" + hash + "'";
 
@@ -306,6 +346,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 	}
 
+	/**
+	 * Returns a cursor grouped by albums from the songs table.  
+	 * 
+	 * @returns Cursor albumsCursor
+	 */
 	public Cursor getAllAlbums() {
 		String query = "SELECT * FROM " + TABLE_SONGS + " GROUP BY " + KEY_ALBUM; 
 
@@ -315,6 +360,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
+	/**
+	 * Returns a cursor grouped by albums by the given artist. 
+	 * 
+	 * @param String artist
+	 * @returns Cursor albumsByArtistCursor
+	 */
 	public Cursor getAlbumsByArtist(String artist) {
 		String escapedArtist = artist.replace("'",  "''");
 		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_ARTIST + " = '" + escapedArtist + "' GROUP BY " + KEY_ALBUM; 
@@ -325,6 +376,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
+	/**
+	 * Returns a cursor containing all the songs
+	 * by the given artist on the given album. 
+	 * 
+	 * @param String artist
+	 * @param String album
+	 * @returns Cursor songsCursor
+	 */
 	public Cursor getSongsByArtistAndAlbum(String artist, String album) {
 		String escapedArtist = artist.replace("'", "''"); 
 		String escapedAlbum = album.replace("'", "''");
@@ -336,8 +395,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
-	// IN THE LONG TERM
-	// WE NEED TO BE USING GET SONG BY ID
+	/**
+	 * Returns a Song object with the given title from 
+	 * the songs table, or null if none exists. 
+	 * 
+	 * @param String title
+	 * @returns Song song, or null if none exists
+	 */
 	public Song getSongByTitle(String title) {
 		String escapedTitle = title.replace("'",  "''");
 		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_TITLE + " = '" + escapedTitle + "'"; 
@@ -345,15 +409,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
 
-		cursor.moveToFirst(); 
-
-		Song song = rowToSong(cursor); 
-
-		cursor.close();
-
-		return song; 
+		if (cursor.moveToFirst()) {
+			Song song = rowToSong(cursor); 
+			cursor.close();
+			return song; 
+		} else {
+			cursor.close(); 
+			return null; 
+		}
 	}
 
+	/**
+	 * Returns a cursor containing all the songs in the jam table, 
+	 * ordered by index. 
+	 * 
+	 * @returns Cursor jamCursor
+	 */
 	public Cursor getSongsInJam() {
 		String query = "SELECT * FROM " + TABLE_JAM + " ORDER BY " + KEY_JAM_INDEX + " ASC";
 
@@ -363,31 +434,57 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
+	/**
+	 * Returns a Song object from the jam at the given index, 
+	 * or null if none exists. 
+	 * 
+	 * @param int index
+	 * @returns Song song, or null if no song exists with the given index
+	 */
 	public Song getSongInJamByIndex(int index) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
 
-		cursor.moveToFirst(); 
-
-		Song song = rowToSong(cursor); 
-		cursor.close(); 
-
-		return song; 
+		if (cursor.moveToFirst()) { 
+			Song song = rowToSong(cursor); 
+			cursor.close(); 
+			return song; 
+		} else {
+			cursor.close(); 
+			return null; 
+		}
 	}
 	
+	/**
+	 * Returns a cursor pointing to the song in the jam table
+	 * with the given timestamp id, or null if none exists. 
+	 * 
+	 * @param String jamSongID
+	 * @returns Cursor songCursor, or null if none exists
+	 */
 	public Cursor getSongInJamByID(String jamSongID) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_TIMESTAMP + " = '" + jamSongID + "'";
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
 		
-		cursor.moveToFirst(); 
-
-		return cursor; 
+		if (cursor.moveToFirst()) {
+			return cursor; 
+		} else {
+			cursor.close(); 
+			return null; 
+		}
 	}
 	
+	/**
+	 * Returns the index of the song in the jam with the 
+	 * given timestamp ID, or null if none exists. 
+	 * 
+	 * @param String jamSongID
+	 * @returns int index, or -1 if non exists
+	 */
 	public int getIndexInJamByID(String jamSongID) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_TIMESTAMP + " = '" + jamSongID + "'";
 
@@ -395,26 +492,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		Cursor cursor = db.rawQuery(query, null);
 		
 		if (cursor.moveToFirst()) {
-			return cursor.getInt(COL_JAM_INDEX); 
+			int index = cursor.getInt(COL_JAM_INDEX); 
+			cursor.close(); 
+			return index; 
 		} else {
+			cursor.close(); 
 			return -1; 
 		}
 	}
 	
+	/**
+	 * Returns the timestamp ID of the song in the Jam at the 
+	 * given index, or the empty string if none exists. 
+	 * 
+	 * @param int index
+	 * @returns String jamSongID, or empty string if none exists
+	 */
 	public String getJamSongIDByIndex(int index) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_JAM_INDEX + " = " + index;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		
 		Cursor cursor = db.rawQuery(query, null);
-		cursor.moveToFirst(); 
-		String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP)); 
-				
-		cursor.close(); 
-
-		return timestamp; 
+		
+		if (cursor.moveToFirst()) { 
+			String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP)); 
+			cursor.close(); 
+			return timestamp;
+		} else {
+			cursor.close(); 
+			return ""; 
+		}
 	}
 
+	/**
+	 * Changes the index of the song in the jam 
+	 * with the given timestamp ID. 
+	 * 
+	 * @param String jamSongID
+	 * @param int to
+	 * @returns int index that the song was moved from
+	 */
 	public int changeSongIndexInJam(String jamSongId, int to) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -424,9 +542,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		ContentValues args = new ContentValues();
 		args.put(KEY_JAM_INDEX, -2);
 		
-		
-		// INSERT CHECK HERE TO SEE IF THE SONG HAS BEEN MOVED FROM ITS POSITION
-		// BY ANOTHER CONCURRENT EDIT? 
 		db.update(TABLE_JAM, args, KEY_TIMESTAMP + " = '" + jamSongId + "'", null);
 
 		
@@ -449,6 +564,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return from; 
 	}
 
+	/**
+	 * Shuffle all the songs in the jam after the currently-playing
+	 * index, by randomly rearranging their indices in the jam table. 
+	 * 
+	 * @param int currentIndex
+	 * @param int lastIndex
+	 */
 	public void shuffleJam(int currentIndex, int lastIndex) {
 		ArrayList<String> ids = new ArrayList<String>(); 
 		for (int i = currentIndex + 1; i <= lastIndex; i++) {
@@ -469,6 +591,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	}
 	
+	/**
+	 * Checks if the jam contains a given song. 
+	 * 
+	 * @param Song song
+	 * @returns True if the song exists in the Jam, or False otherwise
+	 */
 	public boolean jamContainsSong(Song song) {
 		String query = "SELECT * FROM " + TABLE_JAM + " WHERE " + KEY_HASH + " = " + song.hashCode(); 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -481,6 +609,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 	}
 
+	/**
+	 * Removes the song with the given jamSongID from the jam. 
+	 * 
+	 * @param String jamSongID
+	 * @returns int index of the removed song
+	 */
 	public int removeSongFromJam(String jamSongID) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		
@@ -497,11 +631,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return removedIndex; 
 	}
 
+	/**
+	 * Resets the jam table. 
+	 * 
+	 */
 	public void clearJam() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_JAM, null, null);
 	}
 
+	/**
+	 * Sets the album art field for all rows in the songs table
+	 * with the given album title.  
+	 * 
+	 * @param String albumTitle
+	 * @param String albumArtPath
+	 */
 	public void setAlbumArt(String albumTitle, String path) {
 		String escapedAlbumTitle = albumTitle.replace("'",  "''");
 		ContentValues args = new ContentValues();
@@ -511,6 +656,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.update(TABLE_JAM, args, KEY_ALBUM + " = '" + escapedAlbumTitle + "'", null);
 	}
 
+	/**
+	 * Searches the songs table for artists
+	 * containing the character constraint.  
+	 * 
+	 * @param CharSequence constraint
+	 */
 	public Cursor searchArtists(CharSequence constraint) {
 		String query; 
 		if (constraint == null || constraint.length() == 0) {
@@ -528,6 +679,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
+	/**
+	 * Searches the songs table for songs
+	 * containing the character constraint.  
+	 * 
+	 * @param CharSequence constraint
+	 */
 	public Cursor searchSongs(CharSequence constraint) {
 		String query; 
 		if (constraint == null || constraint.length() == 0) {
@@ -551,6 +708,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
+	/**
+	 * Searches the songs table for songs by the 
+	 * given artist containing the character constraint. 
+	 * 
+	 * @param CharSequence constraint
+	 */
 	public Cursor searchSongsByArtist(CharSequence constraint, String artist) {
 		String escapedArtist = artist.replace("'", "''"); 
 		String query; 
@@ -576,18 +739,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor; 
 	}
 
-	public boolean containsSong(int hash) {
-		String query = "SELECT * FROM " + TABLE_SONGS + " WHERE " + KEY_HASH + " = " + hash; 
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(query, null);
-
-		if (cursor.getCount() > 0) {
-			return true; 
-		} else {
-			return false; 
-		}
-	}
-
+	/**
+	 * Converts a row from the database to a Song object. 
+	 * 
+	 * @param Cursor cursor
+	 * @returns Song song
+	 */
 	public Song rowToSong(Cursor cursor) {
 		boolean local = false; 
 		if (Integer.parseInt(cursor.getString(COL_LOCAL)) == 1) {
@@ -607,6 +764,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return song; 
 	}
 
+	/**
+	 * Converts the songs table to a JSONObject. 
+	 * 
+	 * @returns JSONObject songLibrary
+	 */
 	public JSONObject getLibraryAsJSON() {
 		JSONObject json = new JSONObject(); 
 
@@ -624,6 +786,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	}
 
+	/**
+	 * Converts the artists from the songs table
+	 * to a JSONObject. 
+	 * Helper method for getLibraryAsJSON(). 
+	 * 
+	 * @returns JSONArray artistsArray
+	 */
 	private JSONArray getArtistsAsJSON() {
 		JSONArray artistArray = new JSONArray(); 
 		Cursor artistCursor = getAllArtists(); 
@@ -651,6 +820,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return artistArray; 
 	}
 
+	/**
+	 * Converts the albums from the songs table
+	 * by the given artist to a JSONObject. 
+	 * Helper method for getLibraryAsJSON(). 
+	 * 
+	 * @param String artistName
+	 * @returns JSONArray albumsArray
+	 */
 	private JSONArray getAlbumsAsJSON(String artistName) {
 		JSONArray albumArray = new JSONArray(); 
 		Cursor albumCursor = getAlbumsByArtist(artistName); 
@@ -678,6 +855,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return albumArray; 
 	}
 
+	/**
+	 * Converts the songs from the songs table
+	 * by the given artist and album to a JSONObject. 
+	 * Helper method for getLibraryAsJSON(). 
+	 * 
+	 * @returns JSONArray songsArray
+	 */
 	private JSONArray getSongsAsJSON(String artistName, String albumTitle) {
 		JSONArray songArray = new JSONArray(); 
 		Cursor songCursor = getSongsByArtistAndAlbum(artistName, albumTitle); 
@@ -710,6 +894,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return songArray; 
 	}
 
+	/**
+	 * Encodes all album art from the songs table
+	 * in Base64 format and returns as JSONObject.  
+	 * 
+	 * @returns JSONObject encodedAlbumArt
+	 */
 	public JSONObject getAlbumArtAsJSON() {
 		JSONObject albumArt = new JSONObject(); 
 		JSONArray albumArray = new JSONArray(); 
@@ -748,9 +938,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 
-	/*
-	 * Load new music into the database library by
-	 * parsing the JSON response from another phone. 
+	/**
+	 * Loads music metadata into the songs table 
+	 * by parsing a remote JSON response from another phone. 
+	 * 
+	 * @param JSONArray jsonArtists
 	 */
 	public void loadMusicFromJSON(JSONArray artists) { 
 		synchronized (this) {
@@ -792,9 +984,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 	}
 
-	/*
-	 * Load album art music into the database library by
-	 * parsing the JSON response from another phone. 
+	/**
+	 * Decodes and saves Base64-encoded album art 
+	 * by parsing a remote JSON response from another phone. 
+	 * 
+	 * @param JSONArray jsonAlbumArt
 	 */
 	public void loadAlbumArtFromJSON(JSONObject albumArt) {
 		JSONArray albumArray = null; 
@@ -839,30 +1033,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 	}
 
-	/*
+	/**
 	 * Deletes all songs associated with the given ip address from the jam table.
 	 * 
-	 * Returns the number of rows deleted.
+	 * @param String ipAddr
+	 * @returns int number of rows deleted
 	 */
 	public int deleteJamSongsFromIp(String ipAddr) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		return db.delete(TABLE_JAM, KEY_IP + "='" + ipAddr + "'", null);
 	}
 
-	/*
+	/**
 	 * Deletes all songs associated with the given ip address from the song table.
 	 * 
-	 * Returns the number of rows deleted.
+	 * @param String ipAddr
+	 * @returns int number of rows deleted.
 	 */
 	public int deleteSongsFromIp(String ipAddr) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		return db.delete(TABLE_SONGS, KEY_IP + "='" + ipAddr + "'", null);
 	}
 	
-	/*
+	/**
 	 * Updates the port number for all local songs based on the server port.
 	 * 
-	 * Returns the number of rows updated.
+	 * @returns int number of rows updated
 	 */
 	public int updatePortForLocalSongs() {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -873,11 +1069,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return updated;
 	}
 	
-	/*
+	/**
 	 * Creates a jam in the log database.
 	 * Sets the start_time and latest_time timestamps to the current system time.
 	 * 
-	 * Returns the id of the jam as a long.
+	 * @returns long id of the jam
 	 */
 	public long createJamInLog() {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -890,10 +1086,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return db.insert(TABLE_LOG, null, values);
 	}
 	
-	/*
+	/**
 	 * Updates the latest_time timestamp for the provided jamId.
 	 * 
-	 * Returns the number of rows updated, which should always just be 1.
+	 * @param long jamId
+	 * @returns the number of rows updated, which should always just be 1.
 	 */
 	public int updateJamTimestamp(long jamId) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -902,8 +1099,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return db.update(TABLE_LOG, values, KEY_ID + "='" + String.valueOf(jamId)+ "'", null);
 	}
 	
-	/*
+	/**
 	 * Increments the number of users in the jam specified by the provided id.
+	 * 
+	 * @param long jamId
 	 */
 	public void incrementJamNumUsers(long jamId) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -912,12 +1111,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + "='" + String.valueOf(jamId) + "'");
 	}
 	
-	/*
+	/**
 	 * Updates the number of songs in the jam log specified by the provided id.
 	 * The number of songs is set to the number of entries in the song table at
 	 * the time that the method is executed.
 	 * 
-	 * Returns the number of rows updated, which should always be 1.
+	 * @param longJamId
+	 * @returns int number of rows updated, which should always be 1
 	 */
 	public int updateNumSongs(long jamId) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -935,7 +1135,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return db.update(TABLE_LOG, values, where, whereArgs);	
 	}
 	
-	/*
+	/**
 	 * Returns all jam logs which have not been updated in the last 15 seconds as a JSONObject.
 	 * The object has one record: jam_list, which is a list of json jams. Each json jam has
 	 * four fields: start_time, length,  
@@ -992,10 +1192,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return jsonJamLog;
 	}
 	
-	/*
+	/**
 	 * Deletes all jam log data from the database with latest_time timestamps older than 15 seconds.
 	 * 
-	 * Returns the number of rows affected (removed).
+	 * @returns int number of rows affected (removed)
 	 */
 	public int deleteLogData() {
 		int timestamp = (int) (System.currentTimeMillis() / 1000L);
