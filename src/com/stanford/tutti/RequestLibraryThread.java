@@ -13,8 +13,8 @@ import org.json.JSONObject;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 /**
- * Background thread which requests the music library metadata, 
- * jam information, and encoded album art from a remote phone, 
+ * Requests the music library metadata, jam information,
+ * and encoded album art from a remote phone, 
  * and loads it into the local database asynchronously.  
  */
 class RequestLibraryThread extends Thread {

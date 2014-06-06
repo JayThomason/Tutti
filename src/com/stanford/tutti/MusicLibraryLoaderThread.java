@@ -8,14 +8,8 @@ import android.os.Message;
 import android.provider.MediaStore;
 
 /**
- * LoadMusicLibraryActivity
- * 
- * Loads all music meta data from the SDCard into the global
- * in-memory music store.
- * 
- * If we ever want to keep track of more metadata about each
- * artist, album, or song then we can load that memory into
- * the Global music objects using the sqllite queries here.
+ * Loads all local music meta data from the SDCard 
+ * into the in-app music library database.
  */
 public class MusicLibraryLoaderThread extends Thread {
 	
@@ -31,8 +25,10 @@ public class MusicLibraryLoaderThread extends Thread {
 	}
 
 	
-	/*
+	/**
 	 * Loads all of the music into the Globals music metadata store.
+	 * 
+	 * @param Activity activity
 	 */
     public void loadMusic(Activity activity) {
     	Globals g = (Globals) activity.getApplication();
@@ -41,9 +37,11 @@ public class MusicLibraryLoaderThread extends Thread {
 		g.logger.updateNumberSongs();
 	}
 	
-    /*
+    /**
      * Loads all of the artists from the music store into the
      * Globals metadata store.
+     * 
+     * @param Activity activity
      */
 	private void loadAllArtists(Activity activity) {
         artists = new ArrayList<String>();
@@ -62,7 +60,12 @@ public class MusicLibraryLoaderThread extends Thread {
         }
 	}
 	
-	
+	/**
+	 * Loads all metadata from the local music library into the in-app database. 
+	 * 
+	 * @param Activity activity
+	 * @param Globals globals
+	 */
 	private void loadAllSongs(Activity activity, Globals g) {
 		for (int i = 0; i < artists.size(); i++) {
 			
