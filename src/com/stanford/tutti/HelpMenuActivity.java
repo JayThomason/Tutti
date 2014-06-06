@@ -14,7 +14,7 @@ import android.os.Build;
 public class HelpMenuActivity extends Activity {
 
 	/**
-	 * Creates the Help menu. 
+	 * Creates the Help menu activity. 
 	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */

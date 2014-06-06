@@ -5,10 +5,19 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
  
+/**
+ * Displays the settings page, accessible from the home screen, 
+ * and from anywhere in the app via the action bar. 
+ */
 public class SettingsMenuActivity extends PreferenceActivity {
  
 	private SharedPreferences.OnSharedPreferenceChangeListener listener; 
 	
+	/**
+	 * Creates the Settings menu activity. 
+	 * 
+	 * @see android.app.PreferenceActivity#onCreate(android.os.Bundle)
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
