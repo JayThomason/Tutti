@@ -25,6 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This activity handles discovery and display of active local jams, 
+ * as well as user interactions for sending join jam requests. 
+ */
 public class JoinJamActivity extends Activity {
 	private ListView jamListView;
 	private Server server;
@@ -34,7 +38,11 @@ public class JoinJamActivity extends Activity {
 	private Map<String, Integer> requestedMap; 
 	private ArrayList<String> nameList = new ArrayList<String>();
 
-
+	/**
+	 * Boots a local NanoHTTPD server and discovers/displays active local jams. 
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,6 +73,12 @@ public class JoinJamActivity extends Activity {
 		g.discoveryManager.startJamDiscovery();
 	}
 
+	/**
+	 * Sets the onItemClickListener for the ListView of local jams. 
+	 * When the user taps an item, a request to join the jam is sent, 
+	 * and that jam becomes greyed-out and untappable in the ListView 
+	 * until a response is received from the jam host. 
+	 */
 	private void configureJamListView() {
 		jamListView = (ListView) this.findViewById(R.id.jamListView);
 		jamListView.setOnItemClickListener(new OnItemClickListener() {
@@ -101,9 +115,13 @@ public class JoinJamActivity extends Activity {
 				});
 			}
 		});
-
 	}
 
+	/**
+	 * Sets up the UI handler that adds newly-discovered local jams
+	 * to the ListView, and also handles user feedback and interaction
+	 * changes when requests to join remote jams are accepted/rejected. 
+	 */
 	private void setupHandler() {
 		g.joinJamHandler = new Handler() {
 			@Override
@@ -113,9 +131,7 @@ public class JoinJamActivity extends Activity {
 					if (message != null) {
 						String[] tokens = message.split("//"); 
 						final String ipAddr = tokens[1]; 
-						if (tokens[0].equals("ACCEPTED")) {
-							System.out.println("tokens: ");
-							for (String str : tokens) System.out.println(str);
+						if (tokens[0].equals("ACCEPTED")) {;
 							final String username = tokens[1]; 
 							final int masterPort = Integer.parseInt(tokens[2]);
 							final String jamName = tokens[3]; 						
@@ -178,6 +194,10 @@ public class JoinJamActivity extends Activity {
 		};
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -185,6 +205,10 @@ public class JoinJamActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_settings) {
