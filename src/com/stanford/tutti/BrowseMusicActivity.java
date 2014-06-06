@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,31 +17,37 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FilterQueryProvider;
 import android.widget.SearchView;
 
+/**
+ * This activity allows the user to browse the artists, songs, and jam and to
+ * swipe between these three fragments as tabs.
+ */
 public class BrowseMusicActivity extends FragmentActivity implements ActionBar.TabListener {
 
-    public ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     private MenuItem searchMenu; 
     private SearchView searchView; 
-    
-    // Tab titles
     private String[] tabs = { "Artists", "Songs", "Jam" };
-    
     private BrowseArtistsFragment artistsFragment;
     private BrowseSongsFragment songsFragment; 
     private BrowseJamFragment jamFragment; 
-        
     private Globals g; 
+    
+    public ViewPager viewPager;
+
  
+    /**
+     * Sets up the action bar, tabs, etc.
+     * 
+     * (non-Javadoc)
+     * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +88,12 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
         setupHandler(); 
     }
 
+    /**
+     * Creates the search item in the action bar.
+     * 
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar.
@@ -99,8 +110,12 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return true;
 	}
 	
+	/**
+	 * Initializes the listener for the search option in the action bar.
+	 */
 	private void initializeSearchQueryListener() {
-		final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() { 
+		final SearchView.OnQueryTextListener queryTextListener =
+				new SearchView.OnQueryTextListener() { 
 	        @Override 
 	        public boolean onQueryTextChange(String newText) { 
 	            if (actionBar.getSelectedNavigationIndex() == 0) {
@@ -138,8 +153,14 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	    searchView.setOnQueryTextListener(queryTextListener); 
 	}
 	
+	/**
+	 * Initializes a listener for the action expander.
+	 * 
+	 * (Not used / doesn't do anything)
+	 */
 	private void initializeSizeChangeListeners() {
-	    MenuItemCompat.setOnActionExpandListener(searchMenu, new OnActionExpandListener() {
+	    MenuItemCompat.setOnActionExpandListener(searchMenu, 
+	    		new OnActionExpandListener() {
 	        @Override
 	        public boolean onMenuItemActionCollapse(MenuItem item) {
 	            // Do something when collapsed?
@@ -154,6 +175,12 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	}
 	
 
+	/** 
+	 * Callback for the back button. Just switches the index.
+	 * 
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onBackPressed()
+	 */
 	@Override
 	public void onBackPressed() {
 		int index = actionBar.getSelectedNavigationIndex(); 
@@ -164,6 +191,12 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	    viewPager.setCurrentItem(newIndex); 
 	}
 
+	/** 
+	 * Boots the settings menu if the settings button is pressed.
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -178,11 +211,19 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.ActionBar.TabListener#onTabReselected(android.app.ActionBar.Tab, android.app.FragmentTransaction)
+	 */
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.ActionBar.TabListener#onTabSelected(android.app.ActionBar.Tab, android.app.FragmentTransaction)
+	 */
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
@@ -190,11 +231,18 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		viewPager.setCurrentItem(index);
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.ActionBar.TabListener#onTabUnselected(android.app.ActionBar.Tab, android.app.FragmentTransaction)
+	 */
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction arg1) {
 		// TODO Auto-generated method stub
 	}
 	
+	/**
+	 * Sets up the listener that highlights which tab is selected.
+	 */
 	private void setupTabHighlightListener() {
 	   	/**
     	 * on swiping the viewpager make respective tab selected
@@ -230,7 +278,9 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
     	
 	}
 	
-	
+	/**
+	 * Resets the search view.
+	 */
 	private void resetSearchView() {
 		searchView.setQuery("", false); 
 		searchMenu.collapseActionView(); 
@@ -238,7 +288,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	}
 	
 	
-	/*
+	/**
 	 * Initializes the handler. The handler is used to receive messages from
 	 * the server and to update the UI accordingly (new songs, join jam requests, etc.)
 	 */
@@ -263,7 +313,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 							if (searchView.getQuery().equals("")) {
 								songsFragment.refreshSongList(); 
 							} else {
-								songsFragment.searchSongList(searchView.getQuery().toString());
+								songsFragment.searchSongList(
+										searchView.getQuery().toString());
 							}
 						}
 					} else if (index == 2) {
@@ -296,6 +347,12 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 		};		
 	}
 	
+	/**
+	 * Displays a request by another user to join the current jam as an AlertDialog.
+	 * The request can be accepted or rejected.
+	 * 
+	 * @param message
+	 */
 	public void displayJoinJamRequest(String message) {
 		final String ipAddr = message.split("//")[0]; 
 		final String username = message.split("//")[1]; 
@@ -312,7 +369,8 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	        	Client newClient = new Client(g, username, ipAddr, port);
 				g.jam.addClient(newClient);
 				g.jam.setIPUsername(ipAddr, username);
-				newClient.acceptJoinJam(g.jam.getJamName(), g.getServerPort(), new AsyncHttpResponseHandler() {}); 
+				newClient.acceptJoinJam(g.jam.getJamName(), g.getServerPort(), 
+						new AsyncHttpResponseHandler() {}); 
 		    	Thread getLibraryThread = new RequestLibraryThread(g, newClient);
 		    	getLibraryThread.start();
 	        }
@@ -327,12 +385,18 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	    }).show();
 	}
 	
+	/**
+	 * Adapter to turn the fragments into tags.
+	 */
 	public class TabsPagerAdapter extends FragmentPagerAdapter {
-		 
 	    public TabsPagerAdapter(FragmentManager fm) {
 	        super(fm);
 	    }
 	 
+	    /** 
+	     * (non-Javadoc)
+	     * @see android.support.v4.app.FragmentPagerAdapter#getItem(int)
+	     */
 	    @Override
 	    public Fragment getItem(int index) {
 	 
@@ -348,12 +412,20 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 	        return null;
 	    }
 	 
+	    /**
+	     * (non-Javadoc)
+	     * @see android.support.v4.view.PagerAdapter#getCount()
+	     */
 	    @Override
 	    public int getCount() {
 	        // get item count - equal to number of tabs
 	        return 3;
 	    }
 	    
+	    /**
+	     * (non-Javadoc)
+	     * @see android.support.v4.app.FragmentPagerAdapter#instantiateItem(android.view.ViewGroup, int)
+	     */
 	    @Override
 	    public Object instantiateItem(ViewGroup container, int position) {
 	    	Object fragment = super.instantiateItem(container, position); 

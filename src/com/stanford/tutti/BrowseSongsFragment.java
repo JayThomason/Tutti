@@ -1,6 +1,5 @@
 package com.stanford.tutti; 
 
-
 import org.json.JSONObject;
 
 import android.database.Cursor;
@@ -18,17 +17,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Fragment that allows the user to scroll through a list on screen that includes
+ * every song in the library. When this activity is started from the artists fragment
+ * it only includes songs by the artist selected.
+ */
 public class BrowseSongsFragment extends Fragment {
-
 	private Globals g; 
-	private View rootView; 
-	public ListView listView; 
-	
+	private View rootView; 	
 	private String columns[]; 
 	private int views[]; 
+	
+	public ListView listView; 
 	public BrowseMusicAdapter adapter; 
 	
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -43,26 +50,27 @@ public class BrowseSongsFragment extends Fragment {
 		return rootView;
 	}
 
+	/**
+	 * Initializes the list of songs for the list view.
+	 */
 	public void initializeSongList() {
 		Cursor cursor = g.db.getAllSongs(); 
 		
 		columns = new String[] { "art", "artist", "title" };
 		views = new int[] { R.id.browserArt, R.id.browserText };
-		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, cursor, columns, views); 
-		
-		
-		//adapter.setFilterQueryProvider(searchFilter);
-		
+		adapter = new BrowseMusicAdapter(g, R.layout.list_layout, 
+				cursor, columns, views); 
 		
 		listView.setAdapter(adapter);
-		
 		listView.setFastScrollEnabled(true);
 		listView.setTextFilterEnabled(true);
 		
 		setSongListItemClickListener();
 	}
 	
-	
+	/**
+	 * Refreshes the list of songs displayed.
+	 */
 	public void refreshSongList() {
 		Cursor cursor; 
 		
@@ -78,7 +86,11 @@ public class BrowseSongsFragment extends Fragment {
 		listView.setFastScrollEnabled(true);
 	}
 	
-	
+	/**
+	 * Searches the songs for a song with a name that includes the query string.
+	 * 
+	 * @param query The substring to query for
+	 */
 	public void searchSongList(String query) {
 		if (g.currentArtistView.equals("")) {
 			Cursor newCursor = g.db.searchSongs(query); 
@@ -92,7 +104,7 @@ public class BrowseSongsFragment extends Fragment {
 	}
 
 
-	/*
+	/**
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * move to the ViewAlbumsActivity and filter on the selected artist. 
 	 */

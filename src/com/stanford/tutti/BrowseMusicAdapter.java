@@ -14,34 +14,53 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Adapter for the music browser. Associates songs with elements in
+ * the list view for the artists, songs, and jam fragments.
+ */
 public class BrowseMusicAdapter extends SimpleCursorAdapter {
-
     private int layout;
-    private Cursor cr;
     private String[] columns; 
     private final LayoutInflater inflater;
-    
     private Globals g; 
     private int noArtImgID;
             
+    /**
+     * @param context 
+     * @param layout
+     * @param c
+     * @param from
+     * @param to
+     */
     public BrowseMusicAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context,layout,c,from,to);
         this.layout=layout;
         this.mContext = context;
         this.columns = from; 
-        this.inflater=LayoutInflater.from(context);
-        this.cr=c;
-        
+        this.inflater=LayoutInflater.from(context);        
         this.g = (Globals) context.getApplicationContext(); 
     	this.noArtImgID = context.getResources().getIdentifier("musicnote", "drawable", context.getPackageName());
     }
 
+    /**
+     * (non-Javadoc)
+     * @see android.support.v4.widget.ResourceCursorAdapter#newView(android.content.Context, android.database.Cursor, android.view.ViewGroup)
+     */
     @Override
     public View newView (Context context, Cursor cursor, ViewGroup parent) {
             return inflater.inflate(layout, null);
     }
 
-
+    /**
+     * Binds a song from the library database to a view in the list view.
+     * 
+     * @param view A view from the ListView to bind to
+     * @param context The context to use
+     * @param cursor Cursor representing a song from the music library database.
+     * 
+     * (non-Javadoc)
+     * @see android.support.v4.widget.SimpleCursorAdapter#bindView(android.view.View, android.content.Context, android.database.Cursor)
+     */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
@@ -97,12 +116,24 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         }
     }
     
+    /**
+     * Sets the top margin for a view.
+     * 
+     * @param view The view to set the margin for
+     * @param pixels The number of pixels for the margin
+     */
     private void setTopMargin(View view, int pixels) {
     	ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.findViewById(R.id.browserArt).getLayoutParams();
         mlp.setMargins(0, pixels, 0, 0);
     }
     
-    
+    /**
+     * Binds an artist from the database to a view.
+     * Used in the artists fragment list view.
+     * 
+     * @param view The view to bind the artist to.
+     * @param cursor A cursor representing an artist.
+     */
     private void bindArtistsView(View view, Cursor cursor) {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
@@ -118,6 +149,13 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         ownerView.setText(username); 
     }
     
+    /**
+     * Binds a song from the database to a view.
+     * Used in the songs fragment list view.
+     * 
+     * @param view The view to bind the song to.
+     * @param cursor A cursor representing a song from the library database.
+     */
     private void bindSongsView(View view, Cursor cursor) {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
@@ -156,7 +194,13 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         ownerView.setText(username); 
     }
     
-    
+    /**
+     * Binds a song from the jam to a view.
+     * Used in the jam fragment list view.
+     * 
+     * @param view The view to bind the song to.
+     * @param cursor A cursor representing a song from the jam database.
+     */
     private void bindJamView(View view, Cursor cursor) {
         TextView titleView = (TextView) view.findViewById(R.id.browserText); 
         TextView ownerView = (TextView) view.findViewById(R.id.ownerText); 
@@ -211,12 +255,12 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
     }
     
 
-	
+	/**
+	 * (non-Javadoc)
+	 * @see android.widget.BaseAdapter#isEnabled(int)
+	 */
     @Override
     public boolean isEnabled(int position) {
-        /*if(YOUR CONDTITION){
-            return false;
-        }*/
         return true;
     }
 }

@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -31,7 +30,6 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private ImageButton backButton;
 	private ImageButton nextButton;
 
-	//private ListView listView;
 	private DragSortListView listView; 
 
 	private View rootView; 
@@ -46,7 +44,12 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 
 	private BrowseMusicAdapter adapter; 
 
-	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener()
+	/**
+	 * Listener for when an item in the DragSortList is dropped (after being 
+	 * picked up and dragged). Changes the song's index in the jam.
+	 */
+	private DragSortListView.DropListener onDrop = 
+			new DragSortListView.DropListener()
 	{
 		@Override
 		public void drop(int from, int to)
@@ -77,7 +80,12 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		}
 	};
 
-	private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener() {
+	/**
+	 * Listener for when an item (song) in the DragSortList is removed. The song
+	 * should be removed from the jam.
+	 */
+	private DragSortListView.RemoveListener onRemove = 
+			new DragSortListView.RemoveListener() {
 		@Override
 		public void remove(int index) {
 			String songJamId = ""; 
@@ -109,7 +117,13 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	};
 
 
-
+	/**
+	 * Sets up the BrowseJamFragment by initializing the jam list, player buttons,
+	 * and seek bar.
+	 * 
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -131,7 +145,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		if (g.jam.checkMaster()) {
 			initializeSeekBar(); 
 		} else {
-			RelativeLayout progressBar = (RelativeLayout) rootView.findViewById(R.id.player_progress); 
+			RelativeLayout progressBar = (RelativeLayout) 
+					rootView.findViewById(R.id.player_progress); 
 			progressBar.setVisibility(View.GONE); 
 			listView.setPadding(0, 0, 0, 120);
 		}
@@ -146,6 +161,9 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 
 
+	/**
+	 * Initializes the seek bar for the current song in the jam.
+	 */
 	private void initializeSeekBar() {
 		seekBar.setMax(g.playerDuration);  
 		seekBar.postDelayed(onEverySecond, 1000);  
@@ -160,10 +178,14 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			public void onStartTrackingTouch(SeekBar seekBar) { }  
 
 			@Override  
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }  
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) { }  
 		});  
 	}
 
+	/**
+	 * Runnable that updates the seek bar once per second.
+	 */
 	private Runnable onEverySecond = new Runnable() {  
 		@Override  
 		public void run(){  
@@ -180,7 +202,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		}  
 	};  
 
-	private void updateTime(){  
+	/**
+	 * Updates the time strings displayed in the media player representing the 
+	 * the song's progress.
+	 */
+	private void updateTime() {  
 		current = g.jam.mediaPlayer.getCurrentPosition();  
 
 		int dSeconds = (int) (g.playerDuration / 1000) % 60 ;  
@@ -202,8 +228,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}  
 
 
-	/*
-	 * Initializes the play, pause, back, and next buttons on the page.
+	/**
+	 * Initializes the play, pause, back, and next buttons.
 	 */
 	private void assignButtons() {
 		backButton = (ImageButton) rootView.findViewById(R.id.song_media_player_back_btn);
@@ -212,8 +238,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		nextButton = (ImageButton) rootView.findViewById(R.id.song_media_player_next_btn);
 	}
 
-	/*
-	 * Configures each individual button.
+	/**
+	 * Configures the play, pause, back and next buttons.
 	 */
 	private void configureButtons() {
 		configureBackButton();
@@ -222,8 +248,10 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		configureNextButton();
 	}
 
-	/*
-	 * Sets the OnClickListener for the play button.
+	/**
+	 * Sets the OnClickListener for the play button. It starts the jam if this is
+	 * the master phone and it sends a message to the master to tell it to start
+	 * the jam otherwise.
 	 */
 	private void configureStartButton() {
 		startButton.setOnClickListener(new OnClickListener() {
@@ -232,8 +260,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				g.jam.start();
 				if (!g.jam.checkMaster()) {
 					masterClient.startPlaying(new AsyncHttpResponseHandler() {
-						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							System.out.println("Requested start playing on master, returned code: " + statusCode);
+						public void onSuccess(int statusCode, Header[] headers,
+								byte[] responseBody) {
+							System.out.println(
+									"Requested start playing on master, returned code: " 
+											+ statusCode);
 						}
 					});
 				}
@@ -241,7 +272,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		});
 	}
 
-	/*
+	/**
 	 * Sets the OnClickListener for the pause button.
 	 */
 	private void configurePauseButton() {
@@ -251,8 +282,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				g.jam.pause();
 				if (!g.jam.checkMaster()) {
 					masterClient.pauseSong(new AsyncHttpResponseHandler() {
-						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							System.out.println("Requested pause song on master, returned code: " + statusCode);
+						public void onSuccess(int statusCode, Header[] headers, 
+								byte[] responseBody) {
+							System.out.println(
+									"Requested pause song on master, returned code: " 
+											+ statusCode);
 						}
 					});
 				}
@@ -260,7 +294,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		});
 	}
 
-	/*
+	/**
 	 * Sets the OnClickListener for the back (prev song) button.
 	 */
 	private void configureBackButton() {
@@ -270,8 +304,11 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				g.jam.seekTo(0);
 				if (!g.jam.checkMaster()) {
 					masterClient.restartSong(new AsyncHttpResponseHandler() {
-						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							System.out.println("Requested previous song on master, returned code: " + statusCode);
+						public void onSuccess(int statusCode, Header[] headers,
+								byte[] responseBody) {
+							System.out.println(
+									"Requested previous song on master, returned code: "
+											+ statusCode);
 						}
 					});
 				}
@@ -290,9 +327,13 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 				index++;
 				String songTimestampId = g.jam.getSongIdByIndex(index);
 				if (!g.jam.checkMaster()) { // client
-					masterClient.requestSetSong(songTimestampId, new AsyncHttpResponseHandler() {
-						public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-							System.out.println("Requested next song on master, returned code: " + statusCode);
+					masterClient.requestSetSong(songTimestampId, 
+							new AsyncHttpResponseHandler() {
+						public void onSuccess(int statusCode, Header[] headers, 
+								byte[] responseBody) {
+							System.out.println(
+									"Requested next song on master, returned code: " 
+											+ statusCode);
 						}
 					});
 				}
@@ -316,13 +357,12 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 
 
-	/*
+	/**
 	 * Initializes the listView with a list of the current songs in the jam.
 	 */
 	public void initializeJamList() {
 		listView.setDropListener(onDrop);
 		listView.setRemoveListener(onRemove);
-
 
 		DragSortController controller = new DragSortController(listView);
 		controller.setDragHandleId(R.id.browserText);
@@ -337,7 +377,6 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		listView.setOnTouchListener(controller);
 		listView.setDragEnabled(true);
 
-
 		Cursor cursor = g.jam.getSongs(); 
 
 		String[] columns = new String[] { "art", "artist", "title", "addedBy" };
@@ -351,6 +390,9 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 	
 
+	/**
+	 * Refreshes the jam list.
+	 */
 	public void refreshJamList() {
 		Cursor newCursor = g.jam.getSongs(); 
 		Cursor oldCursor = adapter.swapCursor(newCursor);
@@ -358,7 +400,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	}
 
 
-	/*
+	/**
 	 * Adds an onItemClickListener to the items in the listView that will
 	 * play the song which is clicked on.
 	 */
@@ -410,7 +452,10 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 		});
 	}
 
-	
+	/**
+	 * (non-Javadoc)
+	 * @see android.media.MediaPlayer.OnPreparedListener#onPrepared(android.media.MediaPlayer)
+	 */
 	@Override  
 	public void onPrepared(MediaPlayer mp) { 
 		if (g.jam.checkMaster()) {
