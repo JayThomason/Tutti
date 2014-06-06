@@ -20,11 +20,10 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stanford.tutti.NanoHTTPD.Response.Status;
 
 
-/*
+/**
  * This class extends the NanoHTTPD HTTP server. It implements the API used
- * to maintain and update the shared libraries and playlists in each jam and
- * to control the media player. Since the API is still in flux we will not
- * be providing a complete documentation of the API endpoints yet.
+ * to maintain and update the shared libraries and playlists between the phones
+ * in each jam, and to control the media player. 
  */
 public class Server extends NanoHTTPD {
 	/* These strings define the API endpoints for the tutti API. */
@@ -50,9 +49,17 @@ public class Server extends NanoHTTPD {
 	private static final String PING = "/ping";
 	private static final String IS_MASTER = "/isMaster";
 	private static final String HTTP_CLIENT_IP = "http-client-ip";
-	private static final int PORT = 0; // should force an unused port number
+	private static final int PORT = 0; 
 	private Globals g = null;
 	
+	/**
+	 * Constructor. 
+	 * 
+	 * Constructs the singleton Server that is used to maintain
+	 * and update shared libraries and playlists between phones. 
+	 * 
+	 * @param Globals globals
+	 */
 	public Server(Globals g) {
 		super(PORT);
 		this.g = g;
@@ -65,24 +72,30 @@ public class Server extends NanoHTTPD {
 		System.out.println("Server booting on port..." + port);
 	}
 	
-	/*
+	/**
 	 * Returns a BAD_REQUEST HTTP response.
+	 * 
+	 * @returns Response badRequestResponse
 	 */
 	private Response badRequestResponse() {
 		return new NanoHTTPD.Response(NanoHTTPD.Response.Status.BAD_REQUEST, 
 				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Bad Request".getBytes()));
 	}
 	
-	/*
+	/**
 	 * Returns a NOT_FOUND HTTP response.
+	 * 
+	 * @returns Response notFoundResponse
 	 */
 	private Response fileNotFoundResponse() {
 		return new NanoHTTPD.Response(NanoHTTPD.Response.Status.NOT_FOUND, 
 				NanoHTTPD.MIME_PLAINTEXT, new ByteArrayInputStream("Not Found".getBytes()));	
 	}
 	
-	/*
+	/**
 	 * Logs a request to the console. Prints the method, uri, and headers.
+	 * 
+	 * @param IHTTPSession session
 	 */
 	private void logRequest(IHTTPSession session) {
 		String uri = session.getUri();
@@ -98,6 +111,12 @@ public class Server extends NanoHTTPD {
 		System.out.println("\n");
 	}
 	
+	/**
+	 * Serves a response when the server receives a request. 
+	 * 
+	 * @param IHTTPSession session
+	 * @returns Response response
+	 */
     @Override
     public Response serve(IHTTPSession session) {
     	logRequest(session);
@@ -113,6 +132,12 @@ public class Server extends NanoHTTPD {
     	}
     }
     
+	/**
+	 * Serves responses for all GET requests. 
+	 * 
+	 * @param IHTTPSession session
+	 * @returns Response response
+	 */
     public Response getResponse(IHTTPSession session) {
     	String uri = session.getUri();
     	Map<String, String> headers = session.getHeaders();
@@ -155,6 +180,12 @@ public class Server extends NanoHTTPD {
     	}
     }
 
+	/**
+	 * Serves responses for all POST requests. 
+	 * 
+	 * @param IHTTPSession session
+	 * @returns Response response
+	 */
 	public Response postResponse(IHTTPSession session) {
     	String uri = session.getUri();
     	Map<String, String> parameters = session.getParms();
@@ -172,9 +203,17 @@ public class Server extends NanoHTTPD {
     	}
     }
     
-    /*
-     * Responds to a request to join the jam. 
-     */
+    /**
+     * Responds to a request to join this phone's jam. 
+     * This response merely confirms that the request was received. 
+     * The join jam request must be accepted or rejected by the 
+     * user (via an AlertDialog) before a final response is sent. 
+	 * 
+	 * @param String otherIpAddress
+	 * @param String otherPort
+	 * @param String otherUsername
+	 * @returns Response response
+	 */
     private Response joinJamResponse(String otherIpAddr, String otherPort, String username) {
     	if (username == null) {
     		return badRequestResponse();
@@ -188,6 +227,15 @@ public class Server extends NanoHTTPD {
 		return new NanoHTTPD.Response("Requesting master user permission to join");
 	}
     
+    /**
+     * Responds to a request notifying this phone that
+     * its previous request to join a remote jam was accepted. 
+	 * 
+	 * @param String otherIpAddress
+	 * @param String portNumber
+	 * @param String jamName
+	 * @returns Response response
+	 */
     private Response acceptJoinJamResponse(String otherIpAddr, String portNumber, String jamName) {
 		if (g.joinJamHandler != null) {
 			Message msg = g.joinJamHandler.obtainMessage(0);
@@ -197,6 +245,13 @@ public class Server extends NanoHTTPD {
 		return new NanoHTTPD.Response("Joining jam");
     }
     
+    /**
+     * Responds to a request notifying this phone that
+     * its previous request to join a remote jam was rejected. 
+	 * 
+	 * @param String otherIpAddress
+	 * @returns Response response
+	 */
     private Response rejectJoinJamResponse(String otherIpAddr) {
     	if (g.joinJamHandler != null) {
     		Message msg = g.joinJamHandler.obtainMessage(0); 
@@ -206,10 +261,14 @@ public class Server extends NanoHTTPD {
     	return new NanoHTTPD.Response("Not joining jam"); 
     }
     
-    /*
-     * Responds to a request to update the jam. 
-     * Pause, play, skip song, set song, etc. 
-     */
+    /**
+     * Responds to a request to update the local jam. 
+     * 
+	 * @param String otherIpAddress
+	 * @param String path
+	 * @param Map<String, String> parameters
+	 * @returns Response response
+	 */
     private Response editJamResponse(final String otherIpAddr, final String path, Map<String, String> parameters) {
     	if (path.startsWith(JAM_ADD_SONG)) {
     		return jamAddSongResponse(otherIpAddr, parameters.get("songId"), parameters.get("addedBy"), parameters.get("jamSongId")); 
@@ -235,6 +294,13 @@ public class Server extends NanoHTTPD {
         return badRequestResponse();
     }
     
+    /**
+     * Parses, loads, and responds to a POST request containing new 
+     * music library metadata from a remote phone as JSON. 
+     * 
+	 * @param IHTTPSession session
+	 * @returns Response response
+	 */
     private Response updateLibraryResponse(IHTTPSession session) {
     	Map<String, String> files = new HashMap<String, String>();
     	try {
@@ -255,6 +321,13 @@ public class Server extends NanoHTTPD {
     	return new NanoHTTPD.Response("Updated library");
     }
     
+    /**
+     * Parses, loads, and responds to a POST request containing new 
+     * encoded album art from a remote phone as JSON. 
+     * 
+	 * @param IHTTPSession session
+	 * @returns Response response
+	 */
     private Response updateAlbumArtResponse(IHTTPSession session) {
     	Map<String, String> files = new HashMap<String, String>();
     	try {
@@ -269,6 +342,13 @@ public class Server extends NanoHTTPD {
     	return new NanoHTTPD.Response("Updated album art");
     }
     
+    /**
+     * Parses, loads, and responds to a POST request containing new 
+     * shared jam metadata from a remote phone as JSON. 
+     * 
+	 * @param IHTTPSession session
+	 * @returns Response response
+	 */
     private synchronized Response updateJamResponse(IHTTPSession session) {
     	if (g.jam.checkMaster()) {
     		return new NanoHTTPD.Response("Error: Master phone maintains canonical Jam"); 
@@ -293,9 +373,17 @@ public class Server extends NanoHTTPD {
     	}
     }
 
-    /*
-     * Adds the requested song to the jam.
-     */
+    /**
+     * Adds the requested song to the jam, 
+     * and rebroadcasts the new jam state to all Clients. 
+     * Only the master phone of the jam should receive /jam/add requests. 
+     * 
+	 * @param String otherIpAddress
+	 * @param String songId
+	 * @param String addedBy
+	 * @param String jamSongId
+	 * @returns Response response
+	 */
 	private synchronized Response jamAddSongResponse(String otherIpAddr, String songId, String addedBy, String jamSongId) {
 		if (g.jam.checkMaster()) {
 			Song song = g.db.getSongByHash(songId);
@@ -325,9 +413,15 @@ public class Server extends NanoHTTPD {
 		}
 	}
 	
-    /*
-     * Sets the requested song to be the currently playing song. 
-     */
+    /**
+     * Sets the requested song to be the currently playing song,
+     * and rebroadcasts the new jam state to all Clients. 
+     * Only the master phone of the jam should receive /jam/set requests. 
+     * 
+	 * @param String otherIpAddress
+	 * @param String jamSongId
+	 * @returns Response response
+	 */
 	private synchronized Response jamSetSongResponse(String otherIpAddr, String jamSongId) {
 		if (g.jam.checkMaster()) {
 			
@@ -351,7 +445,15 @@ public class Server extends NanoHTTPD {
 		}
 	}
 	
-	
+    /**
+     * Moves the requested song to a new index in the jam, 
+     * and rebroadcasts the new jam state to all Clients. 
+     * Only the master phone of the jam should receive /jam/move requests. 
+     * 
+	 * @param String otherIpAddress
+	 * @param String jamSongId
+	 * @returns Response response
+	 */
 	private synchronized Response jamMoveSongResponse(String otherIpAddr, String jamSongId, String to) {
 		if (g.jam.checkMaster()) {
 			JSONObject jsonJam = new JSONObject(); 
@@ -373,7 +475,15 @@ public class Server extends NanoHTTPD {
 		}
 	}
 	
-	
+    /**
+     * Removes the requested song from the jam, 
+     * and rebroadcasts the new jam state to all Clients. 
+     * Only the master phone of the jam should receive /jam/remove requests. 
+     * 
+	 * @param String otherIpAddress
+	 * @param String jamSongId
+	 * @returns Response response
+	 */
 	private synchronized Response jamRemoveSongResponse(String otherIpAddr, String jamSongID) {
 		if (g.jam.checkMaster()) {
 			JSONObject jsonJam = new JSONObject(); 
@@ -394,33 +504,43 @@ public class Server extends NanoHTTPD {
 	}
 	
 	
-    /*
-     * Start playing the Jam. 
-     */
+    /**
+     * Starts playing the current song in the jam
+     * (or the first song, if none is currently selected). 
+     * 
+	 * @returns Response response
+	 */
 	private Response jamStartResponse() {
 		g.jam.start(); 
 		return new NanoHTTPD.Response("Started playing jam");
 	}
 	
-    /*
-     * Pause the Jam. 
-     */
+    /**
+     * Pauses the currently playing song in the jam. 
+     * 
+	 * @returns Response response
+	 */
 	private Response jamPauseResponse() {
 		g.jam.pause(); 
 		return new NanoHTTPD.Response("Paused playback of jam");
 	}
 	
-    /*
-     * Restart the currently playing song in the Jam. 
-     */
+    /**
+     * Restarts the currently playing song in the jam. 
+     * 
+	 * @returns Response response
+	 */
 	private Response jamRestartResponse() {
 		g.jam.seekTo(0);
 		return new NanoHTTPD.Response("Moved to previous song in jam");
 	}
 
-	/*
-     * Returns an OK HTTP response for the path (if the path corresponds
-     * to a media file) with an audio/mpeg body.
+	/**
+     * Returns an OK HTTP response for the path with an audio/mpeg body, 
+     * if the given path corresponds to a media file. 
+     * 
+     * @param String path
+     * @returns Response response
      */
     private Response getSong(final String path) {
         FileInputStream fis = null;
@@ -433,9 +553,12 @@ public class Server extends NanoHTTPD {
         return new NanoHTTPD.Response(Status.OK, "audio/mpeg", fis);
 	}
 
-    /*
-     * Returns an OK HTTP response with a JSON body containing the local
-     * phone's library as JSON.
+    /**
+     * Returns an OK HTTP response with a JSON body containing
+     * this phone's music library metadata as JSON. 
+     * 
+     * @param String clientIpAddress
+     * @returns Response jsonMusicLibraryResponse
      */
 	private Response getLocalLibraryResponse(String clientIpAddr) {
 		
@@ -463,9 +586,11 @@ public class Server extends NanoHTTPD {
 		return response;
 	}
 	
-    /*
-     * Returns an OK HTTP response with a JSON body containing the local
-     * phone's album art as JSON. 
+    /**
+     * Returns an OK HTTP response with a JSON body containing
+     * this phone's album art as Base64-encoded JSON. 
+     * 
+     * @returns Response jsonAlbumArtResponse
      */
 	private Response getAlbumArtResponse() {
 		JSONObject jsonAlbumArt = g.db.getAlbumArtAsJSON(); 
@@ -487,9 +612,12 @@ public class Server extends NanoHTTPD {
 		return response;
 	}
 	
-	/*
+	/**
 	 * Returns an OK HTTP response once all of the songs associated with the specified user
 	 * have been removed from the library and jam.
+	 * 
+	 * @param Map<String, String> parameters
+	 * @returns Response response
 	 */
     private Response removeUserFromJamResponse(Map<String, String> parameters) {
     	String ipAddr = parameters.get("ip");
@@ -499,9 +627,13 @@ public class Server extends NanoHTTPD {
 		return new NanoHTTPD.Response("OK");
 	}
     
-    /*
+    /**
      * Returns an OK Http response if the correct master phone performs the ping and a 
      * bad request response if any other phone performs the ping.
+     * Pings are used to determine which Client phones are still active/connected to the jam. 
+     * 
+     * @param masterIpAddress
+     * @returns Response response
      */
     private Response pingResponse(String masterIpAddr) {
     	if (g.jam.getMasterIpAddr().equals(masterIpAddr)) {
@@ -512,9 +644,11 @@ public class Server extends NanoHTTPD {
     	}
     }
     
-    /*
+    /**
      * Returns an OK Http response if the phone is the master. Returns a bad request response
      * otherwise. Intended to be used during discovery to see if a jam is active or stale.
+     * 
+     * @returns Response
      */
     private Response isMasterResponse() {
     	if (g.jam.checkMaster()) {
