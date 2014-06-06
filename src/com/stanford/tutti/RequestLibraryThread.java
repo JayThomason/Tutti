@@ -12,19 +12,34 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-
-
-
+/**
+ * Background thread which requests the music library metadata, 
+ * jam information, and encoded album art from a remote phone, 
+ * and loads it into the local database asynchronously.  
+ */
 class RequestLibraryThread extends Thread {
 	private Globals g;
 	private Client client; 
 	
+	/**
+	 * Constructor. 
+	 * 
+	 * Creates a new thread to request from the given Client. 
+	 * 
+	 * @param Globals g
+	 * @param Client client
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	public RequestLibraryThread(Globals g, Client client) {
 		this.g = g; 
 		this.client = client;
 	}
 
-	/*
+	/**
+	 * Runs the thread to request music library metadata, 
+	 * jam information, and album art from a remote client phone. 
+	 * 
 	 * (non-Javadoc)
 	 * @see java.lang.Thread#run()
 	 */
