@@ -14,7 +14,7 @@ import android.os.Build;
 public class HelpMenuActivity extends Activity {
 
 	/**
-	 * Loads the music from disk, resets the jam, sets the Welcome Text.
+	 * Creates the Help menu. 
 	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -35,6 +35,10 @@ public class HelpMenuActivity extends Activity {
 		}
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -42,6 +46,10 @@ public class HelpMenuActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
