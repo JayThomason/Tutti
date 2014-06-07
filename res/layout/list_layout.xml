@@ -13,17 +13,21 @@
         android:scaleType="fitXY"
         android:background="#000000"
     />
-   
+    
+   <RelativeLayout 
+    android:layout_height="wrap_content" 
+    android:layout_width="fill_parent">
+
+
      <TextView
         android:id="@+id/browserText"
-        android:layout_width="0dip"
+        android:layout_width="230dp"
         android:layout_height="60dp"
-        android:layout_weight="0.54"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="5dp"
-        android:gravity="center|left"
+		android:layout_alignParentLeft="true"
         android:textSize="16dp"
         android:background="@android:color/transparent"
         android:textColor="#ffffff"
@@ -36,8 +40,9 @@
      
     <TextView
         android:id="@+id/ownerText"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="60dp"
+        android:layout_alignParentRight="true"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
@@ -50,5 +55,7 @@
         android:maxLines="1"
 		android:ellipsize="end"
      />
+    
+    </RelativeLayout>
              
 </LinearLayout>

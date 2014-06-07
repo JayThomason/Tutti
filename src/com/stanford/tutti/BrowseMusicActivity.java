@@ -342,7 +342,7 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 					if (jamFragment != null) 
 						jamFragment.refreshJamList(); 
 				} else if (msg.what == 8) {
-					// Start the movement of the progress bar agaain
+					// Start the movement of the progress bar again
 					if (jamFragment != null) {
 						jamFragment.running = true; 
 						jamFragment.seekBar.postDelayed(jamFragment.onEverySecond, 1000);  
