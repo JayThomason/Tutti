@@ -34,7 +34,8 @@ public class SettingsMenuActivity extends PreferenceActivity {
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         		if (key.equals("prefUsername")) {
-        			
+        			Globals g = (Globals) getApplication(); 
+        			g.jam.setIPUsername(g.getIpAddr(), g.getUsername());
         		} 
         	}
         };
