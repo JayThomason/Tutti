@@ -335,14 +335,34 @@ public class Jam {
 		return getSongIdByIndex(index); 
 	}
 
+	/**
+	 * Returns the song at the given index of the jam. 
+	 * 
+	 * @param int index
+	 * @return Song song
+	 */
 	public Song getSongByIndex(int index) {
 		return g.db.getSongInJamByIndex(index);  
 	}
 
+	/**
+	 * Returns the timestamp ID of the song at the given
+	 * index in the jam. 
+	 * 
+	 * @param int index
+	 * @return String timestampID
+	 */
 	public String getSongIdByIndex(int index) {
 		return g.db.getJamSongIDByIndex(index); 
 	}
 
+	/**
+	 * Moves the song with the given timestamp ID 
+	 * to a new index in the jam. 
+	 * 
+	 * @param String jamSongId
+	 * @param int toIndex
+	 */
 	public void changeSongIndexInJam(String jamSongId, int to) {
 		int from = g.db.changeSongIndexInJam(jamSongId, to);
 
@@ -355,6 +375,10 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Shuffles the jam, i.e., randomly rearranges
+	 * the indices of all songs after the current song. 
+	 */
 	public void shuffle() {
 		if (!isShuffled()) {
 			g.db.shuffleJam(currIndex, currSize - 1); 
@@ -364,29 +388,56 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Unshuffles the jam by restoring the songs
+	 * to their original orderings. 
+	 */
 	public void unShuffle() {
 		isShuffled = false; 
 	}
 
+	/**
+	 * Checks whether the jam is shuffled. 
+	 * 
+	 * @return boolean isShuffled
+	 */
 	public boolean isShuffled() {
 		return isShuffled; 
 	}
 
+	/**
+	 * Checks whether the jam contains the given song. 
+	 * 
+	 * @param Song song
+	 * @return boolean containsSong
+	 */
 	public boolean containsSong(Song song) {
 		return g.db.jamContainsSong(song); 
 	}
 
+	/**
+	 * Returns the number of songs in the jam. 
+	 * 
+	 * @return int numSongs
+	 */
 	public int getJamSize() {
 		return currSize; 
 	}
 
+	/**
+	 * Clears and resets the jam. 
+	 */
 	public void clearSongs() {
 		g.db.clearJam(); 
 		currIndex = -1; 
 		currSize = 0; 
 	}
 
-
+	/**
+	 * Remove the song with the given timestamp ID from the jam. 
+	 * 
+	 * @param String jamSongID
+	 */
 	public void removeSong(String jamSongID) {
 		int index = g.db.removeSongFromJam(jamSongID);
 
@@ -401,6 +452,13 @@ public class Jam {
 		
 	}
 
+	/**
+	 * Sends a message to all remote Clients to update their 
+	 * local versions of the jam to match the master. 
+	 * Should only be called on the master phone of the jam. 
+	 * 
+	 * @param JSONObject jsonJam
+	 */
 	public void broadcastJamUpdate(JSONObject jsonJam) {
 		if (master) {
 			for (Client client : clientSet) {
@@ -413,6 +471,16 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Sends a message to the master phone of the jam
+	 * requesting to add a song to the jam. 
+	 * Should only be called on non-master Client phones. 
+	 * 
+	 * @param String songCode
+	 * @param String songTitle
+	 * @param String username
+	 * @param String timestampID
+	 */
 	public void requestAddSong(String songCode, final String title, String username, String timestamp) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
@@ -430,6 +498,14 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Sends a message to the master phone of the jam
+	 * requesting to change the currently-playing song.  
+	 * Should only be called on non-master Client phones. 
+	 * 
+	 * @param String jamSongID
+	 * @param String title
+	 */
 	public void requestSetSong(final String jamSongID, final String title) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
@@ -447,6 +523,14 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Sends a message to the master phone of the jam
+	 * requesting to move a song to a new index in the jam. 
+	 * Should only be called on non-master Client phones. 
+	 * 
+	 * @param String jamSongID
+	 * @param int toIndex
+	 */
 	public void requestMoveSong(final String jamSongID, int to) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
@@ -458,6 +542,13 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Sends a message to the master phone of the jam
+	 * requesting to remove a song from the jam.  
+	 * Should only be called on non-master Client phones. 
+	 * 
+	 * @param String jamSongID
+	 */
 	public void requestRemoveSong(final String jamSongID) {
 		if (master) {
 			System.out.println("Error: Master should resend entire Jam state upon modifications"); 
@@ -468,16 +559,20 @@ public class Jam {
 	}
 
 
-	/*
-	 * Plays the current song. 
+	/**
+	 * Plays the current song in the jam. 
+	 * If the song is located on a remote Client phone, 
+	 * a request is dispatched to the owner phone 
+	 * to stream the media to the master phone. 
+	 * 
+	 * Only the master phone of the jam actually
+	 * produces audio output. 
 	 * 
 	 * @return True (success) or false (failure)
 	 */
 	public boolean playCurrentSong() {
 		//if (!master)
 		//	return false; 
-
-		System.out.println("PLAYING CURRENT SONG"); 
 
 		if (hasCurrentSong()) {
 			mediaPlayer.reset();
@@ -524,6 +619,13 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Returns a JSON representation of the jam, 
+	 * containing the song list, current index, 
+	 * and list of IP addresses / associated usernames. 
+	 * 
+	 * @return JSONObject jsonJam
+	 */
 	public JSONObject toJSON() {
 		JSONObject jam = new JSONObject(); 
 		JSONArray songArray = new JSONArray(); 
@@ -548,10 +650,11 @@ public class Jam {
 		return jam; 
 	}
 
-	/*
-	 * Load existing Jam state by parsing
-	 * the JSON response from another phone. 
+	/**
+	 * Clears existing jam state and recreates the jam
+	 * using an updated version sent from the master phone as JSON. 
 	 * 
+	 * @param JSONObject jsonJam
 	 */
 	public void loadJamFromJSON(JSONObject jam) {    	
 		try {
@@ -601,8 +704,9 @@ public class Jam {
 		} 
 	}
 
-	/*
-	 * Periodically checks if the master has received 
+	/**
+	 * Periodically pings all Clients in the jam to 
+	 * check whether or not they are still active / reachable. 
 	 */
 	public void startMasterClientPingThread() {
 		masterKeepAliveThread = new Thread() {
@@ -640,10 +744,12 @@ public class Jam {
 		masterKeepAliveThread.start();
 	}
 
-	/*
+	/**
 	 * Removes the specified client from the jam by removing all of its songs from
-	 * the library and jam and sending a message to all clients telling them to 
+	 * the library and jam, and sending a message to all clients telling them to 
 	 * remove its songs.
+	 * 
+	 * @param Client clientToRemove
 	 */
 	private void removeFromJam(final Client clientToRemove) {
 		g.db.deleteJamSongsFromIp(clientToRemove.getIpAddress());
