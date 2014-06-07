@@ -763,6 +763,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		if (cursor.getColumnIndex(KEY_TIMESTAMP) != -1) {
 			song.setJamID(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP)));
 		}
+		if (cursor.getColumnIndex(KEY_ADDED_BY) != -1) {
+			song.setAddedBy(cursor.getString(cursor.getColumnIndex(KEY_ADDED_BY))); 
+		}
 		
 		return song; 
 	}
