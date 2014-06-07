@@ -515,6 +515,10 @@ public class Server extends NanoHTTPD {
 	 */
 	private Response jamStartResponse() {
 		g.jam.start(); 
+		
+		// Start the movement of the progress bar again
+		g.sendUIMessage(8);
+		
 		return new NanoHTTPD.Response("Started playing jam");
 	}
 	

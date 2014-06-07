@@ -341,7 +341,13 @@ public class BrowseMusicActivity extends FragmentActivity implements ActionBar.T
 				} else if (msg.what == 7) {
 					if (jamFragment != null) 
 						jamFragment.refreshJamList(); 
-				} 
+				} else if (msg.what == 8) {
+					// Start the movement of the progress bar agaain
+					if (jamFragment != null) {
+						jamFragment.running = true; 
+						jamFragment.seekBar.postDelayed(jamFragment.onEverySecond, 1000);  
+					}
+				}
 				super.handleMessage(msg);
 			}
 		};		

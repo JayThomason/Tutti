@@ -36,8 +36,8 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	private Globals g; 
 
 	private int current = 0;  
-	private boolean running = true;  
-	private SeekBar seekBar;  
+	public boolean running = true;  
+	public SeekBar seekBar;  
 	private TextView mediaTimeCurrent;
 	private TextView mediaTimeEnd;
 	private Client masterClient;	
@@ -186,7 +186,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 	/**
 	 * Runnable that updates the seek bar once per second.
 	 */
-	private Runnable onEverySecond = new Runnable() {  
+	public Runnable onEverySecond = new Runnable() {  
 		@Override  
 		public void run(){  
 			if (running == true){  
@@ -194,7 +194,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 					seekBar.setProgress(g.jam.mediaPlayer.getCurrentPosition());  
 				}  
 
-				if (g.jam.mediaPlayer.isPlaying()) {  
+				if (running) {  
 					seekBar.postDelayed(onEverySecond, 1000);  
 					updateTime();  
 				}  
@@ -258,7 +258,10 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			@Override
 			public void onClick(View arg0) {
 				g.jam.start();
-				if (!g.jam.checkMaster()) {
+				running = true; 
+				if (g.jam.checkMaster()) {
+					seekBar.postDelayed(onEverySecond, 1000);  
+				} else {
 					masterClient.startPlaying(new AsyncHttpResponseHandler() {
 						public void onSuccess(int statusCode, Header[] headers,
 								byte[] responseBody) {
@@ -280,6 +283,7 @@ public class BrowseJamFragment extends Fragment implements OnPreparedListener {
 			@Override
 			public void onClick(View arg0) {
 				g.jam.pause();
+				running = false; 
 				if (!g.jam.checkMaster()) {
 					masterClient.pauseSong(new AsyncHttpResponseHandler() {
 						public void onSuccess(int statusCode, Header[] headers, 
