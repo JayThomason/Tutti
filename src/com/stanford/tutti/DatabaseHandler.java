@@ -778,7 +778,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public JSONObject getLibraryAsJSON() {
 		JSONObject json = new JSONObject(); 
 
-		synchronized (this) {
+		//synchronized (this) {
 	
 			JSONArray artistArray = getArtistsAsJSON(); 
 	
@@ -787,7 +787,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			} catch (JSONException e) {
 				e.printStackTrace(); 
 			}
-		}
+		//}
 		return json; 
 
 	}
@@ -951,7 +951,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * @param JSONArray jsonArtists
 	 */
 	public void loadMusicFromJSON(JSONArray artists) { 
-		synchronized (this) {
+		//synchronized (this) {
 			for (int i = 0; i < artists.length(); i++) {
 				try {
 					JSONObject jsonArtist = artists.getJSONObject(i); 
@@ -987,7 +987,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					e.printStackTrace();
 				} 
 			}
-		}
+		//}
 	}
 
 	/**
