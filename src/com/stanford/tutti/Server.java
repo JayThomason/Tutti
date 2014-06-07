@@ -345,6 +345,9 @@ public class Server extends NanoHTTPD {
     /**
      * Parses, loads, and responds to a POST request containing new 
      * shared jam metadata from a remote phone as JSON. 
+     * Only non-master Client phones should receive /jam/update requests, 
+     * i.e. Clients should never overwrite the master phone's canonical
+     * jam state. 
      * 
 	 * @param IHTTPSession session
 	 * @returns Response response

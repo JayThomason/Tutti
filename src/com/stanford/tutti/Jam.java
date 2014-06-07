@@ -20,6 +20,13 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.widget.Toast;
 
+/**
+ * Object that encapsulates all the data for a shared playlist: 
+ * list of songs, set of remote Clients, Android MediaPlayer, etc. 
+ * Each jam has a single "master" phone (by default, the phone
+ * that created the jam), which maintains the canonical jam state 
+ * and acts as the central source of synchronization for remote Clients. 
+ */
 public class Jam {
 	private int currIndex; 
 	private int currSize; 
@@ -35,6 +42,11 @@ public class Jam {
 	private Globals g;
 	private Thread masterKeepAliveThread;
 
+	/**
+	 * Constructor. Initializes a new jam object. 
+	 * 
+	 * @param Globals global
+	 */
 	public Jam(Globals gl) {
 		this.g = gl; 
 		currIndex = -1; 
@@ -63,26 +75,56 @@ public class Jam {
 		name = ""; 
 	}
 
+	/**
+	 * Returns the IP address of the master phone for the jam. 
+	 * 
+	 * @return String masterIpAddress
+	 */
 	public String getMasterIpAddr() {
 		return masterIpAddr;
 	}
 
+	/**
+	 * Returns the port number of the master phone for the jam. 
+	 * 
+	 * @return int masterPort
+	 */
 	public int getMasterPort() {
 		return masterPort;
 	}
 
+	/**
+	 * Sets the IP address of the master phone for the jam. 
+	 * 
+	 * @param String masterIpAddress
+	 */
 	public void setMasterIp(String masterIpAddr) {
 		this.masterIpAddr = masterIpAddr;
 	}
 
+	/**
+	 * Sets the port number of the master phone for the jam. 
+	 * 
+	 * @param int port
+	 */
 	public void setMasterPort(int port) {
 		this.masterPort = port;
 	}
 
+	/**
+	 * Returns the set of all Clients currently in the jam. 
+	 * 
+	 * @return HashSet<Client> clientSet
+	 */
 	public HashSet<Client> getClientSet() {
 		return clientSet; // careful - set is mutable
 	}
 
+	/**
+	 * Add a new Client object to the set of Clients currently in the jam. 
+	 * 
+	 * @param Client client
+	 */
 	public void addClient(Client client) {
 		synchronized (clientSet) {
 			clientSet.add(client);
@@ -91,61 +133,111 @@ public class Jam {
 		g.logger.updateUsers(client.getIpAddress());
 	}
 
+	/**
+	 * Checks whether this phone is the master phone of the jam. 
+	 * 
+	 * @return boolean isMaster
+	 */
 	public boolean checkMaster() {
 		return master; 
 	}
 
+	/**
+	 * Sets whether this phone is the master phone of the jam. 
+	 * 
+	 * @param boolean isMaster
+	 */
 	public void setMaster(boolean master) {
 		this.master = master; 
 	}
 
+	/**
+	 * Adds a new IP address-username pair to the jam. 
+	 * 
+	 * @param String ipAddress
+	 * @param String username
+	 */
 	public void setIPUsername(String ipAddress, String username) {
 		usernameMap.put(ipAddress, username); 
 	}
 
+	/**
+	 * Returns the username associated with the given IP address in the jam. 
+	 * 
+	 * @param String ipAddress
+	 * @return String username
+	 */
 	public String getIPUsername(String ipAddress) {
 		return usernameMap.get(ipAddress); 
 	}
 
+	/**
+	 * Returns the name of the jam. 
+	 * 
+	 * @return String jamName
+	 */
 	public String getJamName() {
 		return name; 
 	}
 
+	/**
+	 * Sets the name of the jam. 
+	 * 
+	 * @param String jamName
+	 */
 	public void setJamName(String name) {
 		this.name = name; 
 	}
 
+	/**
+	 * Starts playing the current song in the jam.
+	 */
 	public void start() {
 		if (!master)
 			return; 
 
-		System.out.println("START"); 
-
 		mediaPlayer.start(); 
 	}
 
+	/**
+	 * Pauses the current song in the jam. 
+	 */
 	public void pause() {
 		if (!master)
 			return; 
 
-		System.out.println("START"); 
-
 		mediaPlayer.pause(); 
 	}
 
+	/**
+	 * Seeks to the specified time in the currently playing song. 
+	 * 
+	 * @param int seekToTime
+	 */
 	public void seekTo(int time) {
 		if (!master)
 			return; 
 
-		System.out.println("START"); 
-
 		mediaPlayer.seekTo(time); 
 	}
 
+	/**
+	 * Returns a cursor containing all the songs in the jam, 
+	 * ordered by index. 
+	 * 
+	 * @return Cursor songsCursor
+	 */
 	public Cursor getSongs() {
 		return g.db.getSongsInJam(); 
 	}
 
+	/**
+	 * Adds the given song to the end of the jam, and
+	 * creates and returns a new timestamp ID for that song in the jam. 
+	 * 
+	 * @param Song song
+	 * @return String timestampID
+	 */
 	public String addSong(Song song) {
 		String timestamp = g.getTimestamp(); 
 		g.db.addSongToJam(song, currSize, timestamp);
@@ -153,11 +245,24 @@ public class Jam {
 		return timestamp; 
 	}
 
+	/**
+	 * Adds the given song to the end of the jam
+	 * with the given, pre-created timestamp ID. 
+	 * 
+	 * @param Song song
+	 * @param String timestampID
+	 */
 	public void addSongWithTimestamp(Song song, String timestamp) {
 		g.db.addSongToJam(song, currSize, timestamp); 
 		currSize++; 
 	}
 
+	/**
+	 * Checks whether a song is currently selected in the jam
+	 * (whether playing or paused doesn't matter). 
+	 * 
+	 * @return boolean hasCurrentSong
+	 */
 	public boolean hasCurrentSong() {
 		if (currIndex >= 0) {
 			return true; 
@@ -166,14 +271,29 @@ public class Jam {
 		}
 	}
 
+	/**
+	 * Returns the current song from the jam. 
+	 * 
+	 * @return Song currentSong
+	 */
 	public Song getCurrentSong() {
 		return g.db.getSongInJamByIndex(currIndex); 
 	}
 
+	/**
+	 * Returns the index of the current song in the jam. 
+	 * 
+	 * @return int currentSongIndex
+	 */
 	public int getCurrentSongIndex() {
 		return currIndex; 
 	}
 
+	/**
+	 * Attempts to iterate to the next song in the jam. 
+	 * 
+	 * @return boolean iteratedSuccessfully
+	 */
 	public boolean iterateCurrentSong() {
 		currIndex++;
 		if (currIndex >= currSize) {
@@ -183,6 +303,11 @@ public class Jam {
 		return true;
 	}
 
+	/**
+	 * Sets the current song in the jam by timestamp ID. 
+	 * 
+	 * @param String timestampID
+	 */
 	public void setCurrentSong(String timestamp) {
 		Cursor cursor = g.db.getSongInJamByID(timestamp); 
 
@@ -192,9 +317,16 @@ public class Jam {
 			currIndex = cursor.getInt(cursor.getColumnIndex("jamIndex")); 
 		}
 
-		//cursor.close(); 
+		cursor.close(); 
 	}
 
+	/**
+	 * Sets the current song in the jam by index, and 
+	 * returns the corresponding timestamp ID. 
+	 * 
+	 * @param int index
+	 * @return String timestampID
+	 */
 	public String setCurrentSongIndex(int index) {
 		if (index < currSize) {
 			currIndex = index; 
