@@ -22,11 +22,23 @@ import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
+/**
+ * Sets and fires an alarm regularly to signal that the data logged by the app
+ * should be serialized and sent to a central server database.
+ */
 public class LoggerAlarmReceiver extends WakefulBroadcastReceiver {
 	private AlarmManager alarmManager;
 	private PendingIntent alarmIntent;
 	private static final String ALARM_SET_FLAG = "alarmSet";
 
+	/**
+	 * Receives the broadcast signaling that the logger alarm has been fired. Gets
+	 * the log data from the local database, serializes it, and posts it to the
+	 * server. If the post succeeds the local log database is cleared.
+	 * 
+	 * @param context
+	 * @param intent 
+	 */
 	@Override
 	public void onReceive(Context context, final Intent intent) {
 		final Globals g = (Globals) context.getApplicationContext();
@@ -73,6 +85,15 @@ public class LoggerAlarmReceiver extends WakefulBroadcastReceiver {
 
 	}
 
+	/**
+	 * Sets or resets the alarm using the AlarmManager. The alarm registers an
+	 * intent to boot this class, which will handle the intent using the onReceive
+	 * method. The alarm is set to be a random time in the next 7 hours and the alarm
+	 * is set to repeat about every 6 hours.
+	 * 
+	 * @param context
+	 * @param forceAlarmReset Whether the alarm must be reset (use on phone reboot)
+	 */
 	public void setAlarm(Context context, boolean forceAlarmReset) {
 		System.out.println("set alarm called in logger alarm");
 		alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
