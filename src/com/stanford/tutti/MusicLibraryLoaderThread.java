@@ -96,18 +96,17 @@ public class MusicLibraryLoaderThread extends Thread {
 	            String artPath = ""; 
 	            if (albumTitle != "") {
 	            	String trackNumString = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-	            	
+	            		            	
 	            	int trackNum;
 	            	
-	            	if (trackNumString != null && trackNumString.equals("null")) {
+	            	if (trackNumString != null && !trackNumString.equals("null")) {
 	            		trackNum = Integer.parseInt(trackNumString);
-	            	}
-	            	else {
+	            	} else {
 	            		trackNum = 0;
 	            	}
 	            	
 	            	song.setTrackNum(trackNum);
-	            	
+	            		            	
 		            Cursor artCursor = activity.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
 		                    new String[] {MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_ART}, 
 		                    MediaStore.Audio.Albums.ALBUM + "=?", 
