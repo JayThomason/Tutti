@@ -174,7 +174,7 @@ public class BrowseMusicAdapter extends SimpleCursorAdapter {
         String titleText = ""; 
         if (trackNum != 0) {
         	titleText += trackNum + ". "; 
-        }
+        } 
         if (g.currentArtistView.equals("")) {
         	titleText += artist + ": "; 
         }
