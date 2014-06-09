@@ -1,21 +1,14 @@
 package com.stanford.tutti;
 
-import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-
-/*
+/**
  * Logs information about the jam such as elapsed time spent in jam, number 
  * of unique users in jam, and the max number of songs in the jam to a local
- * database. Once per day the database is serialized as JSON and sent to a
- * centralized server.
+ * database. The database is regularly serialized as JSON and sent to a
+ * master database.
  * 
  * Data should only be logged when the phone is the master.
  */
@@ -25,13 +18,18 @@ public class Logger {
 	private AtomicBoolean shouldUpdateTimestamp;
 	private Set<String> ipAddrSet;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param g Application Context
+	 */
 	public Logger(Globals g) {
 		this.g = g;
 		shouldUpdateTimestamp = new AtomicBoolean(false);
 		ipAddrSet = new HashSet<String>();
 	}
 
-	/*
+	/**
 	 * Creates a new jam in the log database and creates a thread to update its latest
 	 * timestamp once every 10 seconds.
 	 */
@@ -74,7 +72,7 @@ public class Logger {
 		updateNumberSongs();
 	}
 
-	/*
+	/**
 	 * Stops updating the timestamp for the current jam.
 	 */
 	public void endCurrentJam() {
@@ -82,7 +80,7 @@ public class Logger {
 		currentJamId = -1;
 	}
 
-	/*
+	/**
 	 * Updates the number of songs associated with the current jam in the log database.
 	 */
 	public void updateNumberSongs() {
@@ -97,7 +95,7 @@ public class Logger {
 		}
 	}
 
-	/*
+	/**
 	 * Updates the number of users in the jam if the user's ip address has not been
 	 * seen before.
 	 */
