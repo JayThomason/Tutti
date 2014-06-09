@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.Header;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.content.Context;
@@ -18,9 +17,13 @@ import android.net.wifi.p2p.WifiP2pManager.DnsSdServiceResponseListener;
 import android.net.wifi.p2p.WifiP2pManager.DnsSdTxtRecordListener;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
-import android.os.Handler;
 import android.os.Message;
 
+/**
+ * Manages the advertising and discovery of other phones on the same network 
+ * which are running the application. This class uses Android's Wifi P2P 
+ * API to do local service discovery.
+ */
 public class DiscoveryManager {
 	private Globals g;
 	private final WifiP2pManager mManager;
@@ -36,6 +39,10 @@ public class DiscoveryManager {
 	private static final String IP_PORT_KEY = "ip_port";
 	private static final String JAM_NAME_KEY = "jam_name";
 
+	/**
+	 * Constructor 
+	 * @param g Application Context
+	 */
 	public DiscoveryManager(Globals g) {
 		this.g = g;
 
@@ -45,8 +52,9 @@ public class DiscoveryManager {
 		shouldBroadcastJam = new AtomicBoolean(false);
 	}
 
-	/*
-	 * Makes the current jam discoverable by broadcasting a local DnsSd service over Wifi P2P.
+	/**
+	 * Makes the current jam discoverable by broadcasting a local DnsSd service 
+	 * over Wifi P2P.
 	 */
 	public void makeJamDiscoverable() {
 		Map<String, String> record = new HashMap<String, String>();
@@ -117,6 +125,9 @@ public class DiscoveryManager {
 
 		shouldBroadcastJam.set(true);
 		
+		// Create thread to call discoverServices every 5 seconds because this it seems to stop
+		// discovering services after some time.
+		
 		(new Thread() {
 			public void run() {
 				while (true) {
@@ -148,6 +159,10 @@ public class DiscoveryManager {
 		}).start();
 	}
 
+	/**
+	 * Removes any jam which is being broadcasted (making it undiscoverable to
+	 * nearby phones).
+	 */
 	public void stopJamDiscoverable() {
 		mManager.clearLocalServices(mChannel, new ActionListener() {
 			@Override
@@ -165,6 +180,11 @@ public class DiscoveryManager {
 		shouldBroadcastJam.set(false);
 	}
 
+	/**
+	 * Starts discovery of local jams. Listens for DnsSdTxtRecords, checks for a 
+	 * valid name, parses the ip and port, and sends a message to the 
+	 * joinJamHandler when a new jam is discovered successfully.
+	 */
 	public void startJamDiscovery () {
 		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
 			@Override
@@ -250,7 +270,10 @@ public class DiscoveryManager {
 		});	
 	}
 
-	public boolean stopJamDiscovery() {
+	/**
+	 * Stops discovery of local jams by clearing the discovery request. 
+	 */
+	public void stopJamDiscovery() {
 		// not sure if this works or not
 		mManager.clearServiceRequests(mChannel, new ActionListener() {
 			@Override
@@ -263,8 +286,6 @@ public class DiscoveryManager {
 				System.out.println("could not clear discovery service requests");
 			}
 		});
-
-		return true;
 	}
 
 }
