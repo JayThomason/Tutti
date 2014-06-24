@@ -11,7 +11,6 @@ Tutti
 * Accept, and you'll see each other's music in the browser: 
 ![Browsing the shared music library](http://i102.photobucket.com/albums/m93/hwray/Pic3_zps21d10fb4.png)
 * Everyone can add, move, remove, and change songs simultaneously (if you allow them permission). The music never skips a beat, and the shared playlist stays sync'd in real-time. 
-![Editing the playlist simultaneously](http://s102.photobucket.com/user/hwray/media/Pic5_zps01cb4e19.png.html?sort=3&o=1)
-* Tutti was specifically developed and tested on the Nexus 5, and is not guaranteed to work (or look pretty) on other devices. 
-* [Further background and documentation can be found on the wiki page](https://github.com/JayThomason/Tutti/wiki). 
+![Editing the playlist simultaneously](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps01cb4e19.png)
 * Tutti was developed with the support of engineers from [Audi](http://www.audiusa.com/) and the [Volkswagen Electronics Research Laboratory](http://www.vwerl.com/). 
+* Note: Tutti was specifically developed and tested on the Nexus 5, and is not guaranteed to work (or look pretty) on other devices. * [Further background and documentation can be found on the wiki page](https://github.com/JayThomason/Tutti/wiki). 
