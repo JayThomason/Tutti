@@ -1,17 +1,11 @@
 Tutti
 =====
 
-Tutti is a shared music application for the car being made in conjunction with Audi.
+###**Everyone's Music. One Playlist.**
 
-For now, we are keeping most of the information about the project in our wiki,
-so take a look over [here](https://github.com/JayThomason/tutti/wiki).
+* Tutti is an open-source Android app that allows users to share and edit a collaborative music playlist in real-time. 
+* Create a Jam session on the local Wifi network: 
+![Creating a new Jam](http://i102.photobucket.com/albums/m93/hwray/Pic1_zps03c59ed4.png)
+* [Further background and documentation can be found on the wiki page](https://github.com/JayThomason/Tutti/wiki). 
+* Tutti was developed with the support of engineers from Audi and the Volkswagen Electronics Research Laboratory. 
 
-![Create a Jam](http://s14.postimg.org/q4qlzjcox/image.jpg)
-
-![Join a Jam](http://s14.postimg.org/o1g6rvcw1/image.jpg)
-
-![Share your music library](http://s14.postimg.org/e5f3s8741/image.jpg)
-
-![Browse and add to the playlist](http://s14.postimg.org/y2pmexfcx/image.jpg)
-
-![Everything stays in sync, and the master phone keeps playing music](http://s14.postimg.org/ji8jk3ke9/image.jpg)
