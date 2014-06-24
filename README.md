@@ -12,7 +12,7 @@ Tutti
 ####Accept, and you'll see each other's music in the browser: 
 ![Browsing the shared music library](http://i102.photobucket.com/albums/m93/hwray/Pic3_zps21d10fb4.png)
 ####Everyone can add, move, remove, and change songs simultaneously (if you allow them permission). The music never skips a beat, and the shared playlist stays sync'd in real-time. 
-![Editing the playlist simultaneously](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png)
+![Three phones in a Jam](http://i102.photobucket.com/albums/m93/hwray/Pic6_zpsbbf06b94.png)
 
 ###Everyone's music. One playlist.
 
