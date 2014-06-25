@@ -5,6 +5,10 @@ Tutti
 
 ![Tutti](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png)
 
+![Play Store](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play_zps178954a4.png)
+
+<a href="https://play.google.com/store/apps/details?id=com.stanford.tutti">![Play Store Link](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play1_zps64957db3.png)</a>
+
 ####Create a Jam session on the local Wifi network: 
 ![Creating a new Jam](http://i102.photobucket.com/albums/m93/hwray/Pic1_zps7007828c.png)
 ####Android users on the same WiFi network can request to join: 
@@ -19,4 +23,4 @@ Tutti
 
 * Tutti was developed in conjunction with engineers from [Audi](http://www.audiusa.com/) and the [Volkswagen Electronics Research Laboratory](http://www.vwerl.com/). 
 * Tutti was specifically developed and tested on the Nexus 5, and is not guaranteed to work (or look pretty) on other devices.
-* [Further background and documentation can be found on the team wiki](https://github.com/JayThomason/Tutti/wiki). 
+* Further background and documentation can be found on the [team website](http://www.tuttimusicapp.com/) and [team wiki.](https://github.com/JayThomason/Tutti/wiki)
