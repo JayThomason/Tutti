@@ -18,5 +18,5 @@ Tutti
 
 
 * Tutti was developed in conjunction with engineers from [Audi](http://www.audiusa.com/) and the [Volkswagen Electronics Research Laboratory](http://www.vwerl.com/). 
-* Note: Tutti was specifically developed and tested on the Nexus 5, and is not guaranteed to work (or look pretty) on other devices.
+* Tutti was specifically developed and tested on the Nexus 5, and is not guaranteed to work (or look pretty) on other devices.
 * [Further background and documentation can be found on the team wiki](https://github.com/JayThomason/Tutti/wiki). 
