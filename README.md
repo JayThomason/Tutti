@@ -7,7 +7,7 @@ Tutti
 
 ![Tutti](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png)
 
-####Create an ad-hoc Jam session on the local Wifi network: 
+####Create a new Jam session on the local Wifi network: 
 ![Creating a new Jam](http://i102.photobucket.com/albums/m93/hwray/Pic1_zps7007828c.png)
 ####Nearby Android users on the same Wifi network can request to join: 
 ![Sending a join Jam request](http://i102.photobucket.com/albums/m93/hwray/Pic2_zps62c68c4f.png)
