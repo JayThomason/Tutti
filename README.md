@@ -5,8 +5,6 @@ Tutti
 
 ![Tutti](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png)
 
-![Play Store](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play_zps178954a4.png)
-
 <a href="https://play.google.com/store/apps/details?id=com.stanford.tutti">![Play Store Link](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play1_zps64957db3.png)</a>
 
 ####Create a Jam session on the local Wifi network: 
