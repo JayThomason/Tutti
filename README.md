@@ -1,7 +1,7 @@
 Tutti
 =====
 
-###An **open-source Android app** that lets users share and edit a **collaborative music playlist** in real-time. 
+###Share and edit a **collaborative music playlist** with your friends in real-time. 
 
 <a href="https://play.google.com/store/apps/details?id=com.stanford.tutti">![Play Store Link](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play1_zps64957db3.png)</a>
 
