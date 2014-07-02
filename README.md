@@ -1,7 +1,7 @@
 Tutti
 =====
 
-###Share and edit a **collaborative music playlist** with your friends in real-time. 
+###An open-source Android app that allows users to share and edit a **collaborative music playlist** with their friends in real-time. 
 
 ![Tutti](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png)
 
