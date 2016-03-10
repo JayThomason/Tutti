@@ -3,26 +3,26 @@ Tutti
 
 ###An open-source Android app that allows users to share and edit a **collaborative music playlist** with their friends in real-time. 
 
-![Tutti](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png)
+![Tutti](http://i102.photobucket.com/albums/m93/hwray/Pic5_zps14ad7a2b.png | width=700)
 
-<a href="https://play.google.com/store/apps/details?id=com.stanford.tutti">![Play Store Link](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play1_zps64957db3.png)</a>
+<a href="https://play.google.com/store/apps/details?id=com.stanford.tutti">![Play Store Link](http://i102.photobucket.com/albums/m93/hwray/button-get-it-on-google-play1_zps64957db3.png | width=300)</a>
 
 ====
 
 ####Create a new Jam session on the local Wifi network: 
-![Creating a new Jam](http://i102.photobucket.com/albums/m93/hwray/Pic1_zps7007828c.png)
+![Creating a new Jam](http://i102.photobucket.com/albums/m93/hwray/Pic1_zps7007828c.png | width=700)
 ====
 
 ####Nearby Android users on the same Wifi network can request to join: 
-![Sending a join Jam request](http://i102.photobucket.com/albums/m93/hwray/Pic2_zps62c68c4f.png)
+![Sending a join Jam request](http://i102.photobucket.com/albums/m93/hwray/Pic2_zps62c68c4f.png | width=700)
 ====
 
 ####Accept, and you'll see each other's music in the browser: 
-![Browsing the shared music library](http://i102.photobucket.com/albums/m93/hwray/Pic3_zps21d10fb4.png)
+![Browsing the shared music library](http://i102.photobucket.com/albums/m93/hwray/Pic3_zps21d10fb4.png | width=700)
 ====
 
 ####Everyone can add, move, remove, and change songs (if you give them permission). The music never skips a beat, and the shared playlist stays sync'd in real-time. 
-![Three phones in a Jam](http://i102.photobucket.com/albums/m93/hwray/Pic6_zpsbbf06b94.png)
+![Three phones in a Jam](http://i102.photobucket.com/albums/m93/hwray/Pic6_zpsbbf06b94.png | width=700)
 
 ###Everyone's music. One playlist.
 ====
